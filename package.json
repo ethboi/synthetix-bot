@@ -1,0 +1,42 @@
+{
+  "name": "funding-rates",
+  "version": "1.0.0",
+  "description": "Funding rate discord bot",
+  "main": "index.js",
+  "repository": "git@github.com:ethboi/funding-rates.git",
+  "author": "ethboi",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev --files --respawn src/app.ts",
+    "clean": "rimraf ./build",
+    "build": "yarn clean && npx tsc",
+    "start": "node build/app.js",
+    "generate-types": "yarn typechain --target ethers-v5 --out-dir src/contracts/typechain src/contracts/abis/*.json"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^10.2.0",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.14.6",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.9.5",
+    "yarn-upgrade-all": "^0.7.2",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
+    "prettier": "^2.8.3"
+  },
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
+    "lodash": "^4.17.21",
+    "rimraf": "^4.3.1",
+    "twitter-api-v2": "^1.14.2",
+    "typechain": "^8.1.1",
+    "typescript": "^4.9.5",
+    "ts-node": "^10.5.0"
+  }
+}
