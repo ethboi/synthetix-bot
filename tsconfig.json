@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
+    "target": "es2017",
     "lib": ["ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -9,13 +10,14 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "build",
+    "outDir": "./build",
     "incremental": false,
     "sourceMap": false,
     "noEmit": false,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "rootDir": "./src"
   },
   "exclude": ["node_modules", ".yarn"],
   "include": ["src/**/*.ts"]

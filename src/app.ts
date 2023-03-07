@@ -1,9 +1,11 @@
-import { Run } from "./bot";
+import { Run } from './bot'
 
 async function Init(): Promise<void> {
   try {
-    await Run();
+    await Run()
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 }
+
+Init()
