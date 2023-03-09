@@ -12,7 +12,8 @@
     "clean": "rimraf ./build",
     "build": "yarn clean && npx tsc",
     "start": "node build/app.js",
-    "generate-types": "yarn typechain --target ethers-v5 --out-dir src/contracts/typechain src/contracts/abis/*.json"
+    "generate-types": "yarn typechain --target ethers-v5 --out-dir src/contracts/typechain src/contracts/abis/*.json",
+    "deploycmds": "tsc && node ./deploy-commands.js"
   },
   "devDependencies": {
     "@typechain/ethers-v5": "^10.2.0",

@@ -1,14 +1,13 @@
-import { ethers } from 'ethers'
 import { alchemyProvider } from '../utils/providers'
 import RpcClient from '../utils/rpcClient'
 import { PerpsV2MarketData__factory } from '../contracts/typechain'
 import { PerpsV2FundingDataContractAddress } from '../constants/addresses'
 import printObject from '../utils/printObject'
 import { MarketSummary } from '../types'
-import { hexToAscii } from '../utils/formatters/string'
+import { hexToAscii } from '../utils/formatString'
 import fromBigNumber from '../utils/fromBigNumber'
 
-export async function GetFundingRates() {
+export async function GetMarketSummaries() {
   console.log('Getting Funding Rates')
   const rpcClient = new RpcClient(alchemyProvider)
   const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
@@ -39,8 +38,12 @@ export async function GetFundingRates() {
       currentFundingRate: fromBigNumber(x.currentFundingRate),
       currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
     }
-    printObject(marketSummary)
+    return marketSummary
   })
-
+  console.log(rates)
   return rates
+}
+
+export async function GetStats(markets: MarketSummary[], asset: string) {
+  return markets.find((x) => x.asset.toLowerCase() === asset.toLowerCase())
 }
