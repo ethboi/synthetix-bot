@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { MarketSummary } from '../types'
+import { MarketSummary } from '../types/markets'
 import formatNumber from '../utils/formatNumber'
 import { titleCaseWord } from '../utils/formatString'
 import formatUSD from '../utils/formatUSD'
@@ -122,8 +122,8 @@ export function StatsDiscord(dto: MarketSummary, frontEnd: string): EmbedBuilder
       inline: true,
     },
     {
-      name: `〽️Market Skew`,
-      value: `> ${formatNumber(dto.marketSkew, { showSign: true })}`,
+      name: `〽️Premium`,
+      value: `> ${formatNumber((10000 * dto.marketSkew) / (dto.settings?.skewScale as number), { showSign: true })}`,
       inline: true,
     },
     {

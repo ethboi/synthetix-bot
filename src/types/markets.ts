@@ -10,4 +10,9 @@ export type MarketSummary = {
   marketDebt: number
   currentFundingRate: number
   currentFundingVelocity: number
+  settings: MarketSettings | undefined
+}
+
+export type MarketSettings = {
+  skewScale: number
 }

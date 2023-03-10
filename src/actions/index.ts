@@ -3,9 +3,24 @@ import RpcClient from '../utils/rpcClient'
 import { PerpsV2MarketData__factory } from '../contracts/typechain'
 import { PerpsV2FundingDataContractAddress } from '../constants/addresses'
 import printObject from '../utils/printObject'
-import { MarketSummary } from '../types'
+import { MarketSettings, MarketSummary } from '../types/markets'
 import { hexToAscii } from '../utils/formatString'
 import fromBigNumber from '../utils/fromBigNumber'
+
+export async function GetMarketDetails() {
+  const rpcClient = new RpcClient(alchemyProvider)
+  const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
+  const markets = await contract.allProxiedMarketSummaries()
+
+  markets.map(async (x) => {
+    const params = await contract.parameters(x.key)
+    console.log(params)
+    const mapped: MarketSettings = {
+      skewScale: fromBigNumber(params.skewScale),
+    }
+    global.MARKET_SETTINGS[x.key] = mapped
+  })
+}
 
 export async function GetMarketSummaries() {
   console.log('Getting Funding Rates')
@@ -20,7 +35,7 @@ export async function GetMarketSummaries() {
   //price: BigNumber;
   //marketSize: BigNumber;
   //marketSkew: BigNumber;
-  //marketDebt: BigNumber;
+  //marketDebt: BigNumber;f
   //currentFundingRate: BigNumber;
   //currentFundingVelocity: BigNumber;
   //feeRates: PerpsV2MarketData.FeeRatesStructOutput;
@@ -38,6 +53,7 @@ export async function GetMarketSummaries() {
       currentFundingRate: fromBigNumber(x.currentFundingRate),
       currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
       marketValue: fromBigNumber(x.marketSize) * fromBigNumber(x.price),
+      settings: global.MARKET_SETTINGS[x.key],
     }
 
     return marketSummary
