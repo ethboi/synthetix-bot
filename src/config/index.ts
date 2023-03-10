@@ -25,4 +25,5 @@ export const DISCORD_ENABLED: boolean = _.defaultTo(
 
 export const TESTNET: boolean = _.defaultTo(convertToBoolean(process.env.TESTNET as string), true) as boolean
 
-export const FRONTEND = _.defaultTo(process.env.FRONTEND, '')
+export const FRONTEND = _.defaultTo(process.env.FRONTEND, '') //synthetix //kwenta
+export const DISCORD_CHANNEL = _.defaultTo(process.env.DISCORD_CHANNEL, '')
