@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Client, GuildBasedChannel, TextChannel } from 'discord.js'
-import { FRONTEND, TESTNET, DISCORD_CHANNEL } from '../config'
+import { TESTNET, DISCORD_CHANNEL } from '../config'
 import { defaultActivity, defaultName } from '../integrations/discord'
 import { GetMarketSummaries, GetStats } from '../actions'
 import { MarketSummariesDiscord, StatsDiscord } from '../templates'
@@ -41,7 +41,7 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
   await discordClient.login(accessToken)
   if (!TESTNET) {
     defaultActivity(discordClient)
-    await defaultName(discordClient)
+    await defaultName(discordClient, frontEnd)
   }
   return discordClient
 }

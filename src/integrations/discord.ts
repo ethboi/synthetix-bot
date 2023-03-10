@@ -1,6 +1,7 @@
 import { ActionRowBuilder, ActivityType, ButtonBuilder, Client, EmbedBuilder, TextChannel } from 'discord.js'
 import printObject from '../utils/printObject'
 import { TESTNET } from '../config'
+import { titleCaseWord } from '../utils/formatString'
 
 export async function PostDiscord(
   embed: EmbedBuilder[],
@@ -26,15 +27,15 @@ export async function PostDiscord(
 
 export function defaultActivity(client: Client) {
   try {
-    client.user?.setActivity(`24h: 00%`, { type: ActivityType.Watching })
+    client.user?.setActivity(`Funding Rates`, { type: ActivityType.Watching })
   } catch (e: any) {
     console.log(e)
   }
 }
 
-export async function defaultName(client: Client) {
+export async function defaultName(client: Client, frontEnd: string) {
   try {
-    await client.user?.setUsername(`DEFAULT USERNAME`)
+    await client.user?.setUsername(`${titleCaseWord(frontEnd)} Bot`)
   } catch (e: any) {
     console.log(e)
   }

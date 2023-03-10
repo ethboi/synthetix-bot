@@ -59,7 +59,7 @@ export function MarketRow(embed: EmbedBuilder, dto: MarketSummary): EmbedBuilder
       name: `Open Interest`,
       value: `> 🟢 ${formatUSD(((dto.marketSize + dto.marketSkew) / 2) * dto.price)} (L)\n> 🔴 ${formatUSD(
         ((dto.marketSize - dto.marketSkew) / 2) * dto.price,
-      )} (S)`,
+      )} (S)\n> \n🔗 **Trade**\n> [[open a trade]](https://kwenta.eth.limo/market/?asset=${dto.asset})`,
       inline: true,
     },
   )
