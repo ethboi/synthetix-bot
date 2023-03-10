@@ -28,7 +28,7 @@ export async function GetMarketSummaries() {
   const rates = fundingRates.map((x) => {
     const marketSummary: MarketSummary = {
       market: x.market,
-      asset: hexToAscii(x.asset),
+      asset: ReplaceSynths(hexToAscii(x.asset)),
       key: hexToAscii(x.key),
       maxLeverage: fromBigNumber(x.maxLeverage),
       price: fromBigNumber(x.price),
@@ -45,5 +45,16 @@ export async function GetMarketSummaries() {
 }
 
 export async function GetStats(markets: MarketSummary[], asset: string) {
+  console.log(`stats fr ${asset.toLowerCase()}`)
   return markets.find((x) => x.asset.toLowerCase() === asset.toLowerCase())
+}
+
+function ReplaceSynths(asset: string) {
+  if (asset == 'sETH') {
+    return 'ETH'
+  }
+  if (asset == 'sBTC') {
+    return 'BTC'
+  }
+  return asset
 }

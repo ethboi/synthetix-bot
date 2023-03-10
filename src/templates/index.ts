@@ -1,47 +1,54 @@
 import { EmbedBuilder } from 'discord.js'
 import { MarketSummary } from '../types'
 import formatNumber from '../utils/formatNumber'
+import { titleCaseWord } from '../utils/formatString'
 import formatUSD from '../utils/formatUSD'
 
-export function MarketSummariesDiscord(dto: MarketSummary[]): EmbedBuilder[] {
+export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): EmbedBuilder[] {
   const embeds: EmbedBuilder[] = []
-  const embed = new EmbedBuilder().setColor(`#ffd500`).setTitle(`KWENTA Futures`)
+  const embed = new EmbedBuilder().setColor(`${DefaultColor(frontEnd)}`).setTitle(`${frontEnd.toUpperCase()} Futures`)
 
   console.log(dto.length)
   dto.slice(0, 5).map((summary) => {
     return MarketRow(embed, summary)
   })
 
-  Footer(embed)
+  Footer(embed, frontEnd)
   embeds.push(embed)
   return embeds
 }
 
-export function MarketRow(embed: EmbedBuilder, marketSummary: MarketSummary): EmbedBuilder {
+export function MarketRow(embed: EmbedBuilder, dto: MarketSummary): EmbedBuilder {
   return embed.addFields(
     {
-      name: `💫 ${marketSummary.asset}`,
-      value: `> Price: ${marketSummary.price}`,
+      name: `🪙 ${dto.asset}`,
+      value: `> ${formatUSD(dto.price)}`,
       inline: true,
     },
     {
-      name: `Current Funding Rate`,
-      value: `> ${marketSummary.currentFundingRate}`,
+      name: `💸 Funding`,
+      value: `> *24h:* ${formatNumber(dto.currentFundingRate * 100)}% \n> *APR:* ${formatNumber(
+        dto.currentFundingRate * 365 * 100,
+      )}%\n> \n☄️ **Velocity**\n> *24h:* ${formatNumber(dto.currentFundingVelocity * 100, {
+        showSign: true,
+      })}%\n \u200b`,
       inline: true,
     },
     {
-      name: `Max Leverage`,
-      value: `> ${marketSummary.maxLeverage}`,
+      name: `Open Interest`,
+      value: `> 🟢 ${formatUSD(((dto.marketSize + dto.marketSkew) / 2) * dto.price)} (L)\n> 🔴 ${formatUSD(
+        ((dto.marketSize - dto.marketSkew) / 2) * dto.price,
+      )} (S)`,
       inline: true,
     },
   )
 }
 
-export function StatsDiscord(dto: MarketSummary): EmbedBuilder[] {
+export function StatsDiscord(dto: MarketSummary, frontEnd: string): EmbedBuilder[] {
   const embeds: EmbedBuilder[] = []
   const thumb = dto.key.slice(0, -4) == 'sAPE' ? 'sAPECOIN' : dto.key.slice(0, -4)
   const embed = new EmbedBuilder()
-    .setColor(`${AssetColor(dto.asset)}`)
+    .setColor(`${AssetColor(dto.asset, frontEnd)}`)
     .setTitle(`${dto.asset} Market Stats`)
     .setThumbnail(`https://raw.githubusercontent.com/Kwenta/kwenta/perps-v2-dev/assets/png/currencies/${thumb}.png`)
     .setURL(`https://kwenta.eth.limo/market/?asset=${dto.asset}`)
@@ -63,14 +70,14 @@ export function StatsDiscord(dto: MarketSummary): EmbedBuilder[] {
     },
     {
       name: `💸 Funding Rate`,
-      value: `> *24h:* ${formatNumber(dto.currentFundingRate)}% \n> *APR:* ${formatNumber(
-        dto.currentFundingRate * 365,
+      value: `> *24h:* ${formatNumber(dto.currentFundingRate * 100)}% \n> *APR:* ${formatNumber(
+        dto.currentFundingRate * 365 * 100,
       )}%`,
       inline: true,
     },
     {
       name: `☄️ Funding Velocity`,
-      value: `> *24h:* ${formatNumber(dto.currentFundingVelocity, { showSign: true })}%`,
+      value: `> *24h:* ${formatNumber(dto.currentFundingVelocity * 100, { showSign: true })}%`,
       inline: true,
     },
     {
@@ -109,26 +116,26 @@ export function StatsDiscord(dto: MarketSummary): EmbedBuilder[] {
       inline: true,
     },
   )
-  Footer(embed)
+  Footer(embed, frontEnd)
   embeds.push(embed)
   return embeds
 }
 
-export function Footer(embed: EmbedBuilder) {
+export function Footer(embed: EmbedBuilder, frontEnd: string) {
   embed
     .setFooter({
-      iconURL: `https://raw.githubusercontent.com/ethboi/assets/main/kwenta-icon.png`,
-      text: `Kwenta`,
+      iconURL: `https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-icon.png`,
+      text: `${titleCaseWord(frontEnd)}`,
     })
     .setTimestamp()
-    .setImage('https://raw.githubusercontent.com/ethboi/assets/main/kwenta-footer.jpg')
+    .setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-footer.jpg`)
 }
 
-export function AssetColor(market: string) {
+export function AssetColor(market: string, frontEnd: string) {
   switch (market.toLowerCase()) {
-    case 'seth':
+    case 'eth':
       return '#657deb'
-    case 'sbtc':
+    case 'btc':
       return '#f7931a'
     case 'link':
       return '#2c5cdc'
@@ -168,5 +175,12 @@ export function AssetColor(market: string) {
       return '#5d5d5d '
   }
 
-  return '#ffd500'
+  return DefaultColor(frontEnd)
+}
+
+function DefaultColor(frontEnd: string) {
+  if (frontEnd === 'kwenta') {
+    return '#ffd500'
+  }
+  return '#0548cf'
 }

@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction, Client, GuildBasedChannel, TextChannel } from 'discord.js'
-import { TESTNET } from '../config'
+import { FRONTEND, TESTNET } from '../config'
 import { FUNDING_RATES_CHANNEL } from '../constants/discordChannels'
 import { defaultActivity, defaultName } from '../integrations/discord'
-import { GetMarketSummaries, GetStats } from '../kwenta'
+import { GetMarketSummaries, GetStats } from '../actions'
 import { MarketSummariesDiscord, StatsDiscord } from '../templates'
 
-export async function SetUpDiscord(discordClient: Client, accessToken: string) {
+export async function SetUpDiscord(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord bot is online!`)
   })
@@ -24,6 +24,7 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string) {
         interaction as ChatInputCommandInteraction,
         fundingChannel as GuildBasedChannel,
         commandName,
+        frontEnd,
       )
     }
 
@@ -33,6 +34,7 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string) {
         interaction as ChatInputCommandInteraction,
         fundingChannel as GuildBasedChannel,
         commandName,
+        frontEnd,
       )
     }
   })
@@ -50,12 +52,13 @@ async function FundingInteraction(
   interaction: ChatInputCommandInteraction,
   channel: GuildBasedChannel,
   commandName: string,
+  frontEnd: string,
 ) {
   if (channelName === FUNDING_RATES_CHANNEL) {
     await interaction.deferReply()
 
     const marketSummaries = await GetMarketSummaries()
-    const embeds = MarketSummariesDiscord(marketSummaries)
+    const embeds = MarketSummariesDiscord(marketSummaries, frontEnd)
     await interaction.editReply({ embeds: embeds })
   } else {
     await interaction.reply(`Command ${commandName} only available in <#${channel?.id}>`)
@@ -67,6 +70,7 @@ async function StatsInteraction(
   interaction: ChatInputCommandInteraction,
   channel: GuildBasedChannel,
   commandName: string,
+  frontEnd: string,
 ) {
   if (channelName === FUNDING_RATES_CHANNEL) {
     await interaction.deferReply()
@@ -75,11 +79,13 @@ async function StatsInteraction(
     const stats = await GetStats(markets, market)
 
     if (stats) {
-      const embeds = StatsDiscord(stats)
+      const embeds = StatsDiscord(stats, frontEnd)
       await interaction.editReply({ embeds: embeds })
     } else {
       await interaction.editReply(
-        `Market not found, available markets: ${markets.flatMap((x) => x.asset.toLowerCase()).join(', ')}.`,
+        `Market not found, available markets: ${markets
+          .flatMap((x) => ReplaceSynths(x.asset.toLowerCase()))
+          .join(', ')}.`,
       )
     }
   } else {
@@ -89,14 +95,17 @@ async function StatsInteraction(
 
 function MapMarket(market: string | null) {
   if (!market) {
-    return 'seth'
+    return 'eth'
   }
+  return market
+}
 
-  if (market.toLowerCase() == 'eth') {
-    return 'seth'
+function ReplaceSynths(market: string) {
+  if (market.toLowerCase() == 'seth') {
+    return 'eth'
   }
-  if (market.toLowerCase() == 'btc') {
-    return 'sbtc'
+  if (market.toLowerCase() == 'sbtc') {
+    return 'btc'
   }
   return market
 }

@@ -24,3 +24,5 @@ export const DISCORD_ENABLED: boolean = _.defaultTo(
 ) as boolean
 
 export const TESTNET: boolean = _.defaultTo(convertToBoolean(process.env.TESTNET as string), true) as boolean
+
+export const FRONTEND = _.defaultTo(process.env.FRONTEND, '')
