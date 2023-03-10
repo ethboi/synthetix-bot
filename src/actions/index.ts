@@ -37,15 +37,17 @@ export async function GetMarketSummaries() {
       marketDebt: fromBigNumber(x.marketDebt),
       currentFundingRate: fromBigNumber(x.currentFundingRate),
       currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
+      marketValue: fromBigNumber(x.marketSize) * fromBigNumber(x.price),
     }
+
     return marketSummary
   })
-  console.log(rates)
-  return rates
+  const sorted = rates.sort((a, b) => (a.marketValue > b.marketValue ? -1 : 1))
+  return sorted
 }
 
 export async function GetStats(markets: MarketSummary[], asset: string) {
-  console.log(`stats fr ${asset.toLowerCase()}`)
+  console.log(`stats for ${asset.toLowerCase()}`)
   return markets.find((x) => x.asset.toLowerCase() === asset.toLowerCase())
 }
 

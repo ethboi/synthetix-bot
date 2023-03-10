@@ -5,6 +5,7 @@ export type MarketSummary = {
   maxLeverage: number
   price: number
   marketSize: number
+  marketValue: number
   marketSkew: number
   marketDebt: number
   currentFundingRate: number

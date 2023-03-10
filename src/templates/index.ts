@@ -12,9 +12,30 @@ export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): 
   dto.slice(0, 5).map((summary) => {
     return MarketRow(embed, summary)
   })
+  const summaries: MarketSummary[] = []
 
-  Footer(embed, frontEnd)
   embeds.push(embed)
+  dto.slice(5).reduce((group, summary, index) => {
+    group.push(summary)
+    if (index % 5 === 4) {
+      const embed = new EmbedBuilder().setColor(`${DefaultColor(frontEnd)}`)
+      group.map((summary) => {
+        return MarketRow(embed, summary)
+      })
+      embeds.push(embed)
+      group = []
+    }
+    return group
+  }, summaries)
+
+  embeds.map((embed) => embed.setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-divider.jpg`))
+  if (embeds.length > 0) {
+    const embedLast = embeds.pop()
+    if (embedLast) {
+      Footer(embedLast, frontEnd)
+      embeds.push(embedLast)
+    }
+  }
   return embeds
 }
 

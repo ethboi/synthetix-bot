@@ -1,6 +1,5 @@
 import { ChatInputCommandInteraction, Client, GuildBasedChannel, TextChannel } from 'discord.js'
-import { FRONTEND, TESTNET } from '../config'
-import { FUNDING_RATES_CHANNEL } from '../constants/discordChannels'
+import { FRONTEND, TESTNET, DISCORD_CHANNEL } from '../config'
 import { defaultActivity, defaultName } from '../integrations/discord'
 import { GetMarketSummaries, GetStats } from '../actions'
 import { MarketSummariesDiscord, StatsDiscord } from '../templates'
@@ -14,7 +13,7 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
       return
     }
 
-    const fundingChannel = interaction?.guild?.channels.cache.find((channel) => channel.name === FUNDING_RATES_CHANNEL)
+    const fundingChannel = interaction?.guild?.channels.cache.find((channel) => channel.name === DISCORD_CHANNEL)
     const channelName = (interaction?.channel as TextChannel).name
     const { commandName } = interaction
 
@@ -54,7 +53,7 @@ async function FundingInteraction(
   commandName: string,
   frontEnd: string,
 ) {
-  if (channelName === FUNDING_RATES_CHANNEL) {
+  if (channelName === DISCORD_CHANNEL) {
     await interaction.deferReply()
 
     const marketSummaries = await GetMarketSummaries()
@@ -72,7 +71,7 @@ async function StatsInteraction(
   commandName: string,
   frontEnd: string,
 ) {
-  if (channelName === FUNDING_RATES_CHANNEL) {
+  if (channelName === DISCORD_CHANNEL) {
     await interaction.deferReply()
     const market = MapMarket(interaction.options.getString('market'))
     const markets = await GetMarketSummaries()
