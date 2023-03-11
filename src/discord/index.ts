@@ -53,15 +53,15 @@ async function FundingInteraction(
   commandName: string,
   frontEnd: string,
 ) {
-  if (channelName === DISCORD_CHANNEL) {
-    await interaction.deferReply()
+  //if (channelName === DISCORD_CHANNEL) {
+  await interaction.deferReply()
 
-    const marketSummaries = await GetMarketSummaries()
-    const embeds = MarketSummariesDiscord(marketSummaries, frontEnd)
-    await interaction.editReply({ embeds: embeds })
-  } else {
-    await interaction.reply(`Command ${commandName} only available in <#${channel?.id}>`)
-  }
+  const marketSummaries = await GetMarketSummaries()
+  const embeds = MarketSummariesDiscord(marketSummaries, frontEnd)
+  await interaction.editReply({ embeds: embeds })
+  // } else {
+  // await interaction.reply(`Command ${commandName} only available in <#${channel?.id}>`)
+  // }
 }
 
 async function StatsInteraction(
@@ -71,25 +71,25 @@ async function StatsInteraction(
   commandName: string,
   frontEnd: string,
 ) {
-  if (channelName === DISCORD_CHANNEL) {
-    await interaction.deferReply()
-    const market = MapMarket(interaction.options.getString('market'))
-    const markets = await GetMarketSummaries()
-    const stats = await GetStats(markets, market)
+  // if (channelName === DISCORD_CHANNEL) {
+  await interaction.deferReply()
+  const market = MapMarket(interaction.options.getString('market'))
+  const markets = await GetMarketSummaries()
+  const stats = await GetStats(markets, market)
 
-    if (stats) {
-      const embeds = StatsDiscord(stats, frontEnd)
-      await interaction.editReply({ embeds: embeds })
-    } else {
-      await interaction.editReply(
-        `Market not found, available markets: ${markets
-          .flatMap((x) => ReplaceSynths(x.asset.toLowerCase()))
-          .join(', ')}.`,
-      )
-    }
+  if (stats) {
+    const embeds = StatsDiscord(stats, frontEnd)
+    await interaction.editReply({ embeds: embeds })
   } else {
-    await interaction.reply(`Command ${commandName} only available in <#${channel?.id}>`)
+    await interaction.editReply(
+      `Market not found, available markets: ${markets
+        .flatMap((x) => ReplaceSynths(x.asset.toLowerCase()))
+        .join(', ')}.`,
+    )
   }
+  //} else {
+  //  await interaction.reply(`Command ${commandName} only available in <#${channel?.id}>`)
+  //}
 }
 
 function MapMarket(market: string | null) {
