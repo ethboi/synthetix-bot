@@ -6,7 +6,9 @@ import formatUSD from '../utils/formatUSD'
 
 export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): EmbedBuilder[] {
   const embeds: EmbedBuilder[] = []
-  const embed = new EmbedBuilder().setColor(`${DefaultColor(frontEnd)}`).setTitle(`${frontEnd.toUpperCase()} Futures`)
+  const embed = new EmbedBuilder()
+    .setColor(`${DefaultColor(frontEnd)}`)
+    .setTitle(`Top 5 ${frontEnd.toUpperCase()} Futures`)
 
   console.log(dto.length)
   dto.slice(0, 5).map((summary) => {
@@ -15,19 +17,21 @@ export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): 
   const summaries: MarketSummary[] = []
 
   embeds.push(embed)
-  dto.slice(5).reduce((group, summary, index) => {
-    group.push(summary)
-    if (index % 5 === 4) {
-      const embed = new EmbedBuilder().setColor(`${DefaultColor(frontEnd)}`)
-      group.map((summary) => {
-        return MarketRow(embed, summary)
-      })
-      Footer(embed, frontEnd)
-      embeds.push(embed)
-      group = []
-    }
-    return group
-  }, summaries)
+  Footer(embed, frontEnd)
+  embeds.push(embed)
+
+  // dto.slice(5).reduce((group, summary, index) => {
+  //   group.push(summary)
+  //   if (index % 5 === 4) {
+  //     const embed = new EmbedBuilder().setColor(`${DefaultColor(frontEnd)}`)
+  //     group.map((summary) => {
+  //       return MarketRow(embed, summary)
+  //     })
+
+  //     group = []
+  //   }
+  //   return group
+  // }, summaries)
 
   // embeds.map((embed) => embed.setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-divider.jpg`))
   // if (embeds.length > 0) {
@@ -71,7 +75,7 @@ export function StatsDiscord(dto: MarketSummary, frontEnd: string): EmbedBuilder
   const thumb = dto.key.slice(0, -4) == 'sAPE' ? 'sAPECOIN' : dto.key.slice(0, -4)
   const embed = new EmbedBuilder()
     .setColor(`${AssetColor(dto.asset, frontEnd)}`)
-    .setTitle(`${dto.asset} Market Stats`)
+    .setTitle(`${dto.asset} Funding Rates`)
     .setThumbnail(`https://raw.githubusercontent.com/Kwenta/kwenta/perps-v2-dev/assets/png/currencies/${thumb}.png`)
     .setURL(`https://kwenta.eth.limo/market/?asset=${SynthAsset(dto.asset)}`)
   embed.addFields(
