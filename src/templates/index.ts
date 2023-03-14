@@ -16,7 +16,6 @@ export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): 
   })
   const summaries: MarketSummary[] = []
 
-  embeds.push(embed)
   Footer(embed, frontEnd)
   embeds.push(embed)
 
