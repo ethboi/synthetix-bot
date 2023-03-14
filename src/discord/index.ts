@@ -17,8 +17,8 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
     const channelName = (interaction?.channel as TextChannel).name
     const { commandName } = interaction
 
-    if (commandName === 'funding') {
-      await FundingInteraction(
+    if (commandName === 'markets') {
+      await MarketsInteraction(
         channelName,
         interaction as ChatInputCommandInteraction,
         fundingChannel as GuildBasedChannel,
@@ -27,8 +27,8 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
       )
     }
 
-    if (commandName === 'stats') {
-      await StatsInteraction(
+    if (commandName === 'funding') {
+      await FundingInteraction(
         channelName,
         interaction as ChatInputCommandInteraction,
         fundingChannel as GuildBasedChannel,
@@ -46,7 +46,7 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
   return discordClient
 }
 
-async function FundingInteraction(
+async function MarketsInteraction(
   channelName: string,
   interaction: ChatInputCommandInteraction,
   channel: GuildBasedChannel,
@@ -64,7 +64,7 @@ async function FundingInteraction(
   // }
 }
 
-async function StatsInteraction(
+async function FundingInteraction(
   channelName: string,
   interaction: ChatInputCommandInteraction,
   channel: GuildBasedChannel,

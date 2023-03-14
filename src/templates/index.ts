@@ -22,20 +22,21 @@ export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): 
       group.map((summary) => {
         return MarketRow(embed, summary)
       })
+      Footer(embed, frontEnd)
       embeds.push(embed)
       group = []
     }
     return group
   }, summaries)
 
-  embeds.map((embed) => embed.setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-divider.jpg`))
-  if (embeds.length > 0) {
-    const embedLast = embeds.pop()
-    if (embedLast) {
-      Footer(embedLast, frontEnd)
-      embeds.push(embedLast)
-    }
-  }
+  // embeds.map((embed) => embed.setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-divider.jpg`))
+  // if (embeds.length > 0) {
+  //   const embedLast = embeds.pop()
+  //   if (embedLast) {
+  //     Footer(embedLast, frontEnd)
+  //     embeds.push(embedLast)
+  //   }
+  // }
   return embeds
 }
 
