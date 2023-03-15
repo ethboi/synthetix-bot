@@ -185,7 +185,7 @@ export function AssetColor(market: string, frontEnd: string) {
     case 'doge':
       return '#dcc478'
     case 'xau':
-      return '#decb96c'
+      return '#decb96'
     case 'xag':
       return '#bfc0c0'
     case 'atom':
