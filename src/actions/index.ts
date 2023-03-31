@@ -43,6 +43,7 @@ export async function GetMarketSummaries() {
   const rates = fundingRates.map((x) => {
     const marketSummary: MarketSummary = {
       market: x.market,
+      originalAsset: hexToAscii(x.asset),
       asset: ReplaceSynths(hexToAscii(x.asset)),
       key: hexToAscii(x.key),
       maxLeverage: fromBigNumber(x.maxLeverage),

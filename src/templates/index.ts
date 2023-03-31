@@ -63,7 +63,7 @@ export function MarketRow(embed: EmbedBuilder, dto: MarketSummary): EmbedBuilder
       name: `Open Interest`,
       value: `> 🟢 ${formatUSD(((dto.marketSize + dto.marketSkew) / 2) * dto.price)} (L)\n> 🔴 ${formatUSD(
         ((dto.marketSize - dto.marketSkew) / 2) * dto.price,
-      )} (S)\n> \n🔗 **Trade**\n> [[open a trade]](https://kwenta.eth.limo/market/?asset=${SynthAsset(dto.asset)})`,
+      )} (S)\n> \n🔗 **Trade**\n> [[open a trade]](https://kwenta.eth.limo/market/?asset=${dto.originalAsset})`,
       inline: true,
     },
   )
@@ -76,7 +76,7 @@ export function StatsDiscord(dto: MarketSummary, frontEnd: string): EmbedBuilder
     .setColor(`${AssetColor(dto.asset, frontEnd)}`)
     .setTitle(`${dto.asset} Funding Rates`)
     .setThumbnail(`https://raw.githubusercontent.com/Kwenta/kwenta/perps-v2-dev/assets/png/currencies/${thumb}.png`)
-    .setURL(`https://kwenta.eth.limo/market/?asset=${SynthAsset(dto.asset)}`)
+    .setURL(`https://kwenta.eth.limo/market/?asset=${dto.originalAsset}`)
   embed.addFields(
     {
       name: `🏷️ Market Price`,
@@ -132,7 +132,7 @@ export function StatsDiscord(dto: MarketSummary, frontEnd: string): EmbedBuilder
     },
     {
       name: `🔗 Trade`,
-      value: `> [[open a trade]](https://kwenta.eth.limo/market/?asset=${SynthAsset(dto.asset)})`,
+      value: `> [[open a trade]](https://kwenta.eth.limo/market/?asset=${dto.originalAsset})`,
       inline: true,
     },
     {
@@ -197,7 +197,9 @@ export function AssetColor(market: string, frontEnd: string) {
     case 'ftm':
       return '#1b6bfb'
     case 'near':
-      return '#5d5d5d '
+      return '#5d5d5d'
+    case 'arb':
+      return '#0548cf'
   }
 
   return DefaultColor(frontEnd)
@@ -208,13 +210,4 @@ function DefaultColor(frontEnd: string) {
     return '#ffd500'
   }
   return '#0548cf'
-}
-
-function SynthAsset(asset: string) {
-  if (asset.toLowerCase() == 'eth') {
-    return 'sETH'
-  }
-  if (asset.toLowerCase() == 'btc') {
-    return 'sBTC'
-  }
 }

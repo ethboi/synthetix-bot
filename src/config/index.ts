@@ -27,3 +27,9 @@ export const TESTNET: boolean = _.defaultTo(convertToBoolean(process.env.TESTNET
 
 export const FRONTEND = _.defaultTo(process.env.FRONTEND, '') //synthetix //kwenta
 export const DISCORD_CHANNEL = _.defaultTo(process.env.DISCORD_CHANNEL, '')
+
+export const TELEGRAM_ACCESS_TOKEN = _.defaultTo(process.env.TELEGRAM_ACCESS_TOKEN, '')
+export const TELEGRAM_CHANNEL = _.defaultTo(process.env.TELEGRAM_CHANNEL, '')
+
+export const LOG_TOKEN = _.defaultTo(process.env.LOG_TOKEN, '')
+export const LOG_CHANNEL = _.defaultTo(process.env.LOG_CHANNEL, '')

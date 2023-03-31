@@ -1,6 +1,7 @@
 export type MarketSummary = {
   market: string
   asset: string
+  originalAsset: string
   key: string
   maxLeverage: number
   price: number
