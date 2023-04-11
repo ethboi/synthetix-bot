@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { IFundingRate } from '../../models/funding-rate'
 import { Exchange } from '../common'
+import { createHmac } from 'node:crypto'
 
 export class BINANCE extends Exchange {
   constructor(apiKey?: string, apiSecret?: string) {
@@ -10,7 +11,17 @@ export class BINANCE extends Exchange {
   }
 
   async getFundingRates(): Promise<IFundingRate[]> {
-    return await axios.get<IBinanceFundingRate[]>(`${this._baseUrl}premiumIndex`).then((response) => {
+    const timestamp = Date.now().toString()
+    const signString = ''
+    const signature = createHmac('sha256', this._apiSecret).update(signString).digest('hex')
+    const headers = {
+      'Content-Type': 'application/json',
+      'api-key': this._apiKey,
+      timestamp: timestamp,
+      sign: signature,
+    }
+
+    return await axios.get<IBinanceFundingRate[]>(`${this._baseUrl}premiumIndex`, { headers }).then((response) => {
       const results: IFundingRate[] = []
       if (response.data) {
         response.data.map((market) => {

@@ -3,7 +3,7 @@ import { BYBIT } from '../providers/bybit'
 import { DYDX } from '../providers/dydx'
 import { SYNTHETIX } from '../providers/synthetix'
 import { ProviderType } from '../types/arbitrage'
-import { BYBIT_API_KEY, BYBIT_API_SECRET } from '../config'
+import { BINANCE_API_KEY, BINANCE_API_SECRET, BYBIT_API_KEY, BYBIT_API_SECRET } from '../config'
 import { IFundingRate } from '../models/funding-rate'
 
 export async function getFundingRates(market: string | undefined = undefined) {
@@ -11,7 +11,7 @@ export async function getFundingRates(market: string | undefined = undefined) {
     new SYNTHETIX().getFundingRates(),
     new DYDX().getFundingRates(),
     new BYBIT(BYBIT_API_KEY, BYBIT_API_SECRET).getFundingRates(),
-    new BINANCE().getFundingRates(),
+    new BINANCE(BINANCE_API_KEY, BINANCE_API_SECRET).getFundingRates(),
   ])
 
   const rates: { [key: string]: IFundingRate[] } = {
