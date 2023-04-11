@@ -1,8 +1,8 @@
 import { EmbedBuilder } from 'discord.js'
 import { MarketSummary } from '../types/markets'
 import formatNumber from '../utils/formatNumber'
-import { titleCaseWord } from '../utils/formatString'
 import formatUSD from '../utils/formatUSD'
+import { AssetColor, DefaultColor, Footer } from './common'
 
 export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): EmbedBuilder[] {
   const embeds: EmbedBuilder[] = []
@@ -18,28 +18,6 @@ export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): 
 
   Footer(embed, frontEnd)
   embeds.push(embed)
-
-  // dto.slice(5).reduce((group, summary, index) => {
-  //   group.push(summary)
-  //   if (index % 5 === 4) {
-  //     const embed = new EmbedBuilder().setColor(`${DefaultColor(frontEnd)}`)
-  //     group.map((summary) => {
-  //       return MarketRow(embed, summary)
-  //     })
-
-  //     group = []
-  //   }
-  //   return group
-  // }, summaries)
-
-  // embeds.map((embed) => embed.setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-divider.jpg`))
-  // if (embeds.length > 0) {
-  //   const embedLast = embeds.pop()
-  //   if (embedLast) {
-  //     Footer(embedLast, frontEnd)
-  //     embeds.push(embedLast)
-  //   }
-  // }
   return embeds
 }
 
@@ -47,7 +25,7 @@ export function MarketRow(embed: EmbedBuilder, dto: MarketSummary): EmbedBuilder
   return embed.addFields(
     {
       name: `🪙 ${dto.asset}`,
-      value: `> ${formatUSD(dto.price)}`,
+      value: `> ${formatUSD(dto.price, { dps: 2 })}`,
       inline: true,
     },
     {
@@ -144,70 +122,4 @@ export function StatsDiscord(dto: MarketSummary, frontEnd: string): EmbedBuilder
   Footer(embed, frontEnd)
   embeds.push(embed)
   return embeds
-}
-
-export function Footer(embed: EmbedBuilder, frontEnd: string) {
-  embed
-    .setFooter({
-      iconURL: `https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-icon.png`,
-      text: `${titleCaseWord(frontEnd)}`,
-    })
-    .setTimestamp()
-    .setImage(`https://raw.githubusercontent.com/ethboi/assets/main/${frontEnd}-footer.jpg`)
-}
-
-export function AssetColor(market: string, frontEnd: string) {
-  switch (market.toLowerCase()) {
-    case 'eth':
-      return '#657deb'
-    case 'btc':
-      return '#f7931a'
-    case 'link':
-      return '#2c5cdc'
-    case 'sol':
-      return '#b9afef'
-    case 'avax':
-      return '#e44343'
-    case 'aave':
-      return '#ab53a0'
-    case 'uni':
-      return '#f40b7a'
-    case 'matic':
-      return '#6c43db'
-    case 'ape':
-      return '#0548cf'
-    case 'dydx':
-      return '#5a58d8'
-    case 'bnb':
-      return '#f3bb2c'
-    case 'op':
-      return '#fb0423'
-    case 'doge':
-      return '#dcc478'
-    case 'xau':
-      return '#decb96'
-    case 'xag':
-      return '#bfc0c0'
-    case 'atom':
-      return '#76758c'
-    case 'axs':
-      return '#0055d4'
-    case 'flow':
-      return '#04ec8c'
-    case 'ftm':
-      return '#1b6bfb'
-    case 'near':
-      return '#5d5d5d'
-    case 'arb':
-      return '#0548cf'
-  }
-
-  return DefaultColor(frontEnd)
-}
-
-function DefaultColor(frontEnd: string) {
-  if (frontEnd === 'kwenta') {
-    return '#ffd500'
-  }
-  return '#0548cf'
 }

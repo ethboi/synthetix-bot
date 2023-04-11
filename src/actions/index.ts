@@ -35,8 +35,8 @@ export async function GetMarketSummaries() {
   //price: BigNumber;
   //marketSize: BigNumber;
   //marketSkew: BigNumber;
-  //marketDebt: BigNumber;f
-  //currentFundingRate: BigNumber;
+  //marketDebt: BigNumber;
+  //currentFundingRate: BigNumber; // 8 hour
   //currentFundingVelocity: BigNumber;
   //feeRates: PerpsV2MarketData.FeeRatesStructOutput;
 

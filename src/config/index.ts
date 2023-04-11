@@ -5,7 +5,6 @@ import { convertToBoolean } from '../utils/utils'
 dotenv.config({ path: '.env' })
 
 export const DISCORD_ACCESS_TOKEN = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN, '')
-
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 
 export const TWITTER_ENABLED: boolean = _.defaultTo(
@@ -33,3 +32,6 @@ export const TELEGRAM_CHANNEL = _.defaultTo(process.env.TELEGRAM_CHANNEL, '')
 
 export const LOG_TOKEN = _.defaultTo(process.env.LOG_TOKEN, '')
 export const LOG_CHANNEL = _.defaultTo(process.env.LOG_CHANNEL, '')
+
+export const BYBIT_API_KEY = _.defaultTo(process.env.TELEGRAM_ACCESS_TOKEN, '')
+export const BYBIT_API_SECRET = _.defaultTo(process.env.TELEGRAM_CHANNEL, '')
