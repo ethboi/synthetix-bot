@@ -9,7 +9,6 @@ export function ArbDiscord(dto: ProviderRates, frontEnd: string): EmbedBuilder[]
   console.log(dto)
   const embeds: EmbedBuilder[] = []
   const market = Object.values(dto)[0][0].id
-  const spot = Object.values(dto)[0][0].spot
 
   const thumb =
     Object.values(dto)[0][0].market.slice(0, -4) == 'sAPE' ? 'sAPECOIN' : Object.values(dto)[0][0].market.slice(0, -4)
@@ -17,7 +16,7 @@ export function ArbDiscord(dto: ProviderRates, frontEnd: string): EmbedBuilder[]
     .setColor(`${AssetColor(market, frontEnd)}`)
     .setTitle(`${market} Funding Rate Arbs`)
     .setThumbnail(`https://raw.githubusercontent.com/Kwenta/kwenta/perps-v2-dev/assets/png/currencies/${thumb}.png`)
-    .setURL(`https://kwenta.eth.limo/market/?asset=${dto.originalAsset}`)
+    .setURL(`https://kwenta.eth.limo/market/?asset=${market}`)
 
   Object.entries(dto).map((providerRates) => {
     if (providerRates[1] && providerRates[1].length > 0) {
