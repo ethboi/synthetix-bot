@@ -1,2 +1,1 @@
-export const PerpsV2FundingDataContractAddress =
-  "0xF7D3D05cCeEEcC9d77864Da3DdE67Ce9a0215A9D";
+export const PerpsV2FundingDataContractAddress = '0x58e6227510F83d3F45B339F2f7A05a699fDEE6D4'
