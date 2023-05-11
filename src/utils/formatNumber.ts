@@ -65,3 +65,13 @@ export default function formatNumber(value: number | BigNumber, options?: Format
   const numStr = dec != null && dec.length > 0 ? num + '.' + dec : num
   return roundedVal > 0 && showSign ? '+' + numStr : numStr
 }
+
+export function displayNumber(number: number): string {
+  if (number >= 1_000_000) {
+    return (number / 1_000_000).toFixed(2) + 'M'
+  } else if (number >= 1_000) {
+    return (number / 1_000).toFixed(2) + 'K'
+  } else {
+    return number.toFixed(2)
+  }
+}

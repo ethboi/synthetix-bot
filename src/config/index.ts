@@ -5,6 +5,8 @@ import { convertToBoolean } from '../utils/utils'
 dotenv.config({ path: '.env' })
 
 export const DISCORD_ACCESS_TOKEN = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN, '')
+export const DISCORD_ACCESS_TOKEN_VOLUME = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME, '')
+
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 
 export const TWITTER_ENABLED: boolean = _.defaultTo(

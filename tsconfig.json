@@ -17,7 +17,8 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "jsx": "preserve",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules", ".yarn"],
   "include": ["src/**/*.ts"]

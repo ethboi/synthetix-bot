@@ -14,7 +14,7 @@ export async function GetMarketDetails() {
 
   markets.map(async (x) => {
     const params = await contract.parameters(x.key)
-    console.log(params)
+    //console.log(params)
     const mapped: MarketSettings = {
       skewScale: fromBigNumber(params.skewScale),
     }
@@ -23,7 +23,7 @@ export async function GetMarketDetails() {
 }
 
 export async function GetMarketSummaries() {
-  console.log('Getting Funding Rates')
+  //console.log('Getting Funding Rates')
   const rpcClient = new RpcClient(alchemyProvider)
   const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
   const fundingRates = await contract.allProxiedMarketSummaries()
