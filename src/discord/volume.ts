@@ -28,13 +28,16 @@ export async function setNameActivity(
   try {
     const changeDirection = volume > prevVolume
     const change = calculatePercentageChange(prevVolume, volume)
-    let initialPresence = 'VOL'
+    //let initialPresence = 'VOL'
 
-    setInterval(async () => {
-      initialPresence = updatePresence(client, change, trades, initialPresence)
-    }, 10000)
+    // setInterval(async () => {
+    //   initialPresence = updatePresence(client, change, trades, initialPresence)
+    // }, 10000)
 
     await client.user?.setUsername(`$${displayNumber(volume)} (${changeDirection ? '↗' : '↘'})`)
+    client.user?.setActivity(`24h: ${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
+      type: ActivityType.Watching,
+    })
   } catch (e: any) {
     console.log(e)
   }
