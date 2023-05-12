@@ -19,11 +19,10 @@ export async function SetUpDiscordFees(discordClient: Client, accessToken: strin
 
 export async function setNameActivityFees(client: Client, dailyFees: number, weeklyFees: number) {
   try {
-    console.log(dailyFees)
+    await client.user?.setUsername(`$${displayNumber(weeklyFees)} | WK`)
     client.user?.setActivity(`24h: ${displayNumber(dailyFees)} | FEES`, {
       type: ActivityType.Watching,
     })
-    await client.user?.setUsername(`$${displayNumber(weeklyFees)} | WK`)
   } catch (e: any) {
     console.log(e)
   }
