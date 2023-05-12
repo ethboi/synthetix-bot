@@ -17,7 +17,7 @@ yarn build
 yarn start
 ```
 
-### Environment Variables
+### Environment Variables !
 
 - `TESTNET` - true/false (if true prints to console, doesn't post)
 - `ALCHEMY_ID` - Alchemy RPC Optimism.
