@@ -34,9 +34,10 @@ export async function setNameActivity(
     //   initialPresence = updatePresence(client, change, trades, initialPresence)
     // }, 10000)
 
-    await client.user?.setUsername(`$${displayNumber(volume)} (${changeDirection ? '↗' : '↘'})`)
-    client.user?.setActivity(`24h: ${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
-      type: ActivityType.Watching,
+    await client.user?.setUsername(`$${displayNumber(volume)} (${changeDirection ? '↗' : '↘'})`).then(() => {
+      client.user?.setActivity(`24h: ${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
+        type: ActivityType.Watching,
+      })
     })
   } catch (e: any) {
     console.log(e)
