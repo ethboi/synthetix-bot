@@ -6,6 +6,9 @@ import printObject from '../utils/printObject'
 import { MarketSettings, MarketSummary } from '../types/markets'
 import { hexToAscii } from '../utils/formatString'
 import fromBigNumber from '../utils/fromBigNumber'
+import { ethers } from 'ethers'
+import EthDater from 'ethereum-block-by-date'
+import moment from 'moment'
 
 export async function GetMarketDetails() {
   const rpcClient = new RpcClient(alchemyProvider)
@@ -22,12 +25,21 @@ export async function GetMarketDetails() {
   })
 }
 
-export async function GetMarketSummaries() {
+export async function GetMarketSummaries(timestamp?: number | undefined) {
   //console.log('Getting Funding Rates')
+  let blockTag = undefined
   const rpcClient = new RpcClient(alchemyProvider)
-  const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
-  const fundingRates = await contract.allProxiedMarketSummaries()
+  if (timestamp) {
+    const fromBlock = await getBlockByTimestamp(rpcClient.provider, timestamp)
+    //console.log(fromBlock)
+    blockTag = ethers.utils.hexValue(fromBlock)
+  }
+  //console.log(`blockTag ${blockTag}`)
 
+  const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
+  const fundingRates = await contract.allProxiedMarketSummaries({ blockTag: blockTag })
+
+  //console.log(fundingRates)
   //market: string;
   //asset: string;
   //key: string;
@@ -76,4 +88,14 @@ function ReplaceSynths(asset: string) {
     return 'BTC'
   }
   return asset
+}
+
+async function getBlockByTimestamp(provider: ethers.providers.JsonRpcProvider, timestamp: number) {
+  const dater = new EthDater(
+    provider, // Ethers provider, required.
+  )
+  const date = moment.unix(timestamp)
+  const blockResult = await dater.getDate(date, true, false)
+  console.log(blockResult)
+  return blockResult.block
 }
