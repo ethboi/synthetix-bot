@@ -25,3 +25,11 @@ export function calculatePercentageChange(oldValue: number, newValue: number): n
   const percentageChange = (change / oldValue) * 100
   return percentageChange
 }
+
+export function calculateDayPercentage(): number {
+  const now = new Date()
+  const startOfDay = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  const millisecondsInDay = 24 * 60 * 60 * 1000
+
+  return ((now.getTime() - startOfDay.getTime()) / millisecondsInDay) * 100
+}

@@ -31,3 +31,22 @@ export const VOLUME_QUERY = gql`
     }
   }
 `
+
+export const VOLUME_QUERY_NEW = gql`
+  query dailyStats {
+    dailyStats(orderBy: timestamp, orderDirection: desc, first: 2) {
+      cumulativeFees
+      cumulativeTraders
+      cumulativeTrades
+      cumulativeVolume
+      day
+      existingTraders
+      fees
+      id
+      newTraders
+      timestamp
+      trades
+      volume
+    }
+  }
+`

@@ -78,3 +78,18 @@ export type sFuturesPosition = {
   txHash: string
   unrealizedPnl: number
 }
+
+export type sDailyStat = {
+  cumulativeFees: number
+  cumulativeTraders: number
+  cumulativeTrades: number
+  cumulativeVolume: number
+  day: string
+  existingTraders: number
+  fees: number
+  id: string
+  newTraders: number
+  timestamp: number
+  trades: number
+  volume: number
+}
