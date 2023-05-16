@@ -27,10 +27,9 @@ export async function setNameActivity(client: Client, dailyStats: sDailyStat[]) 
     const changeDirection = today.volume > adjustedPrevVol
     const change = calculatePercentageChange(adjustedPrevVol, today.volume)
 
-    await client.user?.setUsername(`$${displayNumber(today.volume)} (${changeDirection ? '↗' : '↘'})`).then(() => {
-      client.user?.setActivity(`24h: ${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
-        type: ActivityType.Watching,
-      })
+    await client.user?.setUsername(`$${displayNumber(today.volume)} (${changeDirection ? '↗' : '↘'})`)
+    client.user?.setActivity(`24h: ${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
+      type: ActivityType.Watching,
     })
   } catch (e: any) {
     console.log(e)

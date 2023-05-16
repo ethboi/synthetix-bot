@@ -7,7 +7,7 @@ import { setNameActivityFees } from '../discord/fees'
 
 export function VolumeJob(discordClient: Client): void {
   console.log('VOLUME job running')
-  scheduleJob('*/30 * * * *', async () => {
+  scheduleJob('5,35 * * * *', async () => {
     const dailyStats = await getVolume()
 
     if (dailyStats) {
