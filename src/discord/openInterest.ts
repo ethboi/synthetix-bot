@@ -11,11 +11,11 @@ export async function SetUpDiscordOpenInterest(discordClient: Client, accessToke
   const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
   await discordClient.login(accessToken)
 
-  await setNameActivityFees(discordClient, openInterestPrev, openInterest)
+  await setNameActivityOI(discordClient, openInterestPrev, openInterest)
   return discordClient
 }
 
-export async function setNameActivityFees(client: Client, openInterestPrev: number, openInterest: number) {
+export async function setNameActivityOI(client: Client, openInterestPrev: number, openInterest: number) {
   try {
     const changeDirection = openInterest > openInterestPrev
     const change = calculatePercentageChange(openInterestPrev, openInterest)

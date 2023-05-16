@@ -32,9 +32,9 @@ export const VOLUME_QUERY = gql`
   }
 `
 
-export const VOLUME_QUERY_NEW = gql`
+export const DAILY_STATS_QUERY = gql`
   query dailyStats {
-    dailyStats(orderBy: timestamp, orderDirection: desc, first: 2) {
+    dailyStats(orderBy: timestamp, orderDirection: desc, first: 7) {
       cumulativeFees
       cumulativeTraders
       cumulativeTrades

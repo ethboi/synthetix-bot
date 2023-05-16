@@ -1,33 +1,44 @@
 import { Client, ActivityType } from 'discord.js'
 import { displayNumber } from '../utils/formatNumber'
-import { getFees } from '../actions/fees'
+import { getDailyStats } from '../actions/dailyStats'
+import { sDailyStat } from '../types/synthetix'
 
 export async function SetUpDiscordFees(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Volume bot is online!`)
   })
-
-  const [dailyFees, weeklyFees] = await Promise.all([getFees(true), getFees(false)])
-
   await discordClient.login(accessToken)
 
-  if (dailyFees && weeklyFees) {
-    await setNameActivityFees(discordClient, dailyFees.fees, weeklyFees.fees)
+  const dailyStats = await getDailyStats()
+
+  if (dailyStats) {
+    await setNameActivityFees(discordClient, dailyStats)
   }
   return discordClient
 }
 
-export async function setNameActivityFees(client: Client, dailyFees: number, weeklyFees: number) {
+export async function setNameActivityFees(client: Client, dailyStats: sDailyStat[]) {
   try {
-    console.log(`Set usename: Fees $${displayNumber(weeklyFees)}  `)
-    await client.user?.setUsername(`$${displayNumber(weeklyFees)} | WK`).then(() => {
-      console.log(`Set actvity: Fees $${displayNumber(dailyFees)}  `)
-      client.user?.setActivity(`24h: ${displayNumber(dailyFees)} | FEES`, {
-        type: ActivityType.Watching,
-      })
+    // get the date
+    const currentDate = new Date(dailyStats[0].day)
+    const daysToIncl = daysSinceLastWednesday(currentDate)
+    const epochFees = dailyStats.slice(0, daysToIncl).reduce((accumulator, dailyStat) => {
+      return accumulator + dailyStat.fees
+    }, 0)
+
+    // console.log(`Set usename: Fees $${displayNumber(weeklyFees)}  `)
+    await client.user?.setUsername(`$${displayNumber(epochFees)} | EP`)
+    //console.log(`Set actvity: Fees $${displayNumber(dailyFees)}  `)
+    client.user?.setActivity(`24h: ${displayNumber(dailyStats[0].fees)} | FEES`, {
+      type: ActivityType.Watching,
     })
   } catch (e: any) {
-    console.log('error?')
     console.log(e)
   }
+}
+
+function daysSinceLastWednesday(today: Date): number {
+  const dayOfWeek = today.getDay() // 0 = Sunday, 3 = Wed, 6 = Sat
+  const diff = dayOfWeek < 3 ? dayOfWeek + 4 : dayOfWeek === 3 ? 7 : dayOfWeek - 3
+  return diff
 }

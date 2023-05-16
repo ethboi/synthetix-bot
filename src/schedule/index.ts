@@ -1,28 +1,25 @@
 import { Client } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
-import { getVolume } from '../actions/volume'
-import { setNameActivity } from '../discord/volume'
-import { getFees } from '../actions/fees'
+import { getDailyStats } from '../actions/dailyStats'
+import { setNameActivityVolume } from '../discord/volume'
 import { setNameActivityFees } from '../discord/fees'
+import { setNameActivityOI } from '../discord/openInterest'
+import { GetOpenInterest } from '../actions/openInterest'
 
-export function VolumeJob(discordClient: Client): void {
-  console.log('VOLUME job running')
+export function StatsJobs(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
   scheduleJob('5,35 * * * *', async () => {
-    const dailyStats = await getVolume()
+    try {
+      console.log('STATS (FEES / VOLUME) job running')
+      const dailyStats = await getDailyStats()
+      const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
 
-    if (dailyStats) {
-      await setNameActivity(discordClient, dailyStats)
+      if (dailyStats) {
+        await setNameActivityVolume(discordClientVolume, dailyStats)
+        await setNameActivityFees(discordClientFees, dailyStats)
+        await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
+      }
+    } catch (ex) {
+      console.log(ex)
     }
   })
 }
-
-// export function FeesJob(discordClient: Client): void {
-//   console.log('FEES job running')
-//   scheduleJob('*/30 * * * *', async () => {
-//     const dailyFees = await getFees(true)
-//     const weeklyFees = await getFees(false)
-//     if (dailyFees && weeklyFees) {
-//       await setNameActivityFees(discordClient, dailyFees.fees, weeklyFees.fees)
-//     }
-//   })
-// }

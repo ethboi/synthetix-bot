@@ -1,7 +1,7 @@
 import { Client, ActivityType } from 'discord.js'
 import formatNumber, { displayNumber } from '../utils/formatNumber'
 import { calculateDayPercentage, calculatePercentageChange } from '../utils/utils'
-import { getVolume } from '../actions/volume'
+import { getDailyStats } from '../actions/dailyStats'
 import { sDailyStat } from '../types/synthetix'
 
 export async function SetUpDiscordVolume(discordClient: Client, accessToken: string, frontEnd: string) {
@@ -9,17 +9,17 @@ export async function SetUpDiscordVolume(discordClient: Client, accessToken: str
     console.debug(`Discord Volume bot is online!`)
   })
 
-  const dailyStats = await getVolume()
+  const dailyStats = await getDailyStats()
   await discordClient.login(accessToken)
 
   if (dailyStats) {
-    await setNameActivity(discordClient, dailyStats)
+    await setNameActivityVolume(discordClient, dailyStats)
   }
 
   return discordClient
 }
 
-export async function setNameActivity(client: Client, dailyStats: sDailyStat[]) {
+export async function setNameActivityVolume(client: Client, dailyStats: sDailyStat[]) {
   try {
     const today = dailyStats[0]
     const prev = dailyStats[1]
@@ -28,7 +28,7 @@ export async function setNameActivity(client: Client, dailyStats: sDailyStat[]) 
     const change = calculatePercentageChange(adjustedPrevVol, today.volume)
 
     await client.user?.setUsername(`$${displayNumber(today.volume)} (${changeDirection ? '↗' : '↘'})`)
-    client.user?.setActivity(`24h: ${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
+    client.user?.setActivity(`${formatNumber(change, { dps: 2, showSign: true })}% | VOL`, {
       type: ActivityType.Watching,
     })
   } catch (e: any) {

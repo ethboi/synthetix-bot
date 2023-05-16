@@ -1,11 +1,11 @@
 import { SynthetixGraphClient } from '../clients/apolloClient'
-import { VOLUME_QUERY_NEW } from '../queries'
+import { DAILY_STATS_QUERY } from '../queries'
 import { DailyStat } from '../synthetix/__generated__/graphql'
 import getDailyStatsData from '../synthetix/utils/getDailyStatsData'
 
-export async function getVolume() {
+export async function getDailyStats() {
   const result = await SynthetixGraphClient.query({
-    query: VOLUME_QUERY_NEW,
+    query: DAILY_STATS_QUERY,
   })
   if (result) {
     const data = result?.data?.dailyStats as DailyStat[]
@@ -42,4 +42,43 @@ export async function getVolume() {
 //   }
 
 //   return results
+// }
+
+// async function paginateGraphQL<T>(
+//   query: DocumentNode,
+//   variables: any,
+//   pageSize = 1000,
+//   maxRecords = 5000,
+// ): Promise<{ results: T[]; lastItem: T }> {
+//   let results: T[] = []
+//   let skip = 0
+//   let lastItem: any = null
+
+//   // eslint-disable-next-line no-constant-condition
+//   while (true) {
+//     const response = await SynthetixGraphClient.query({
+//       query: query,
+//       variables: {
+//         ...variables,
+//         first: pageSize,
+//         skip: skip,
+//       },
+//     })
+
+//     const data: T[] = response.data.futuresTrades
+
+//     if (!data.length || results.length + data.length > maxRecords) {
+//       break
+//     }
+
+//     results = [...results, ...data]
+//     skip += pageSize
+
+//     if (results.length >= maxRecords) {
+//       lastItem = results[results.length - 1]
+//       break
+//     }
+//   }
+
+//   return { results, lastItem }
 // }

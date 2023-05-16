@@ -9,7 +9,7 @@ import {
   FRONTEND,
 } from './config'
 import { GetMarketDetails } from './actions'
-import { VolumeJob } from './schedule'
+import { StatsJobs } from './schedule'
 import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
@@ -23,16 +23,15 @@ export async function Run(): Promise<void> {
   try {
     console.log('Running Bot')
     global.MARKET_SETTINGS = {}
-    //await GetMarketDetails()
+    await GetMarketDetails()
     await Promise.all([
       SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND),
       SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
-      //SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
-      // SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
+      SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
+      SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
     ])
 
-    VolumeJob(discordVolume)
-    // FeesJob(discordFees)
+    StatsJobs(discordVolume, discordFees, discordOI)
   } catch (error) {
     console.log(error)
   }
