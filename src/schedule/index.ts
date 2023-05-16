@@ -20,6 +20,7 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
       }
     } catch (ex) {
       console.log(ex)
+      console.log(`:)`)
     }
   })
 }
