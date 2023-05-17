@@ -16,7 +16,7 @@ export async function PostDiscord(
       const channels = client.channels.cache
         .filter((value) => (value as TextChannel)?.name == channelName)
         .map(async (channel) => {
-          console.log(`found channel: ${channelName}`)
+          // console.log(`found channel: ${channelName}`)
           await (channel as TextChannel).send({ embeds: embed, components: rows })
         })
     } catch (e: any) {

@@ -28,7 +28,6 @@ function RegisterShutdownEvents(): void {
   })
 
   process.on('beforeExit', async (code) => {
-    console.log('before exit.')
     await Notifier('Before Exit').then(process.exit(code))
   })
 }

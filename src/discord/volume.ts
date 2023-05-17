@@ -38,7 +38,7 @@ export async function setNameActivityVolume(client: Client, dailyStats: sDailySt
 
 function applyDayPercentageToFee(fee: number): number {
   const percentage = calculateDayPercentage()
-  console.log(percentage)
+  //console.log(percentage)
   return fee * (percentage / 100)
 }
 

@@ -26,7 +26,6 @@ export async function setNameActivityOI(client: Client, openInterestPrev: number
       })
     })
   } catch (e: any) {
-    console.log('error?')
     console.log(e)
   }
 }

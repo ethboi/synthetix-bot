@@ -10,7 +10,6 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
   scheduleJob('5,35 * * * *', async () => {
     console.log('STATS (FEES / VOLUME) job running')
 
-    // DAILY STATS
     try {
       console.log(`Getting Volume & Fees: ${Date.now}`)
       const dailyStats = await getDailyStats()
@@ -20,8 +19,8 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
           setNameActivityFees(discordClientFees, dailyStats),
         ])
       }
-    } catch (ex) {
-      console.log(ex)
+    } catch (e) {
+      console.log(e)
     }
 
     // OPEN INTEREST
@@ -29,8 +28,14 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
       console.log(`Getting Open Interest:  ${Date.now}`)
       const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
       await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
-    } catch (ex) {
-      console.log(ex)
+    } catch (e) {
+      console.log(e)
     }
+  })
+}
+
+export function TestJob(): void {
+  scheduleJob('/1 * * * *', async () => {
+    console.log(`Running job ${Date.now()}`)
   })
 }

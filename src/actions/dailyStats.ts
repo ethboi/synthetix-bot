@@ -10,7 +10,7 @@ export async function getDailyStats() {
   if (result) {
     const data = result?.data?.dailyStats as DailyStat[]
     const mapped = data.map(getDailyStatsData)
-    console.log(mapped)
+    //console.log(mapped)
 
     return mapped
   }

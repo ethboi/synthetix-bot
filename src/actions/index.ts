@@ -76,7 +76,7 @@ export async function GetMarketSummaries(timestamp?: number | undefined) {
 }
 
 export async function GetStats(markets: MarketSummary[], asset: string) {
-  console.log(`stats for ${asset.toLowerCase()}`)
+  //console.log(`stats for ${asset.toLowerCase()}`)
   return markets.find((x) => x.asset.toLowerCase() === asset.toLowerCase())
 }
 
@@ -96,6 +96,6 @@ async function getBlockByTimestamp(provider: ethers.providers.JsonRpcProvider, t
   )
   const date = moment.unix(timestamp)
   const blockResult = await dater.getDate(date, true, false)
-  console.log(blockResult)
+  //console.log(blockResult)
   return blockResult.block
 }

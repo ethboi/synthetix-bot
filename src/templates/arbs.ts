@@ -6,7 +6,7 @@ import formatNumber from '../utils/formatNumber'
 import { SELECTED_MARKETS } from '../actions/funding'
 
 export function ArbDiscord(dto: ProviderRates, frontEnd: string): EmbedBuilder[] {
-  console.log(dto)
+  //console.log(dto)
   const embeds: EmbedBuilder[] = []
   const market = Object.values(dto)[0][0].id
 

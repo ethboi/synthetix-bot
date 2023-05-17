@@ -10,7 +10,7 @@ export function MarketSummariesDiscord(dto: MarketSummary[], frontEnd: string): 
     .setColor(`${DefaultColor(frontEnd)}`)
     .setTitle(`Top 5 ${frontEnd.toUpperCase()} Futures`)
 
-  console.log(dto.length)
+  //console.log(dto.length)
   dto.slice(0, 5).map((summary) => {
     return MarketRow(embed, summary)
   })

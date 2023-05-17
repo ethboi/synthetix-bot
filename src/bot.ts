@@ -9,7 +9,7 @@ import {
   FRONTEND,
 } from './config'
 import { GetMarketDetails } from './actions'
-import { StatsJobs } from './schedule'
+import { StatsJobs, TestJob } from './schedule'
 import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
@@ -32,6 +32,7 @@ export async function Run(): Promise<void> {
     ])
 
     StatsJobs(discordVolume, discordFees, discordOI)
+    TestJob()
   } catch (error) {
     console.log(error)
   }
