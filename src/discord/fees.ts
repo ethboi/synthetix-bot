@@ -5,7 +5,7 @@ import { sDailyStat } from '../types/synthetix'
 
 export async function SetUpDiscordFees(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
-    console.debug(`Discord Volume bot is online!`)
+    console.debug(`Discord Fees bot is online!`)
   })
   await discordClient.login(accessToken)
 

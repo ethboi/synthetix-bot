@@ -35,7 +35,7 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
 }
 
 export function TestJob(): void {
-  scheduleJob('/1 * * * *', async () => {
+  scheduleJob('*/1 * * * *', async () => {
     console.log(`Running job ${Date.now()}`)
   })
 }
