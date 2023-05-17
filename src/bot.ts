@@ -27,7 +27,7 @@ export async function Run(): Promise<void> {
     await Promise.all([
       SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND),
       SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
-      SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND),
+      SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
       SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
     ])
 
