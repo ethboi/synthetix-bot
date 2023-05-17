@@ -8,7 +8,12 @@ export function GraphClient(url: string) {
       uri: url,
       fetch,
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({ resultCaching: false }),
+    defaultOptions: {
+      query: {
+        fetchPolicy: 'network-only',
+      },
+    },
   })
 }
 
