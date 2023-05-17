@@ -7,13 +7,15 @@ export async function getDailyStats() {
   const result = await SynthetixGraphClient.query({
     query: DAILY_STATS_QUERY,
   })
-  if (result) {
-    const data = result?.data?.dailyStats as DailyStat[]
+  const data = result?.data?.dailyStats as DailyStat[]
+
+  if (data) {
     const mapped = data.map(getDailyStatsData)
     //console.log(mapped)
 
     return mapped
   }
+  return undefined
 }
 
 // async function paginateGraphQL<T>(query: DocumentNode, variables: any, pageSize = 1000): Promise<T[]> {

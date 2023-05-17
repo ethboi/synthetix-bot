@@ -7,9 +7,9 @@ export async function SetUpDiscordFees(discordClient: Client, accessToken: strin
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Fees bot is online!`)
   })
-  await discordClient.login(accessToken)
 
   const dailyStats = await getDailyStats()
+  await discordClient.login(accessToken)
 
   if (dailyStats) {
     await setNameActivityFees(discordClient, dailyStats)
@@ -19,17 +19,23 @@ export async function SetUpDiscordFees(discordClient: Client, accessToken: strin
 
 export async function setNameActivityFees(client: Client, dailyStats: sDailyStat[]) {
   try {
-    // get the date
     const currentDate = new Date(dailyStats[0].day)
     const daysToIncl = daysSinceLastWednesday(currentDate)
-    //console.log(daysToIncl)
+
     const epochDays = dailyStats.slice(0, daysToIncl)
     const epochFees = epochDays.reduce((accumulator, dailyStat) => {
       return accumulator + dailyStat.fees
     }, 0)
 
-    await client.user?.setUsername(`$${displayNumber(epochFees)} | EP`)
-    client.user?.setActivity(`24h: ${displayNumber(dailyStats[0].fees)} | FEES`, {
+    const username = `$${displayNumber(epochFees)} | EP`
+    const activity = `24h: ${displayNumber(dailyStats[0].fees)} | FEES`
+
+    console.log('FEES')
+    console.log(username)
+    console.log(activity)
+
+    await client.user?.setUsername(username)
+    client.user?.setActivity(activity, {
       type: ActivityType.Watching,
     })
   } catch (e: any) {

@@ -13,11 +13,16 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
     try {
       console.log(`Getting Volume & Fees: ${Date.now}`)
       const dailyStats = await getDailyStats()
+
       if (dailyStats) {
+        console.log('Stats found.')
+        console.log(dailyStats)
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStats),
           setNameActivityFees(discordClientFees, dailyStats),
         ])
+      } else {
+        console.log(`Stats not found.`)
       }
     } catch (e) {
       console.log(e)

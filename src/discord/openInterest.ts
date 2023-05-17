@@ -1,5 +1,5 @@
 import { Client, ActivityType } from 'discord.js'
-import { displayNumber } from '../utils/formatNumber'
+import formatNumber, { displayNumber } from '../utils/formatNumber'
 import { GetOpenInterest } from '../actions/openInterest'
 import { calculatePercentageChange } from '../utils/utils'
 
@@ -19,11 +19,17 @@ export async function setNameActivityOI(client: Client, openInterestPrev: number
   try {
     const changeDirection = openInterest > openInterestPrev
     const change = calculatePercentageChange(openInterestPrev, openInterest)
+    const username = `$${displayNumber(openInterest)} (${changeDirection ? '↗' : '↘'})`
+    const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% | OI`
 
-    await client.user?.setUsername(`$${displayNumber(openInterest)} (${changeDirection ? '↗' : '↘'})`).then(() => {
-      client.user?.setActivity(`24h: ${displayNumber(change)}% | OI`, {
-        type: ActivityType.Watching,
-      })
+    console.log('OPEN INTEREST')
+    console.log(username)
+    console.log(activity)
+
+    await client.user?.setUsername(username)
+
+    client.user?.setActivity(activity, {
+      type: ActivityType.Watching,
     })
   } catch (e: any) {
     console.log(e)
