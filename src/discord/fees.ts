@@ -22,13 +22,16 @@ export async function setNameActivityFees(client: Client, dailyStats: sDailyStat
     // get the date
     const currentDate = new Date(dailyStats[0].day)
     const daysToIncl = daysSinceLastWednesday(currentDate)
-    const epochFees = dailyStats.slice(0, daysToIncl).reduce((accumulator, dailyStat) => {
+    console.log(daysToIncl)
+    const epochDays = dailyStats.slice(0, daysToIncl)
+    const epochFees = epochDays.reduce((accumulator, dailyStat) => {
       return accumulator + dailyStat.fees
     }, 0)
-
-    // console.log(`Set usename: Fees $${displayNumber(weeklyFees)}  `)
+    console.log('EPOCH DAYS:')
+    console.log(`${displayNumber(epochFees)}`)
+    console.log(`DAILY`)
+    console.log(`${displayNumber(dailyStats[0].fees)}`)
     await client.user?.setUsername(`$${displayNumber(epochFees)} | EP`)
-    //console.log(`Set actvity: Fees $${displayNumber(dailyFees)}  `)
     client.user?.setActivity(`24h: ${displayNumber(dailyStats[0].fees)} | FEES`, {
       type: ActivityType.Watching,
     })

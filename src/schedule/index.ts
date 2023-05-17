@@ -8,19 +8,29 @@ import { GetOpenInterest } from '../actions/openInterest'
 
 export function StatsJobs(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
   scheduleJob('5,35 * * * *', async () => {
-    try {
-      console.log('STATS (FEES / VOLUME) job running')
-      const dailyStats = await getDailyStats()
-      const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
+    console.log('STATS (FEES / VOLUME) job running')
 
+    // DAILY STATS
+    try {
+      console.log(`Getting Volume & Fees: ${Date.now}`)
+      const dailyStats = await getDailyStats()
       if (dailyStats) {
-        await setNameActivityVolume(discordClientVolume, dailyStats)
-        await setNameActivityFees(discordClientFees, dailyStats)
-        await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
+        await Promise.all([
+          setNameActivityVolume(discordClientVolume, dailyStats),
+          setNameActivityFees(discordClientFees, dailyStats),
+        ])
       }
     } catch (ex) {
       console.log(ex)
-      console.log(`:)`)
+    }
+
+    // OPEN INTEREST
+    try {
+      console.log(`Getting Open Interest:  ${Date.now}`)
+      const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
+      await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
+    } catch (ex) {
+      console.log(ex)
     }
   })
 }
