@@ -74,7 +74,7 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
   await discordClient.login(accessToken)
   if (!TESTNET) {
     defaultActivity(discordClient)
-    await defaultName(discordClient, frontEnd)
+    //await defaultName(discordClient, frontEnd)
   }
   return discordClient
 }

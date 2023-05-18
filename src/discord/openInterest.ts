@@ -26,8 +26,7 @@ export async function setNameActivityOI(client: Client, openInterestPrev: number
     console.log(username)
     console.log(activity)
 
-    await client.user?.setUsername(username)
-
+    client.guilds.cache.map((guild) => guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username))
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,
     })

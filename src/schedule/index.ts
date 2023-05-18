@@ -6,8 +6,8 @@ import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 
-export function StatsJobs(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
-  scheduleJob('5,35 * * * *', async () => {
+export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
+  scheduleJob('*/5 * * * *', async () => {
     console.log('STATS (FEES / VOLUME) job running')
 
     try {
@@ -36,11 +36,5 @@ export function StatsJobs(discordClientVolume: Client, discordClientFees: Client
     } catch (e) {
       console.log(e)
     }
-  })
-}
-
-export function TestJob(): void {
-  scheduleJob('*/1 * * * *', async () => {
-    console.log(`Running job ${Date.now()}`)
   })
 }

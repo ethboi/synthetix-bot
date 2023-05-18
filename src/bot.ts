@@ -9,10 +9,11 @@ import {
   FRONTEND,
 } from './config'
 import { GetMarketDetails } from './actions'
-import { StatsJobs, TestJob } from './schedule'
+import { FiveMinuteJob } from './schedule'
 import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
+import { GetInflation } from './actions/inflation'
 
 let discordClient: Client
 let discordVolume: Client
@@ -31,8 +32,8 @@ export async function Run(): Promise<void> {
       SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
     ])
 
-    StatsJobs(discordVolume, discordFees, discordOI)
-    TestJob()
+    //await GetInflation()
+    FiveMinuteJob(discordVolume, discordFees, discordOI)
   } catch (error) {
     console.log(error)
   }

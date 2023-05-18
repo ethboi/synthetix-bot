@@ -27,14 +27,14 @@ export async function setNameActivityFees(client: Client, dailyStats: sDailyStat
       return accumulator + dailyStat.fees
     }, 0)
 
-    const username = `$${displayNumber(epochFees)} | EP`
+    const username = `$${displayNumber(epochFees)} | Epoch`
     const activity = `24h: ${displayNumber(dailyStats[0].fees)} | FEES`
 
     console.log('FEES')
     console.log(username)
     console.log(activity)
 
-    await client.user?.setUsername(username)
+    client.guilds.cache.map((guild) => guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username))
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,
     })
