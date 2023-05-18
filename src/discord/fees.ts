@@ -12,6 +12,7 @@ export async function SetUpDiscordFees(discordClient: Client, accessToken: strin
   await discordClient.login(accessToken)
 
   if (dailyStats) {
+    console.log('lol')
     await setNameActivityFees(discordClient, dailyStats)
   }
   return discordClient
@@ -27,8 +28,8 @@ export async function setNameActivityFees(client: Client, dailyStats: sDailyStat
       return accumulator + dailyStat.fees
     }, 0)
 
-    const username = `$${displayNumber(epochFees)} | Epoch`
-    const activity = `24h: ${displayNumber(dailyStats[0].fees)} | FEES`
+    const username = `$${displayNumber(epochFees)} | Fees`
+    const activity = `24h: ${displayNumber(dailyStats[0].fees)} `
 
     console.log('FEES')
     console.log(username)

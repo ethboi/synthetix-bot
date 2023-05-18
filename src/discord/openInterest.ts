@@ -19,8 +19,8 @@ export async function setNameActivityOI(client: Client, openInterestPrev: number
   try {
     const changeDirection = openInterest > openInterestPrev
     const change = calculatePercentageChange(openInterestPrev, openInterest)
-    const username = `$${displayNumber(openInterest)} (${changeDirection ? '↗' : '↘'})`
-    const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% | OI`
+    const username = `$${displayNumber(openInterest)} | OI`
+    const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`
 
     console.log('OPEN INTEREST')
     console.log(username)
