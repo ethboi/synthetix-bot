@@ -8,6 +8,8 @@ export const DISCORD_ACCESS_TOKEN = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN
 export const DISCORD_ACCESS_TOKEN_VOLUME = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME, '')
 export const DISCORD_ACCESS_TOKEN_FEES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_FEES, '')
 export const DISCORD_ACCESS_TOKEN_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_OI, '')
+export const DISCORD_ACCESS_TOKEN_ETH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETH, '')
+export const DISCORD_ACCESS_TOKEN_BTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BTC, '')
 
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 

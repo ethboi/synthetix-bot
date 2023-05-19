@@ -5,6 +5,9 @@ import { setNameActivityVolume } from '../discord/volume'
 import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
+import { GetPrices } from '../actions/price'
+import { BTC_OP, ETH_OP } from '../constants/addresses'
+import { setNameActivityPrice } from '../discord/prices'
 
 export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
   scheduleJob('*/5 * * * *', async () => {
@@ -15,8 +18,6 @@ export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Cl
       const dailyStats = await getDailyStats()
 
       if (dailyStats) {
-        console.log('Stats found.')
-        console.log(dailyStats)
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStats),
           setNameActivityFees(discordClientFees, dailyStats),
@@ -33,6 +34,30 @@ export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Cl
       console.log(`Getting Open Interest:  ${Date.now}`)
       const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
       await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
+    } catch (e) {
+      console.log(e)
+    }
+  })
+}
+
+export function OneMinuteJob(discordClientEth: Client, discordClientBtc: Client): void {
+  scheduleJob('*/1 * * * *', async () => {
+    try {
+      console.log(`Getting Prices: ${Date.now()}`)
+      const pairs = await GetPrices()
+      //ETH
+      const ethPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ETH_OP.toLowerCase())
+      if (ethPair) {
+        console.log(ethPair.priceUsd)
+        await setNameActivityPrice(discordClientEth, ethPair, 'eth')
+      }
+
+      //BTC
+      const btcPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == BTC_OP.toLowerCase())
+      if (btcPair) {
+        console.log(btcPair.priceUsd)
+        await setNameActivityPrice(discordClientBtc, btcPair, 'btc')
+      }
     } catch (e) {
       console.log(e)
     }
