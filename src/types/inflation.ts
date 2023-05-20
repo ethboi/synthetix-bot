@@ -17,3 +17,10 @@ export type Result = {
   transactionHash: string
   transactionIndex: string
 }
+
+export type Inflation = {
+  supplyMinted: number
+  lastMintEvent: number
+  numberOfWeeksIssued: number
+  change: number
+}

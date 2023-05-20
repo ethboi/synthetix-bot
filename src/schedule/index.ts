@@ -8,6 +8,8 @@ import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
 import { BTC_OP, ETH_OP } from '../constants/addresses'
 import { setNameActivityPrice } from '../discord/prices'
+import { GetInflation } from '../actions/inflation'
+import { setNameActivityInflation } from '../discord/inflation'
 
 export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
   scheduleJob('*/5 * * * *', async () => {
@@ -57,6 +59,20 @@ export function OneMinuteJob(discordClientEth: Client, discordClientBtc: Client)
       if (btcPair) {
         console.log(btcPair.priceUsd)
         await setNameActivityPrice(discordClientBtc, btcPair, 'btc')
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  })
+}
+
+export function DailyJob(discordInflation: Client): void {
+  scheduleJob('5,10 0 * * *', async () => {
+    try {
+      console.log(`Getting Inflation: ${Date.now()}`)
+      const inf = await GetInflation()
+      if (inf) {
+        await setNameActivityInflation(discordInflation, inf)
       }
     } catch (e) {
       console.log(e)

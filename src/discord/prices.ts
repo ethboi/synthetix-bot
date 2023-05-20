@@ -7,27 +7,24 @@ import { BTC_OP, ETH_OP } from '../constants/addresses'
 export async function SetUpDiscordPrices(discordClient: Client, accessToken: string, market: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord PRICE ${market} bot is online!`)
+    const pairs = await GetPrices()
+    let address = ''
+
+    if (market == 'eth') {
+      address = ETH_OP.toLowerCase()
+    }
+    if (market == 'btc') {
+      address = BTC_OP.toLowerCase()
+    }
+    if (address) {
+      const marketPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == address)
+      if (marketPair) {
+        await setNameActivityPrice(discordClient, marketPair, market)
+      }
+    }
   })
 
-  const pairs = await GetPrices()
-  let address = ''
-
-  if (market == 'eth') {
-    address = ETH_OP.toLowerCase()
-  }
-  if (market == 'btc') {
-    address = BTC_OP.toLowerCase()
-  }
-
   await discordClient.login(accessToken)
-
-  if (address) {
-    const marketPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == address)
-    if (marketPair) {
-      await setNameActivityPrice(discordClient, marketPair, market)
-    }
-  }
-
   return discordClient
 }
 
@@ -41,7 +38,9 @@ export async function setNameActivityPrice(client: Client, pair: Pair, market: s
     console.log(username)
     console.log(activity)
 
-    client.guilds.cache.map((guild) => guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username))
+    client.guilds.cache.map(
+      async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
+    )
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,
     })

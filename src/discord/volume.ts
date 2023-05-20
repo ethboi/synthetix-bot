@@ -7,15 +7,12 @@ import { sDailyStat } from '../types/synthetix'
 export async function SetUpDiscordVolume(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Volume bot is online!`)
+    const dailyStats = await getDailyStats()
+    if (dailyStats) {
+      await setNameActivityVolume(discordClient, dailyStats)
+    }
   })
-
-  const dailyStats = await getDailyStats()
   await discordClient.login(accessToken)
-
-  if (dailyStats) {
-    await setNameActivityVolume(discordClient, dailyStats)
-  }
-
   return discordClient
 }
 
@@ -27,14 +24,16 @@ export async function setNameActivityVolume(client: Client, dailyStats: sDailySt
     const changeDirection = today.volume > adjustedPrevVol
     const change = calculatePercentageChange(adjustedPrevVol, today.volume)
 
-    const username = `$${displayNumber(today.volume)} | Vol`
+    const username = `$${displayNumber(today.volume)} VOL`
     const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`
 
     console.log('VOLUME')
     console.log(username)
     console.log(activity)
 
-    client.guilds.cache.map((guild) => guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username))
+    client.guilds.cache.map(
+      async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
+    )
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,
     })

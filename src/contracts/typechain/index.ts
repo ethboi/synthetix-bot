@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { PerpsV2MarketData } from "./PerpsV2MarketData";
+export type { SupplySchedule } from "./SupplySchedule";
 export * as factories from "./factories";
 export { PerpsV2MarketData__factory } from "./factories/PerpsV2MarketData__factory";
+export { SupplySchedule__factory } from "./factories/SupplySchedule__factory";

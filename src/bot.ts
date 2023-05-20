@@ -6,17 +6,18 @@ import {
   DISCORD_ACCESS_TOKEN_BTC,
   DISCORD_ACCESS_TOKEN_ETH,
   DISCORD_ACCESS_TOKEN_FEES,
+  DISCORD_ACCESS_TOKEN_INFLATION,
   DISCORD_ACCESS_TOKEN_OI,
   DISCORD_ACCESS_TOKEN_VOLUME,
   FRONTEND,
 } from './config'
 import { GetMarketDetails } from './actions'
-import { FiveMinuteJob, OneMinuteJob } from './schedule'
+import { DailyJob, FiveMinuteJob, OneMinuteJob } from './schedule'
 import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
-import { GetInflation } from './actions/inflation'
 import { SetUpDiscordPrices } from './discord/prices'
+import { SetUpDiscordInflation } from './discord/inflation'
 
 let discordClient: Client
 let discordVolume: Client
@@ -24,6 +25,7 @@ let discordFees: Client
 let discordOI: Client
 let discordEth: Client
 let discordBtc: Client
+let discordInflation: Client
 
 export async function Run(): Promise<void> {
   try {
@@ -37,12 +39,12 @@ export async function Run(): Promise<void> {
       SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
       SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
       SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
+      SetUpDiscordInflation((discordInflation = DiscordClient()), DISCORD_ACCESS_TOKEN_INFLATION, FRONTEND),
     ])
-
-    //await GetInflation()
 
     FiveMinuteJob(discordVolume, discordFees, discordOI)
     OneMinuteJob(discordEth, discordBtc)
+    DailyJob(discordInflation)
   } catch (error) {
     console.log(error)
   }

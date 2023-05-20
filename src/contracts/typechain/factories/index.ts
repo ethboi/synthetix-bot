@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { PerpsV2MarketData__factory } from "./PerpsV2MarketData__factory";
+export { SupplySchedule__factory } from "./SupplySchedule__factory";

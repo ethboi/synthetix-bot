@@ -6,15 +6,14 @@ import { sDailyStat } from '../types/synthetix'
 export async function SetUpDiscordFees(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Fees bot is online!`)
+    const dailyStats = await getDailyStats()
+    if (dailyStats) {
+      console.log('lol')
+      await setNameActivityFees(discordClient, dailyStats)
+    }
   })
 
-  const dailyStats = await getDailyStats()
   await discordClient.login(accessToken)
-
-  if (dailyStats) {
-    console.log('lol')
-    await setNameActivityFees(discordClient, dailyStats)
-  }
   return discordClient
 }
 
@@ -28,14 +27,16 @@ export async function setNameActivityFees(client: Client, dailyStats: sDailyStat
       return accumulator + dailyStat.fees
     }, 0)
 
-    const username = `$${displayNumber(epochFees)} | Fees`
+    const username = `$${displayNumber(epochFees)} FEES`
     const activity = `24h: ${displayNumber(dailyStats[0].fees)} `
 
     console.log('FEES')
     console.log(username)
     console.log(activity)
 
-    client.guilds.cache.map((guild) => guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username))
+    client.guilds.cache.map(
+      async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
+    )
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,
     })
