@@ -95,7 +95,7 @@ async function getBlockByTimestamp(provider: ethers.providers.JsonRpcProvider, t
     provider, // Ethers provider, required.
   )
   const date = moment.unix(timestamp)
-  const blockResult = dater.getDate(date, true, false)
+  const blockResult = await dater.getDate(date, true, false)
   //console.log(blockResult)
   return blockResult.block
 }
