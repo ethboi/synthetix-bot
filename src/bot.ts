@@ -7,7 +7,11 @@ import {
   DISCORD_ACCESS_TOKEN_ETH,
   DISCORD_ACCESS_TOKEN_FEES,
   DISCORD_ACCESS_TOKEN_INFLATION,
+  DISCORD_ACCESS_TOKEN_KWENTA,
+  DISCORD_ACCESS_TOKEN_LYRA,
   DISCORD_ACCESS_TOKEN_OI,
+  DISCORD_ACCESS_TOKEN_SNX,
+  DISCORD_ACCESS_TOKEN_THALES,
   DISCORD_ACCESS_TOKEN_TRADERS,
   DISCORD_ACCESS_TOKEN_TRADES,
   DISCORD_ACCESS_TOKEN_VOLUME,
@@ -32,6 +36,10 @@ let discordBtc: Client
 let discordInflation: Client
 let discordTraders: Client
 let discordTrades: Client
+let discordLyra: Client
+let discordThales: Client
+let discordSNX: Client
+let discordKwenta: Client
 
 export async function Run(): Promise<void> {
   try {
@@ -48,10 +56,14 @@ export async function Run(): Promise<void> {
       SetUpDiscordInflation((discordInflation = DiscordClient()), DISCORD_ACCESS_TOKEN_INFLATION, FRONTEND),
       SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
       SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
+      SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
+      SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
+      SetUpDiscordPrices((discordSNX = DiscordClient()), DISCORD_ACCESS_TOKEN_SNX, 'snx'),
+      SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
     ])
 
     FiveMinuteJob(discordVolume, discordFees, discordOI, discordTraders, discordTrades)
-    OneMinuteJob(discordEth, discordBtc)
+    OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta)
     DailyJob(discordInflation)
   } catch (error) {
     console.log(error)

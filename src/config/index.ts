@@ -13,6 +13,10 @@ export const DISCORD_ACCESS_TOKEN_BTC = _.defaultTo(process.env.DISCORD_ACCESS_T
 export const DISCORD_ACCESS_TOKEN_INFLATION = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_INFLATION, '')
 export const DISCORD_ACCESS_TOKEN_TRADERS = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_TRADERS, '')
 export const DISCORD_ACCESS_TOKEN_TRADES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_TRADES, '')
+export const DISCORD_ACCESS_TOKEN_LYRA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_LYRA, '')
+export const DISCORD_ACCESS_TOKEN_THALES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_THALES, '')
+export const DISCORD_ACCESS_TOKEN_SNX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_SNX, '')
+export const DISCORD_ACCESS_TOKEN_KWENTA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_KWENTA, '')
 
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 

@@ -6,7 +6,7 @@ import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
-import { BTC_OP, ETH_OP } from '../constants/addresses'
+import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../constants/addresses'
 import { setNameActivityPrice } from '../discord/prices'
 import { GetInflation } from '../actions/inflation'
 import { setNameActivityInflation } from '../discord/inflation'
@@ -52,7 +52,14 @@ export function FiveMinuteJob(
   })
 }
 
-export function OneMinuteJob(discordClientEth: Client, discordClientBtc: Client): void {
+export function OneMinuteJob(
+  discordClientEth: Client,
+  discordClientBtc: Client,
+  discordLyra: Client,
+  discordThales: Client,
+  discordSNX: Client,
+  discordKwenta: Client,
+): void {
   scheduleJob('*/1 * * * *', async () => {
     try {
       console.log(`Getting Prices: ${Date.now()}`)
@@ -69,6 +76,34 @@ export function OneMinuteJob(discordClientEth: Client, discordClientBtc: Client)
       if (btcPair) {
         console.log(btcPair.priceUsd)
         await setNameActivityPrice(discordClientBtc, btcPair, 'btc')
+      }
+
+      //LYRA
+      const lyraPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == LYRA_OP.toLowerCase())
+      if (lyraPair) {
+        console.log(lyraPair.priceUsd)
+        await setNameActivityPrice(discordLyra, lyraPair, 'lyra')
+      }
+
+      //THALES
+      const thalesPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == THALES_OP.toLowerCase())
+      if (thalesPair) {
+        console.log(thalesPair.priceUsd)
+        await setNameActivityPrice(discordThales, thalesPair, 'thales')
+      }
+
+      //SNX
+      const snxPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == SNX_OP.toLowerCase())
+      if (snxPair) {
+        console.log(snxPair.priceUsd)
+        await setNameActivityPrice(discordSNX, snxPair, 'snx')
+      }
+
+      //KWENTA
+      const kwentaPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == KWENTA_OP.toLowerCase())
+      if (kwentaPair) {
+        console.log(kwentaPair.priceUsd)
+        await setNameActivityPrice(discordKwenta, kwentaPair, 'kwenta')
       }
     } catch (e) {
       console.log(e)
