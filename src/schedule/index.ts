@@ -10,8 +10,16 @@ import { BTC_OP, ETH_OP } from '../constants/addresses'
 import { setNameActivityPrice } from '../discord/prices'
 import { GetInflation } from '../actions/inflation'
 import { setNameActivityInflation } from '../discord/inflation'
+import { setNameActivityTraders } from '../discord/traders'
+import { setNameActivityTrades } from '../discord/trades'
 
-export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Client, discordClientOI: Client): void {
+export function FiveMinuteJob(
+  discordClientVolume: Client,
+  discordClientFees: Client,
+  discordClientOI: Client,
+  discordClientTraders: Client,
+  discordClientTrades: Client,
+): void {
   scheduleJob('*/5 * * * *', async () => {
     console.log('STATS (FEES / VOLUME) job running')
 
@@ -23,6 +31,8 @@ export function FiveMinuteJob(discordClientVolume: Client, discordClientFees: Cl
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStats),
           setNameActivityFees(discordClientFees, dailyStats),
+          setNameActivityTraders(discordClientTraders, dailyStats),
+          setNameActivityTrades(discordClientTrades, dailyStats),
         ])
       } else {
         console.log(`Stats not found.`)

@@ -11,6 +11,8 @@ export const DISCORD_ACCESS_TOKEN_OI = _.defaultTo(process.env.DISCORD_ACCESS_TO
 export const DISCORD_ACCESS_TOKEN_ETH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETH, '')
 export const DISCORD_ACCESS_TOKEN_BTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BTC, '')
 export const DISCORD_ACCESS_TOKEN_INFLATION = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_INFLATION, '')
+export const DISCORD_ACCESS_TOKEN_TRADERS = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_TRADERS, '')
+export const DISCORD_ACCESS_TOKEN_TRADES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_TRADES, '')
 
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 

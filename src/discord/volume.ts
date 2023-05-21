@@ -24,7 +24,7 @@ export async function setNameActivityVolume(client: Client, dailyStats: sDailySt
     const changeDirection = today.volume > adjustedPrevVol
     const change = calculatePercentageChange(adjustedPrevVol, today.volume)
 
-    const username = `$${displayNumber(today.volume)} VOL`
+    const username = `$${displayNumber(today.volume)} VOLUME`
     const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`
 
     console.log('VOLUME')
