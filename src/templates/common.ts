@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js'
 import { titleCaseWord } from '../utils/formatString'
 import { ProviderType } from '../types/arbitrage'
+import { urls } from '../constants/urls'
 
 export function Footer(embed: EmbedBuilder, frontEnd: string, version = 0) {
   embed
@@ -87,4 +88,25 @@ export function ExchangeEmoji(exchange: string) {
   }
 
   return ''
+}
+
+export function WatcherLink(smartWallet: string | undefined) {
+  if (!smartWallet) {
+    return urls.WATCHER
+  }
+
+  return `${urls.WATCHER}${smartWallet}`
+}
+
+export function Medal(position: number | undefined): string {
+  if (position == 1) {
+    return '🥇'
+  }
+  if (position == 2) {
+    return '🥈'
+  }
+  if (position == 3) {
+    return '🥉'
+  }
+  return '🏅'
 }

@@ -6,7 +6,10 @@ export function convertToBoolean(input: string): boolean | undefined {
   }
 }
 
-export function shortAddress(value: string): string {
+export function shortAddress(value: string | undefined): string {
+  if (!value) {
+    return ''
+  }
   return `${value.slice(0, 5)}...${value.slice(-4)}`
 }
 
@@ -32,4 +35,16 @@ export function calculateDayPercentage(): number {
   const millisecondsInDay = 24 * 60 * 60 * 1000
 
   return ((now.getTime() - startOfDay.getTime()) / millisecondsInDay) * 100
+}
+
+export function isEmpty(value: unknown): boolean {
+  if (value === null || value === undefined) {
+    return true
+  }
+
+  if (Array.isArray(value) && value.length === 0) {
+    return true
+  }
+
+  return false
 }

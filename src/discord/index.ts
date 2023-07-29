@@ -6,6 +6,10 @@ import { MarketSummariesDiscord, StatsDiscord } from '../templates'
 import { getFundingRates } from '../actions/funding'
 import { ArbDiscord, ArbsDiscord } from '../templates/arbs'
 import { HelpDiscord } from '../templates/help'
+import { getTrader } from '../actions/trader'
+import { TraderDiscord } from '../templates/trader'
+import { GetLeaderBoard } from '../actions/leaderboard'
+import { LeaderBoardDiscord } from '../templates/leaderboard'
 
 export async function SetUpDiscord(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
@@ -62,6 +66,36 @@ export async function SetUpDiscord(discordClient: Client, accessToken: string, f
 
     if (commandName === 'help') {
       await HelpInteraction(
+        channelName,
+        interaction as ChatInputCommandInteraction,
+        fundingChannel as GuildBasedChannel,
+        commandName,
+        frontEnd,
+      )
+    }
+
+    if (commandName === 'trader') {
+      await TraderInteraction(
+        channelName,
+        interaction as ChatInputCommandInteraction,
+        fundingChannel as GuildBasedChannel,
+        commandName,
+        frontEnd,
+      )
+    }
+
+    if (commandName === 'winners') {
+      await LeaderBoardInteraction(
+        channelName,
+        interaction as ChatInputCommandInteraction,
+        fundingChannel as GuildBasedChannel,
+        commandName,
+        frontEnd,
+      )
+    }
+
+    if (commandName === 'losers') {
+      await LeaderBoardInteraction(
         channelName,
         interaction as ChatInputCommandInteraction,
         fundingChannel as GuildBasedChannel,
@@ -170,7 +204,50 @@ function MapMarket(market: string | null) {
   return market
 }
 
-function ReplaceSynths(market: string) {
+async function TraderInteraction(
+  channelName: string,
+  interaction: ChatInputCommandInteraction,
+  channel: GuildBasedChannel,
+  commandName: string,
+  frontEnd: string,
+) {
+  await interaction.deferReply()
+  const address = interaction.options.getString('address')
+
+  if (!address) {
+    return await interaction.editReply(`Error retrieving trader.`)
+  }
+
+  const trader = await getTrader(address)
+
+  if (trader) {
+    const embeds = TraderDiscord(trader, frontEnd)
+    await interaction.editReply({ embeds: embeds })
+  } else {
+    await interaction.editReply(`Trader not found.`)
+  }
+}
+
+async function LeaderBoardInteraction(
+  channelName: string,
+  interaction: ChatInputCommandInteraction,
+  channel: GuildBasedChannel,
+  commandName: string,
+  frontEnd: string,
+) {
+  await interaction.deferReply()
+  const getTop = commandName == 'winners'
+  const leaderboard = await GetLeaderBoard(getTop)
+
+  if (leaderboard) {
+    const embeds = LeaderBoardDiscord(leaderboard, frontEnd, getTop)
+    await interaction.editReply({ embeds: embeds })
+  } else {
+    await interaction.editReply('Leaderboard not found')
+  }
+}
+
+export function ReplaceSynths(market: string) {
   if (market.toLowerCase() == 'seth') {
     return 'eth'
   }
