@@ -46,6 +46,7 @@ export async function Run(): Promise<void> {
   try {
     console.log('Running Bot')
     global.MARKET_SETTINGS = {}
+    global.ENS = {}
     await GetMarketDetails()
     await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
     if (!TESTNET) {
