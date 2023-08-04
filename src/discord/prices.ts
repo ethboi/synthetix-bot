@@ -30,7 +30,11 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
     }
 
     if (address) {
-      const marketPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == address)
+      const marketPair = pairs.find(
+        (pair) =>
+          pair.baseToken.address.toLowerCase() == address &&
+          (market == 'lyra' ? pair.baseToken.symbol.toLowerCase() == market : true),
+      )
       if (marketPair) {
         await setNameActivityPrice(discordClient, marketPair, market)
       }
