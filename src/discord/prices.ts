@@ -10,37 +10,27 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
     const pairs = await GetPrices()
     let address = ''
 
-    let dexSymbol = ''
-
     if (market == 'eth') {
       address = ETH_OP.toLowerCase()
-      dexSymbol = 'WETH'
     }
     if (market == 'btc') {
       address = BTC_OP.toLowerCase()
-      dexSymbol = 'WBTC'
     }
     if (market == 'lyra') {
       address = LYRA_OP.toLowerCase()
-      dexSymbol = 'LYRA'
     }
     if (market == 'thales') {
       address = THALES_OP.toLowerCase()
-      dexSymbol = 'THALES'
     }
     if (market == 'snx') {
       address = SNX_OP.toLowerCase()
-      dexSymbol = 'SNX'
     }
     if (market == 'kwenta') {
       address = KWENTA_OP.toLowerCase()
-      dexSymbol = 'KWENTA'
     }
 
     if (address) {
-      const marketPair = pairs.find(
-        (pair) => pair.baseToken.address.toLowerCase() == address && pair.baseToken.symbol == dexSymbol,
-      )
+      const marketPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == address)
       if (marketPair) {
         await setNameActivityPrice(discordClient, marketPair, market)
       }

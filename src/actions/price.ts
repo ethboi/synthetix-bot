@@ -32,7 +32,9 @@ export async function GetPrices() {
       pairs.push(pairBtc)
     }
 
-    const pairLyra = dexLyra.pairs.find((pair) => pair.baseToken.address.toLowerCase() == LYRA_OP.toLowerCase())
+    const pairLyra = dexLyra.pairs.find(
+      (pair) => pair.baseToken.address.toLowerCase() == LYRA_OP.toLowerCase() && pair.baseToken.symbol == 'LYRA',
+    )
     if (pairLyra) {
       pairs.push(pairLyra)
     }
