@@ -8,7 +8,6 @@ export async function SetUpDiscordFees(discordClient: Client, accessToken: strin
     console.debug(`Discord Fees bot is online!`)
     const dailyStats = await getDailyStats()
     if (dailyStats) {
-      console.log('lol')
       await setNameActivityFees(discordClient, dailyStats)
     }
   })

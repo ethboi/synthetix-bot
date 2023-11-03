@@ -17,6 +17,7 @@ export const DISCORD_ACCESS_TOKEN_LYRA = _.defaultTo(process.env.DISCORD_ACCESS_
 export const DISCORD_ACCESS_TOKEN_THALES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_THALES, '')
 export const DISCORD_ACCESS_TOKEN_SNX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_SNX, '')
 export const DISCORD_ACCESS_TOKEN_KWENTA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_KWENTA, '')
+export const DISCORD_ACCESS_TOKEN_ETHBTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETHBTC, '')
 
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 export const ALCHEMY_ID_MAINNET = _.defaultTo(process.env.ALCHEMY_ID_MAINNET, '')

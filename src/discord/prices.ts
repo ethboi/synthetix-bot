@@ -29,6 +29,16 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
       address = KWENTA_OP.toLowerCase()
     }
 
+    if (market == 'ethbtc') {
+      const ethPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ETH_OP.toLowerCase())
+      const btcPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == BTC_OP.toLowerCase())
+
+      if (btcPair && ethPair) {
+        await setNameActivityRatio(discordClient, ethPair, btcPair)
+      }
+      return
+    }
+
     if (address) {
       const marketPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == address)
       if (marketPair) {
@@ -48,6 +58,28 @@ export async function setNameActivityPrice(client: Client, pair: Pair, market: s
     })`
     const activity = `24h: ${formatNumber(Number(pair.priceChange.h24), { dps: 2, showSign: true })}% `
     console.log(`PRICE: ${market.toUpperCase()}`)
+    console.log(username)
+    console.log(activity)
+
+    client.guilds.cache.map(
+      async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
+    )
+    client.user?.setActivity(activity, {
+      type: ActivityType.Watching,
+    })
+  } catch (e: any) {
+    console.log(e)
+  }
+}
+
+export async function setNameActivityRatio(client: Client, ethPair: Pair, btcPair: Pair) {
+  try {
+    const ratio = Number(ethPair.priceUsd) / Number(btcPair.priceUsd)
+
+    const username = `${formatNumber(Number(ratio), { dps: 4 })} ETH/BTC`
+    const activity = `Ether / Bitcoin Ratio`
+
+    console.log(`ETH/BTC Ratio`)
     console.log(username)
     console.log(activity)
 

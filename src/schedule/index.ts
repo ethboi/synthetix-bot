@@ -7,7 +7,7 @@ import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
 import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../constants/addresses'
-import { setNameActivityPrice } from '../discord/prices'
+import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetInflation } from '../actions/inflation'
 import { setNameActivityInflation } from '../discord/inflation'
 import { setNameActivityTraders } from '../discord/traders'
@@ -59,6 +59,7 @@ export function OneMinuteJob(
   discordThales: Client,
   discordSNX: Client,
   discordKwenta: Client,
+  discordEthBtc: Client,
 ): void {
   scheduleJob('*/1 * * * *', async () => {
     try {
@@ -104,6 +105,10 @@ export function OneMinuteJob(
       if (kwentaPair) {
         console.log(kwentaPair.priceUsd)
         await setNameActivityPrice(discordKwenta, kwentaPair, 'kwenta')
+      }
+
+      if (ethPair && btcPair) {
+        await setNameActivityRatio(discordEthBtc, ethPair, btcPair)
       }
     } catch (e) {
       console.log(e)
