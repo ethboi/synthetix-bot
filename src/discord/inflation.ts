@@ -19,17 +19,16 @@ export async function SetUpDiscordBuyback(discordClient: Client, accessToken: st
 
 export async function setNameActivityBuyback(client: Client, buyback: Buyback) {
   try {
-    const username = `${displayNumber(buyback.burnedSNX)} SNX`; // Update property name based on buyback data structure
+    const username = `${displayNumber(buyback.burnedSNX)} SNX`; 
     const date = new Date(buyback.lastBurnEvent);
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const monthIndex = date.getUTCMonth()
-    // Get short month name using the month index
+
     const monthName = monthIndex >= 0 && monthIndex < monthNames.length ? monthNames[monthIndex] : 'Unknown';
 
     const day = date.getUTCDate()
     const year = date.getUTCFullYear()
 
-    // Ensure day and month are two digits
     const dayStr = day < 10 ? '0' + day : '' + day
     const shortDateStr = dayStr + ' ' + monthName.toUpperCase() + ' ' + year
     const activity = `Burn: ${shortDateStr} `
@@ -48,4 +47,5 @@ export async function setNameActivityBuyback(client: Client, buyback: Buyback) {
     console.log(e);
   }
 }
+
 
