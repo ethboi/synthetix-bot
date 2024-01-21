@@ -10,6 +10,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "outDir": "./build",
     "incremental": false,
     "sourceMap": false,

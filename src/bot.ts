@@ -25,7 +25,7 @@ import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
 import { SetUpDiscordPrices } from './discord/prices'
-import { SetUpDiscordInflation } from './discord/inflation'
+import { SetUpDiscordBuyback } from './discord/inflation'
 import { SetUpDiscordTraders } from './discord/traders'
 import { SetUpDiscordTrades } from './discord/trades'
 
@@ -60,8 +60,8 @@ export async function Run(): Promise<void> {
         // SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         // SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
 
-        SetUpDiscordInflation((discordInflation = DiscordClient()), DISCORD_ACCESS_TOKEN_INFLATION, FRONTEND),
-        
+        SetUpDiscordBuyback((discordInflation = DiscordClient()), DISCORD_ACCESS_TOKEN_INFLATION, FRONTEND),
+
         // SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
         // SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
         // SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),

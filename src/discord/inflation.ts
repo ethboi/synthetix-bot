@@ -1,36 +1,40 @@
-import { Client, ActivityType, time } from 'discord.js'
-import { displayNumber } from '../utils/formatNumber'
-import { GetBuyback } from '../actions/inflation'
-import { Inflation } from '../types/inflation'
 
-export async function SetUpDiscordInflation(discordClient: Client, accessToken: string, frontEnd: string) {
-  discordClient.on('ready', async (client) => {
-    console.debug(`Discord Buyback/Burn bot is online!`)
-    const inflation = await GetBuyback()
-    await setNameActivityInflation(discordClient, inflation)
-  })
-  await discordClient.login(accessToken)
-  return discordClient
+// Import necessary libraries
+import { Client, ActivityType } from 'discord.js';
+import { displayNumber } from '../utils/formatNumber';
+import { GetBuybackData } from '../actions/buyback'; // Import the new function for fetching buyback data
+import { Buyback } from '../types/inflation'; // Import the new type for buyback data
+
+export async function SetUpDiscordBuyback(discordClient: Client, accessToken: string, frontEnd: string) {
+  discordClient.on('ready', async () => {
+    console.debug(`Discord Buyback/Burn bot is online!`);
+    const buyback = await GetBuybackData();
+    await setNameActivityBuyback(discordClient, buyback);
+    
+  });
+
+  await discordClient.login(accessToken);
+  return discordClient;
 }
 
-export async function setNameActivityInflation(client: Client, inflation: Inflation) {
+export async function setNameActivityBuyback(client: Client, buyback: Buyback) {
   try {
-    const username = `${displayNumber(inflation.supplyMinted)} SNX`
-    const date = new Date(inflation.lastMintEvent * 1000)
+    const username = `${displayNumber(buyback.burnedSNX)} SNX`; // Update property name based on buyback data structure
+    const date = new Date(buyback.lastBurnEvent);
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const monthIndex = date.getUTCMonth()
     // Get short month name using the month index
-    const monthName = monthNames[monthIndex]
+    const monthName = monthIndex >= 0 && monthIndex < monthNames.length ? monthNames[monthIndex] : 'Unknown';
+
     const day = date.getUTCDate()
     const year = date.getUTCFullYear()
 
     // Ensure day and month are two digits
     const dayStr = day < 10 ? '0' + day : '' + day
-
     const shortDateStr = dayStr + ' ' + monthName.toUpperCase() + ' ' + year
-    const activity = `Mint: ${shortDateStr} `
+    const activity = `Burn: ${shortDateStr} `
 
-    console.log('INFLATION')
+    console.log('BUYBACK')
     console.log(username)
     console.log(activity)
 
@@ -41,6 +45,7 @@ export async function setNameActivityInflation(client: Client, inflation: Inflat
       type: ActivityType.Watching,
     })
   } catch (e: any) {
-    console.log(e)
+    console.log(e);
   }
 }
+
