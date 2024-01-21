@@ -47,29 +47,31 @@ let discordEthBtc: Client
 export async function Run(): Promise<void> {
   try {
     console.log('Running Bot')
-    global.MARKET_SETTINGS = {}
-    global.ENS = {}
-    await GetMarketDetails()
-    await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
+    // global.MARKET_SETTINGS = {}
+    // global.ENS = {}
+    // await GetMarketDetails()
+    // await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
 
     if (!TESTNET) {
       await Promise.all([
-        SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
-        SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
-        SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
-        SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
-        SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
+        // SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
+        // SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
+        // SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
+        // SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
+        // SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
+
         SetUpDiscordInflation((discordInflation = DiscordClient()), DISCORD_ACCESS_TOKEN_INFLATION, FRONTEND),
-        SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
-        SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
-        SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
-        SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
-        SetUpDiscordPrices((discordSNX = DiscordClient()), DISCORD_ACCESS_TOKEN_SNX, 'snx'),
-        SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
-        SetUpDiscordPrices((discordEthBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_ETHBTC, 'ethbtc'),
+        
+        // SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
+        // SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
+        // SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
+        // SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
+        // SetUpDiscordPrices((discordSNX = DiscordClient()), DISCORD_ACCESS_TOKEN_SNX, 'snx'),
+        // SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
+        // SetUpDiscordPrices((discordEthBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_ETHBTC, 'ethbtc'),
       ])
-      FiveMinuteJob(discordVolume, discordFees, discordOI, discordTraders, discordTrades)
-      OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc)
+      // FiveMinuteJob(discordVolume, discordFees, discordOI, discordTraders, discordTrades)
+      // OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc)
       DailyJob(discordInflation)
     }
   } catch (error) {

@@ -17,7 +17,8 @@ import fromWei from '../utils/fromWei'
 import { wei } from '@synthetixio/wei'
 import { calculatePercentageChange } from '../utils/utils'
 
-export async function GetInflation() {
+export async function GetBuyback() {
+  // change url to new format 
   const url = `${urls.ETHERSCAN_API_URL}?module=logs&action=getLogs&fromBlock=1&toBlock=latest&topic0=0x601e517d4811033fed8290c79b7823ce1ab70258da45400fe2391a3c7432edab&address=0x8d203c458d536fe0f97e9f741bc231eac8cd91cf`
   const inflationData = (await axios.get(url)).data as InflationData
   const supplyMinted = parseSupplyMintedEvent(inflationData.result[inflationData.result.length - 1])

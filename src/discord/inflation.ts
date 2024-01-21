@@ -1,12 +1,12 @@
 import { Client, ActivityType, time } from 'discord.js'
 import { displayNumber } from '../utils/formatNumber'
-import { GetInflation } from '../actions/inflation'
+import { GetBuyback } from '../actions/inflation'
 import { Inflation } from '../types/inflation'
 
 export async function SetUpDiscordInflation(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async (client) => {
-    console.debug(`Discord Inflation bot is online!`)
-    const inflation = await GetInflation()
+    console.debug(`Discord Buyback/Burn bot is online!`)
+    const inflation = await GetBuyback()
     await setNameActivityInflation(discordClient, inflation)
   })
   await discordClient.login(accessToken)
