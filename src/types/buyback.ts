@@ -25,11 +25,6 @@ export type Inflation = {
   change: number
 }
 
-// export type Buyback = {
-//   snx: number
-//   usd: number
-// }
-
 export type Buyback = {
   burnedSNX: number;  
   weeklyBurnedSNX: number;

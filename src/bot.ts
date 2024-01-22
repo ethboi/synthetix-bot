@@ -25,7 +25,7 @@ import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
 import { SetUpDiscordPrices } from './discord/prices'
-import { SetUpDiscordBuyback } from './discord/inflation'
+import { SetUpDiscordBuyback } from './discord/buyback'
 import { SetUpDiscordTraders } from './discord/traders'
 import { SetUpDiscordTrades } from './discord/trades'
 

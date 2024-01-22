@@ -9,7 +9,7 @@ import fromBigNumber from '../utils/fromBigNumber'
 import { ethers } from 'ethers'
 import EthDater from 'ethereum-block-by-date'
 import moment from 'moment'
-import { Inflation, Result, BuybackData } from '../types/inflation'
+import { Inflation, Result, BuybackData } from '../types/buyback'
 import { SupplyMintedEvent } from '../contracts/typechain/SupplySchedule'
 import fromWei from '../utils/fromWei'
 import { wei } from '@synthetixio/wei'
@@ -17,7 +17,7 @@ import { calculatePercentageChange } from '../utils/utils'
 
 import { urls } from '../constants/urls'
 import axios from 'axios'
-import { Buyback } from '../types/inflation'; 
+import { Buyback } from '../types/buyback'; 
 
 export async function GetBuybackData() {
   try {

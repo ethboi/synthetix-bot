@@ -3,7 +3,7 @@
 import { Client, ActivityType } from 'discord.js';
 import { displayNumber } from '../utils/formatNumber';
 import { GetBuybackData } from '../actions/buyback'; 
-import { Buyback } from '../types/inflation'; 
+import { Buyback } from '../types/buyback'; 
 
 export async function SetUpDiscordBuyback(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async () => {
