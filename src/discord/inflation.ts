@@ -2,8 +2,8 @@
 // Import necessary libraries
 import { Client, ActivityType } from 'discord.js';
 import { displayNumber } from '../utils/formatNumber';
-import { GetBuybackData } from '../actions/buyback'; // Import the new function for fetching buyback data
-import { Buyback } from '../types/inflation'; // Import the new type for buyback data
+import { GetBuybackData } from '../actions/buyback'; 
+import { Buyback } from '../types/inflation'; 
 
 export async function SetUpDiscordBuyback(discordClient: Client, accessToken: string, frontEnd: string) {
   discordClient.on('ready', async () => {
@@ -19,33 +19,44 @@ export async function SetUpDiscordBuyback(discordClient: Client, accessToken: st
 
 export async function setNameActivityBuyback(client: Client, buyback: Buyback) {
   try {
-    const username = `${displayNumber(buyback.burnedSNX)} SNX`; 
-    const date = new Date(buyback.lastBurnEvent);
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    const monthIndex = date.getUTCMonth()
+    const weeklyBurnedSNX = await calculateWeeklyBurnedSNX();
+    const username = `${displayNumber(weeklyBurnedSNX)} SNX`; 
 
-    const monthName = monthIndex >= 0 && monthIndex < monthNames.length ? monthNames[monthIndex] : 'Unknown';
+    const now = new Date();
+    const previousWednesday = getPreviousWednesday(now);
+    const startDateString = previousWednesday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endDateString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    // If you want to show the timeframe uncomment below:
+    // const activity = `Weekly Wednessay Burn: ${startDateString} - ${endDateString}`;
+    const activity = `Weekly Burn`;
 
-    const day = date.getUTCDate()
-    const year = date.getUTCFullYear()
-
-    const dayStr = day < 10 ? '0' + day : '' + day
-    const shortDateStr = dayStr + ' ' + monthName.toUpperCase() + ' ' + year
-    const activity = `Burn: ${shortDateStr} `
-
-    console.log('BUYBACK')
-    console.log(username)
-    console.log(activity)
+    console.log('Weekly Buyback/Burn');
+    console.log(username);
+    console.log(activity);
 
     client.guilds.cache.map(
       async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
-    )
+    );
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,
-    })
+    });
   } catch (e: any) {
     console.log(e);
   }
+}
+
+async function calculateWeeklyBurnedSNX(): Promise<number> {
+  const buyback = await GetBuybackData();
+  return buyback.weeklyBurnedSNX;
+}
+
+function getPreviousWednesday(now: Date): Date {
+  const dayOfWeek = now.getDay();
+  const daysSincePreviousWednesday = (dayOfWeek + 7 - 3) % 7;
+  const previousWednesday = new Date(now);
+  previousWednesday.setDate(now.getDate() - daysSincePreviousWednesday);
+  previousWednesday.setHours(0, 0, 0, 0); // Set hours to midnight
+  return previousWednesday;
 }
 
 

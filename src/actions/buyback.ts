@@ -35,11 +35,13 @@ export async function GetBuybackData() {
 }
 
 function parseBuybackData(data: any[]): Buyback {
+  const weeklyBurnedSNX = calculateWeeklyBurnedSNX(data);
   const totalBurnedSNX = calculateTotalBurnedSNX(data);
+
   const latestEntry = data[data.length - 1];
   const burnedSNX = parseBurnedSNXData(latestEntry.data);
-  
   const burnedUSD = parseBurnedUSDData(latestEntry.data);
+
   const lastBurnEventTimestampHex = latestEntry.timeStamp;
   const lastBurnEventTimestampDecimal = parseInt(lastBurnEventTimestampHex, 16);
 
@@ -47,12 +49,34 @@ function parseBuybackData(data: any[]): Buyback {
   const lastBurnEventDate = new Date(lastBurnEventTimestampDecimal * 1000); // Multiply by 1000 to convert to milliseconds
   return {
     burnedSNX,
+    weeklyBurnedSNX,
     totalBurnedSNX,
     burnedUSD,
     lastBurnEvent: lastBurnEventDate.toISOString(), 
   };
 }
 
+// Calculate the weekly (wednesday to wednesday burned SNX)
+function calculateWeeklyBurnedSNX(data: any[]): number {
+  const now = moment();
+  const lastWednesday = now.clone().weekday(-3); // Get the last Wednesday
+
+  let weeklyBurnedSNX = 0;
+
+  for (const entry of data) {
+    const entryDate = moment.unix(parseInt(entry.timeStamp, 16));
+    // Check if the entry date is within the current week (from last Wednesday to this Wednesday)
+    if (entryDate.isSameOrAfter(lastWednesday) && entryDate.isBefore(now)) {
+      const burnedSNX = parseBurnedSNXData(entry.data);
+      weeklyBurnedSNX += burnedSNX;
+    }
+  }
+
+  console.log('weekly burned supply:');
+  console.log(weeklyBurnedSNX);
+
+  return weeklyBurnedSNX;
+}
 // Calculate total amount of burned SNX
 function calculateTotalBurnedSNX(data: any[]): number {
   let totalBurnedSNX = 0;
@@ -69,16 +93,13 @@ function calculateTotalBurnedSNX(data: any[]): number {
 
 //Calculate latest amount of burned SNX
 function parseBurnedSNXData(data: string): number {
-  
   const hexValue = data.slice(2, 66); 
   const SNXValue = parseInt(hexValue, 16);
-  // const formattedValue = parseFloat(`0.${SNXValue}`);
   const formattedValue=SNXValue/1e18;
   return formattedValue;
 }
 
 function parseBurnedUSDData(data: string): number {
-  
   const hexValue = data.slice(67, 130); 
   return parseInt(hexValue, 16);
 }
