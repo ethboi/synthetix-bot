@@ -8,10 +8,11 @@ import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
 import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
-import { GetInflation } from '../actions/inflation'
-import { setNameActivityInflation } from '../discord/inflation'
+import { GetBuybackData } from '../actions/buyback'
+// import { setNameActivityInflation } from '../discord/inflation'
 import { setNameActivityTraders } from '../discord/traders'
 import { setNameActivityTrades } from '../discord/trades'
+import { setNameActivityBuyback } from '../discord/buyback'
 
 export function FiveMinuteJob(
   discordClientVolume: Client,
@@ -119,10 +120,10 @@ export function OneMinuteJob(
 export function DailyJob(discordInflation: Client): void {
   scheduleJob('5,10 0 * * *', async () => {
     try {
-      console.log(`Getting Inflation: ${Date.now()}`)
-      const inf = await GetInflation()
+      console.log(`Getting Inflation old : ${Date.now()}`)
+      const inf = await GetBuybackData()
       if (inf) {
-        await setNameActivityInflation(discordInflation, inf)
+        await setNameActivityBuyback(discordInflation, inf)
       }
     } catch (e) {
       console.log(e)

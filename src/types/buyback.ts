@@ -1,4 +1,4 @@
-export type InflationData = {
+export type BuybackData = {
   status: string
   message: string
   result: Result[]
@@ -23,4 +23,13 @@ export type Inflation = {
   lastMintEvent: number
   numberOfWeeksIssued: number
   change: number
+}
+
+export type Buyback = {
+  burnedSNX: number;  
+  weeklyBurnedSNX: number;
+  totalBurnedSNX: number;      
+  lastBurnEvent: string;     
+  burnedUSD: number;            
+  
 }

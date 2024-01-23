@@ -7,7 +7,7 @@ import {
   DISCORD_ACCESS_TOKEN_ETH,
   DISCORD_ACCESS_TOKEN_ETHBTC,
   DISCORD_ACCESS_TOKEN_FEES,
-  DISCORD_ACCESS_TOKEN_INFLATION,
+  DISCORD_ACCESS_TOKEN_BUYBACK,
   DISCORD_ACCESS_TOKEN_KWENTA,
   DISCORD_ACCESS_TOKEN_LYRA,
   DISCORD_ACCESS_TOKEN_OI,
@@ -25,7 +25,7 @@ import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
 import { SetUpDiscordPrices } from './discord/prices'
-import { SetUpDiscordInflation } from './discord/inflation'
+import { SetUpDiscordBuyback } from './discord/buyback'
 import { SetUpDiscordTraders } from './discord/traders'
 import { SetUpDiscordTrades } from './discord/trades'
 
@@ -35,7 +35,7 @@ let discordFees: Client
 let discordOI: Client
 let discordEth: Client
 let discordBtc: Client
-let discordInflation: Client
+let discordBuyback: Client
 let discordTraders: Client
 let discordTrades: Client
 let discordLyra: Client
@@ -59,7 +59,7 @@ export async function Run(): Promise<void> {
         SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
-        SetUpDiscordInflation((discordInflation = DiscordClient()), DISCORD_ACCESS_TOKEN_INFLATION, FRONTEND),
+        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK, FRONTEND),//New Buyback Bot (Inflationbot offline)
         SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
         SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
         SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
@@ -70,7 +70,7 @@ export async function Run(): Promise<void> {
       ])
       FiveMinuteJob(discordVolume, discordFees, discordOI, discordTraders, discordTrades)
       OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc)
-      DailyJob(discordInflation)
+      DailyJob(discordBuyback)
     }
   } catch (error) {
     console.log(error)
