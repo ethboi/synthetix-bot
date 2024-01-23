@@ -16,20 +16,20 @@ async function Initialize(): Promise<void> {
 }
 
 async function Notifier(message: string, isDown = true) {
-  // await PostTelegram(`📘 Synthetix Bot ${isDown ? 'Down' : 'Up'} (${message}) \n`, new Telegraf(LOG_TOKEN), LOG_CHANNEL)
+  await PostTelegram(`📘 Synthetix Bot ${isDown ? 'Down' : 'Up'} (${message}) \n`, new Telegraf(LOG_TOKEN), LOG_CHANNEL)
 }
 
 function RegisterShutdownEvents(): void {
-  // process.on('uncaughtException', async (error) => {
-  //   console.error('Uncaught exception! Shutting down.')
-  //   await Notifier('Uncaught Exception')
-  //   await PostTelegram(`Error:\n\n ${error.message}`, new Telegraf(LOG_TOKEN), LOG_CHANNEL)
-  //   console.error(error)
-  // })
+  process.on('uncaughtException', async (error) => {
+    console.error('Uncaught exception! Shutting down.')
+    await Notifier('Uncaught Exception')
+    await PostTelegram(`Error:\n\n ${error.message}`, new Telegraf(LOG_TOKEN), LOG_CHANNEL)
+    console.error(error)
+  })
 
-  // process.on('beforeExit', async (code) => {
-  //   await Notifier('Before Exit').then(process.exit(code))
-  // })
+  process.on('beforeExit', async (code) => {
+    await Notifier('Before Exit').then(process.exit(code))
+  })
 }
 
 Initialize()

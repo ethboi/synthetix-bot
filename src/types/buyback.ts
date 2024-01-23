@@ -26,10 +26,9 @@ export type Inflation = {
 }
 
 export type Buyback = {
-  burnedSNX: number;  
-  weeklyBurnedSNX: number;
-  totalBurnedSNX: number;      
-  lastBurnEvent: string;     
-  burnedUSD: number;            
-  
+  burnedSNX: number
+  weeklyBurnedSNX: number
+  totalBurnedSNX: number
+  lastBurnEvent: string
+  burnedUSD: number
 }
