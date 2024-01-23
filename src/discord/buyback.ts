@@ -10,9 +10,7 @@ export async function SetUpDiscordBuyback(discordClient: Client, accessToken: st
     console.debug(`Discord Buyback/Burn bot is online!`);
     const buyback = await GetBuybackData();
     await setNameActivityBuyback(discordClient, buyback);
-    
   });
-
   await discordClient.login(accessToken);
   return discordClient;
 }
@@ -21,7 +19,6 @@ export async function setNameActivityBuyback(client: Client, buyback: Buyback) {
   try {
     const weeklyBurnedSNX = await calculateWeeklyBurnedSNX();
     const username = `${displayNumber(weeklyBurnedSNX)} SNX`; 
-
     const now = new Date();
     const previousWednesday = getPreviousWednesday(now);
     const startDateString = previousWednesday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });

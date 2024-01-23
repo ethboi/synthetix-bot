@@ -10,9 +10,9 @@ import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../consta
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetBuybackData } from '../actions/buyback'
 // import { setNameActivityInflation } from '../discord/inflation'
-import { setNameActivityBuyback } from '../discord/buyback'
 import { setNameActivityTraders } from '../discord/traders'
 import { setNameActivityTrades } from '../discord/trades'
+import { setNameActivityBuyback } from '../discord/buyback'
 
 export function FiveMinuteJob(
   discordClientVolume: Client,

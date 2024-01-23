@@ -1,19 +1,5 @@
-import { alchemyProvider } from '../utils/providers'
-import RpcClient from '../utils/rpcClient'
-import { PerpsV2MarketData__factory, SupplySchedule__factory } from '../contracts/typechain'
-import { PerpsV2FundingDataContractAddress } from '../constants/addresses'
-import printObject from '../utils/printObject'
-import { MarketSettings, MarketSummary } from '../types/markets'
-import { hexToAscii } from '../utils/formatString'
-import fromBigNumber from '../utils/fromBigNumber'
-import { ethers } from 'ethers'
-import EthDater from 'ethereum-block-by-date'
+
 import moment from 'moment'
-import { Inflation, Result, BuybackData } from '../types/buyback'
-import { SupplyMintedEvent } from '../contracts/typechain/SupplySchedule'
-import fromWei from '../utils/fromWei'
-import { wei } from '@synthetixio/wei'
-import { calculatePercentageChange } from '../utils/utils'
 
 import { urls } from '../constants/urls'
 import axios from 'axios'
@@ -60,7 +46,6 @@ function parseBuybackData(data: any[]): Buyback {
 function calculateWeeklyBurnedSNX(data: any[]): number {
   const now = moment();
   const lastWednesday = now.clone().weekday(-3); // Get the last Wednesday
-
   let weeklyBurnedSNX = 0;
 
   for (const entry of data) {
@@ -71,23 +56,15 @@ function calculateWeeklyBurnedSNX(data: any[]): number {
       weeklyBurnedSNX += burnedSNX;
     }
   }
-
-  console.log('weekly burned supply:');
-  console.log(weeklyBurnedSNX);
-
   return weeklyBurnedSNX;
 }
 // Calculate total amount of burned SNX
 function calculateTotalBurnedSNX(data: any[]): number {
   let totalBurnedSNX = 0;
-
   for (const entry of data) {
     const burnedSNX = parseBurnedSNXData(entry.data);
     totalBurnedSNX += burnedSNX;
   }
-  console.log('total burned supply:')
-  console.log(totalBurnedSNX);
-
   return totalBurnedSNX;
 }
 
