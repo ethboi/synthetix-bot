@@ -42,22 +42,39 @@ function parseBuybackData(data: any[]): Buyback {
   };
 }
 
-// Calculate the weekly (wednesday to wednesday burned SNX)
+// Calculate weekly amount of burned SNX
 function calculateWeeklyBurnedSNX(data: any[]): number {
-  const now = moment();
-  const lastWednesday = now.clone().weekday(-3); // Get the last Wednesday
+  const now = moment.utc(); // Use UTC if your timestamps are in UTC
+  let lastWednesday;
+
+  if (now.weekday() >= 3) {
+    // If today is Wednesday or later, last Wednesday is this week
+    lastWednesday = now.clone().startOf('week').add(3, 'days'); // Start of this week + 2 days to get to Wednesday
+    console.log('lastWednesday');
+    console.log(lastWednesday);
+  } else {
+    // If today is before Wednesday, last Wednesday was last week
+    lastWednesday = now.clone().subtract(1, 'week').startOf('week').add(3, 'days');
+    console.log('lastWednesday');
+    console.log(lastWednesday);
+  }
+
   let weeklyBurnedSNX = 0;
 
   for (const entry of data) {
-    const entryDate = moment.unix(parseInt(entry.timeStamp, 16));
+    const entryDate = moment.unix(parseInt(entry.timeStamp, 16)).utc(); // Use UTC if your timestamps are in UTC
     // Check if the entry date is within the current week (from last Wednesday to this Wednesday)
     if (entryDate.isSameOrAfter(lastWednesday) && entryDate.isBefore(now)) {
       const burnedSNX = parseBurnedSNXData(entry.data);
+      console.log('burnedSNX');
+      console.log(burnedSNX);
       weeklyBurnedSNX += burnedSNX;
     }
   }
   return weeklyBurnedSNX;
 }
+
+
 // Calculate total amount of burned SNX
 function calculateTotalBurnedSNX(data: any[]): number {
   let totalBurnedSNX = 0;
