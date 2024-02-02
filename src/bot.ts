@@ -20,7 +20,7 @@ import {
   TESTNET,
 } from './config'
 import { GetMarketDetails } from './actions'
-import { DailyJob, FiveMinuteJob, OneMinuteJob } from './schedule'
+import { SixMinuteJob, FiveMinuteJob, OneMinuteJob } from './schedule'
 import { SetUpDiscordVolume } from './discord/volume'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
@@ -70,7 +70,7 @@ export async function Run(): Promise<void> {
       ])
       FiveMinuteJob(discordVolume, discordFees, discordOI, discordTraders, discordTrades)
       OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc)
-      DailyJob(discordBuyback)
+      SixMinuteJob(discordBuyback)
     }
   } catch (error) {
     console.log(error)
