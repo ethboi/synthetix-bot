@@ -116,13 +116,14 @@ export function OneMinuteJob(
   })
 }
 
-export function DailyJob(discordInflation: Client): void {
-  scheduleJob('5,10 0 * * *', async () => {
+// Getting Buyback and Burn Data every 6 Minutes:
+export function SixMinuteJob(discordClientBuyback: Client): void {
+  scheduleJob('*/6 * * * *', async () => { // Updated the schedule to run every 6 minutes
     try {
-      console.log(`Getting Inflation old : ${Date.now()}`)
-      const inf = await GetBuybackData()
-      if (inf) {
-        await setNameActivityBuyback(discordInflation, inf)
+      console.log(`Getting Buyback/Burn every 6 minutes: ${Date.now}`)
+      const BBB = await GetBuybackData()
+      if (BBB) {
+        await setNameActivityBuyback(discordClientBuyback, BBB) 
       }
     } catch (e) {
       console.log(e)
