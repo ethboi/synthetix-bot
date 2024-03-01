@@ -41,3 +41,23 @@ export type kFutureStat = {
   trades?: kFuturesTrade[]
   position?: number
 }
+
+export type BuyBackResponse = {
+  status: string
+  message: string
+  result: BuyBackResult[] | string
+}
+
+export type BuyBackResult = {
+  address: string
+  topics: string[]
+  data: string
+  blockNumber: string
+  blockHash: string
+  timeStamp: string
+  gasPrice: string
+  gasUsed: string
+  logIndex: string
+  transactionHash: string
+  transactionIndex: string
+}

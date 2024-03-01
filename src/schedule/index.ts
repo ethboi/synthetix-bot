@@ -8,7 +8,6 @@ import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
 import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
-import { GetBuybackData } from '../actions/buyback'
 import { setNameActivityTraders } from '../discord/traders'
 import { setNameActivityTrades } from '../discord/trades'
 import { setNameActivityBuyback } from '../discord/buyback'
@@ -118,13 +117,11 @@ export function OneMinuteJob(
 
 // Getting Buyback and Burn Data every 6 Minutes:
 export function SixMinuteJob(discordClientBuyback: Client): void {
-  scheduleJob('*/6 * * * *', async () => { // Updated the schedule to run every 6 minutes
+  scheduleJob('*/6 * * * *', async () => {
+    // Updated the schedule to run every 6 minutes
     try {
       console.log(`Getting Buyback/Burn every 6 minutes: ${Date.now}`)
-      const BBB = await GetBuybackData()
-      if (BBB) {
-        await setNameActivityBuyback(discordClientBuyback, BBB) 
-      }
+      await setNameActivityBuyback(discordClientBuyback)
     } catch (e) {
       console.log(e)
     }
