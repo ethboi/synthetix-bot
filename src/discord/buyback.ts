@@ -15,7 +15,7 @@ export async function setNameActivityBuyback(client: Client) {
     const buyback = await GetBuybackData()
 
     if (buyback) {
-      const username = `${displayNumber(buyback.weeklyBurnedSNX)} / ${displayNumber(buyback.burnedSNX)} SNX`
+      const username = `${displayNumber(buyback.weeklyBurnedSNX)} / ${displayNumber(buyback.totalBurnedSNX)} SNX`
       //const now = new Date()
       // const previousWednesday = getPreviousWednesday(now)
       // const startDateString = previousWednesday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
