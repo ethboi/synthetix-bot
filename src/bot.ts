@@ -16,12 +16,16 @@ import {
   DISCORD_ACCESS_TOKEN_TRADERS,
   DISCORD_ACCESS_TOKEN_TRADES,
   DISCORD_ACCESS_TOKEN_VOLUME,
+  DISCORD_ACCESS_TOKEN_VOLUME_BASE,
+  DISCORD_ACCESS_TOKEN_VOLUME_COMBINED,
   FRONTEND,
   TESTNET,
 } from './config'
 import { GetMarketDetails } from './actions'
 import { SixMinuteJob, FiveMinuteJob, OneMinuteJob } from './schedule'
 import { SetUpDiscordVolume } from './discord/volume'
+import { SetUpDiscordVolumeBase } from './discord/volumeBase'
+import { SetUpDiscordVolumeCombined } from './discord/volumeCombined'
 import { SetUpDiscordFees } from './discord/fees'
 import { SetUpDiscordOpenInterest } from './discord/openInterest'
 import { SetUpDiscordPrices } from './discord/prices'
@@ -31,6 +35,8 @@ import { SetUpDiscordTrades } from './discord/trades'
 
 let discordClient: Client
 let discordVolume: Client
+let discordVolumeBase: Client
+let discordVolumeCombined: Client
 let discordFees: Client
 let discordOI: Client
 let discordEth: Client
@@ -55,11 +61,13 @@ export async function Run(): Promise<void> {
     if (!TESTNET) {
       await Promise.all([
         SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
+        SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE, FRONTEND),
+        SetUpDiscordVolumeCombined((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED, FRONTEND),
         SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
         SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
-        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
+        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK, FRONTEND), //New Buyback Bot (Inflationbot offline)
         SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
         SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
         SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
@@ -68,7 +76,7 @@ export async function Run(): Promise<void> {
         SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
         SetUpDiscordPrices((discordEthBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_ETHBTC, 'ethbtc'),
       ])
-      FiveMinuteJob(discordVolume, discordFees, discordOI, discordTraders, discordTrades)
+      FiveMinuteJob(discordVolume, discordVolumeBase, discordVolumeCombined, discordFees, discordOI, discordTraders, discordTrades)
       OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc)
       SixMinuteJob(discordBuyback)
     }
