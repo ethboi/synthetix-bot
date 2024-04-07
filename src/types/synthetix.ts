@@ -93,3 +93,7 @@ export type sDailyStat = {
   trades: number
   volume: number
 }
+
+export type baseDailyStat = {
+  volume: number
+}

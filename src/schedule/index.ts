@@ -2,18 +2,24 @@ import { Client } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
 import { getDailyStats } from '../actions/dailyStats'
 import { setNameActivityVolume } from '../discord/volume'
+import { setNameActivityVolumeBase } from '../discord/volumeBase'
+import { setNameActivityVolumeCombined } from '../discord/volumeCombined'
 import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
 import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
+import { GetBuybackData } from '../actions/buyback'
+// import { setNameActivityInflation } from '../discord/inflation'
 import { setNameActivityTraders } from '../discord/traders'
 import { setNameActivityTrades } from '../discord/trades'
 import { setNameActivityBuyback } from '../discord/buyback'
 
 export function FiveMinuteJob(
   discordClientVolume: Client,
+  discordClientVolumeBase: Client,
+  discordClientVolumeCombined: Client,
   discordClientFees: Client,
   discordClientOI: Client,
   discordClientTraders: Client,
@@ -29,6 +35,8 @@ export function FiveMinuteJob(
       if (dailyStats) {
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStats),
+          setNameActivityVolume(discordClientVolumeBase, dailyStats),
+          setNameActivityVolume(discordClientVolumeCombined, dailyStats),
           setNameActivityFees(discordClientFees, dailyStats),
           setNameActivityTraders(discordClientTraders, dailyStats),
           setNameActivityTrades(discordClientTrades, dailyStats),
@@ -117,13 +125,16 @@ export function OneMinuteJob(
 
 // Getting Buyback and Burn Data every 6 Minutes:
 export function SixMinuteJob(discordClientBuyback: Client): void {
-  scheduleJob('*/6 * * * *', async () => {
-    // Updated the schedule to run every 6 minutes
+  scheduleJob('*/6 * * * *', async () => { // Updated the schedule to run every 6 minutes
     try {
       console.log(`Getting Buyback/Burn every 6 minutes: ${Date.now}`)
-      await setNameActivityBuyback(discordClientBuyback)
+      const BBB = await GetBuybackData()
+      if (BBB) {
+        await setNameActivityBuyback(discordClientBuyback, BBB) 
+      }
     } catch (e) {
       console.log(e)
     }
   })
 }
+

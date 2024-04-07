@@ -6,6 +6,8 @@ dotenv.config({ path: '.env' })
 
 export const DISCORD_ACCESS_TOKEN = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN, '')
 export const DISCORD_ACCESS_TOKEN_VOLUME = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME, '')
+export const DISCORD_ACCESS_TOKEN_VOLUME_BASE = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME_BASE, '')
+export const DISCORD_ACCESS_TOKEN_VOLUME_COMBINED = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME_COMBINED, '')
 export const DISCORD_ACCESS_TOKEN_FEES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_FEES, '')
 export const DISCORD_ACCESS_TOKEN_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_OI, '')
 export const DISCORD_ACCESS_TOKEN_ETH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETH, '')
@@ -18,6 +20,9 @@ export const DISCORD_ACCESS_TOKEN_THALES = _.defaultTo(process.env.DISCORD_ACCES
 export const DISCORD_ACCESS_TOKEN_SNX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_SNX, '')
 export const DISCORD_ACCESS_TOKEN_KWENTA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_KWENTA, '')
 export const DISCORD_ACCESS_TOKEN_ETHBTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETHBTC, '')
+
+export const BASESCAN_API = _.defaultTo(process.env.BASESCAN_API, '')
+export const ALCHEMY_BASE_API_URL = _.defaultTo(process.env.ALCHEMY_BASE_API_URL, '')
 
 export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
 export const ALCHEMY_ID_MAINNET = _.defaultTo(process.env.ALCHEMY_ID_MAINNET, '')
