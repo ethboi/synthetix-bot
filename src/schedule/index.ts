@@ -35,8 +35,8 @@ export function FiveMinuteJob(
       if (dailyStats) {
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStats),
-          setNameActivityVolume(discordClientVolumeBase, dailyStats),
-          setNameActivityVolume(discordClientVolumeCombined, dailyStats),
+          setNameActivityVolumeBase(discordClientVolumeBase, dailyStats),
+          setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStats),
           setNameActivityFees(discordClientFees, dailyStats),
           setNameActivityTraders(discordClientTraders, dailyStats),
           setNameActivityTrades(discordClientTrades, dailyStats),
@@ -125,16 +125,16 @@ export function OneMinuteJob(
 
 // Getting Buyback and Burn Data every 6 Minutes:
 export function SixMinuteJob(discordClientBuyback: Client): void {
-  scheduleJob('*/6 * * * *', async () => { // Updated the schedule to run every 6 minutes
+  scheduleJob('*/6 * * * *', async () => {
+    // Updated the schedule to run every 6 minutes
     try {
       console.log(`Getting Buyback/Burn every 6 minutes: ${Date.now}`)
       const BBB = await GetBuybackData()
       if (BBB) {
-        await setNameActivityBuyback(discordClientBuyback, BBB) 
+        await setNameActivityBuyback(discordClientBuyback, BBB)
       }
     } catch (e) {
       console.log(e)
     }
   })
 }
-
