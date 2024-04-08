@@ -62,7 +62,11 @@ export async function Run(): Promise<void> {
       await Promise.all([
         SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
         SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE, FRONTEND),
-        SetUpDiscordVolumeCombined((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED, FRONTEND),
+        SetUpDiscordVolumeCombined(
+          (discordVolumeCombined = DiscordClient()),
+          DISCORD_ACCESS_TOKEN_VOLUME_COMBINED,
+          FRONTEND,
+        ),
         SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
         SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
@@ -76,7 +80,15 @@ export async function Run(): Promise<void> {
         SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
         SetUpDiscordPrices((discordEthBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_ETHBTC, 'ethbtc'),
       ])
-      FiveMinuteJob(discordVolume, discordVolumeBase, discordVolumeCombined, discordFees, discordOI, discordTraders, discordTrades)
+      FiveMinuteJob(
+        discordVolume,
+        discordVolumeBase,
+        discordVolumeCombined,
+        discordFees,
+        discordOI,
+        discordTraders,
+        discordTrades,
+      )
       OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc)
       SixMinuteJob(discordBuyback)
     }
