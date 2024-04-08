@@ -3,7 +3,7 @@ import { scheduleJob } from 'node-schedule'
 import { getDailyStats } from '../actions/dailyStats'
 import { setNameActivityVolume } from '../discord/volume'
 import { setNameActivityVolumeBase } from '../discord/volumeBase'
-import { setNameActivityVolumeCombined } from '../discord/volumeCombined'
+import { combineStats, setNameActivityVolumeCombined } from '../discord/volumeCombined'
 import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
@@ -15,6 +15,7 @@ import { GetBuybackData } from '../actions/buyback'
 import { setNameActivityTraders } from '../discord/traders'
 import { setNameActivityTrades } from '../discord/trades'
 import { setNameActivityBuyback } from '../discord/buyback'
+import { getDailyStatsBase } from '../actions/volumeBase'
 
 export function FiveMinuteJob(
   discordClientVolume: Client,
@@ -30,16 +31,17 @@ export function FiveMinuteJob(
 
     try {
       console.log(`Getting Volume & Fees: ${Date.now}`)
-      const dailyStats = await getDailyStats()
-
-      if (dailyStats) {
+      const dailyStatsOP = await getDailyStats()
+      const dailyStatsBase = await getDailyStatsBase()
+      const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase)
+      if (dailyStatsOP) {
         await Promise.all([
-          setNameActivityVolume(discordClientVolume, dailyStats),
-          setNameActivityVolumeBase(discordClientVolumeBase, dailyStats),
-          setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStats),
-          setNameActivityFees(discordClientFees, dailyStats),
-          setNameActivityTraders(discordClientTraders, dailyStats),
-          setNameActivityTrades(discordClientTrades, dailyStats),
+          setNameActivityVolume(discordClientVolume, dailyStatsOP),
+          setNameActivityVolumeBase(discordClientVolumeBase, dailyStatsBase),
+          setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStatsCombined),
+          setNameActivityFees(discordClientFees, dailyStatsOP),
+          setNameActivityTraders(discordClientTraders, dailyStatsOP),
+          setNameActivityTrades(discordClientTrades, dailyStatsOP),
         ])
       } else {
         console.log(`Stats not found.`)
