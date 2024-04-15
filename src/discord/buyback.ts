@@ -50,6 +50,7 @@ async function calculateWeeklyBurnedSNX(): Promise<number> {
 
 async function calculateTotalBurnedSNX(): Promise<number> {
   const totalBurnedSNX = await FetchTotalBurnedSNX();
+  console.log('######TOTAL',totalBurnedSNX)
   return totalBurnedSNX;
 }
 

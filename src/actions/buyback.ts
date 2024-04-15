@@ -11,26 +11,34 @@ export async function GetBuybackData() {
     const apiKey = BASESCAN_API;
     // OLD ADRESS: const url = `${urls.BASESCAN_API_URL}?module=logs&action=getLogs&fromBlock=1&toBlock=latest&topic0=0x840f6b22bacac5a7ec150e55e4101f796377c95c8b315bbfd6c943958d5a83f8&address=0x53f1e640c058337a12d036265681bc172e6fb962&apikey=${apiKey}`;
     const url = `${urls.BASESCAN_API_URL}?module=logs&action=getLogs&fromBlock=1&toBlock=latest&topic0=0x840f6b22bacac5a7ec150e55e4101f796377c95c8b315bbfd6c943958d5a83f8&address=0x632caa10a56343c5e6c0c066735840c096291b18&apikey=${apiKey}`;
-    
-    const response = await axios.get(url); // No headers needed for API key
-    
+    // console.log('url', url)
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+      }
+    });
     // console.log(response.data.result);
     const buybackData = parseBuybackData(response.data.result);
     
     // console.log(buybackData);
     return buybackData;
   } catch (error) {
-    console.error('Error fetching buyback data:', error);
+    console.error('Error fetching buyback data:');
     throw error;
   } 
 }
 
 export async function FetchTotalBurnedSNX() {
   try {
+    const apiKey = BASESCAN_API;
     const snxContractAddress = '0x22e6966B799c4D5B13BE962E1D117b56327FDa66'; //SNX contract address
     const accountAddress = '0x000000000000000000000000000000000000dead'; //Burn Adress
-    const url = `${urls.BASESCAN_API_URL}?module=account&action=tokenbalance&contractaddress=${snxContractAddress}&address=${accountAddress}&tag=latest&apikey=${BASESCAN_API}`;
-    const response = await axios.get(url); 
+    const url = `${urls.BASESCAN_API_URL}?module=account&action=tokenbalance&contractaddress=${snxContractAddress}&address=${accountAddress}&tag=latest&apikey=${apiKey}`;
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+      }
+    });
 
     // console.log('response data',response.data);  
     const totalBurnedSNX = parseInt(response.data.result) / 1e18; // Convert from wei to SNX
@@ -45,7 +53,7 @@ export async function FetchTotalBurnedSNX() {
 }
 async function parseBuybackData(data: any[]): Promise<Buyback> {
   const weeklyBurnedSNX = calculateWeeklyBurnedSNX(data);
-  // const totalBurnedSNX = await fetchTotalBurnedSNX(); // Await the async call
+  const totalBurnedSNX = Number(FetchTotalBurnedSNX());; // Await the async call
 
   const latestEntry = data[data.length - 1];
   const burnedSNX = parseBurnedSNXData(latestEntry.data);
@@ -58,7 +66,7 @@ async function parseBuybackData(data: any[]): Promise<Buyback> {
   return {
     burnedSNX,
     weeklyBurnedSNX,
-    // totalBurnedSNX, // Now including the awaited value
+    totalBurnedSNX, // Now including the awaited value
     burnedUSD,
     lastBurnEvent: lastBurnEventDate.toISOString(), 
   };
