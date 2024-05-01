@@ -28,29 +28,72 @@ export async function GetBuybackData() {
   } 
 }
 
-export async function FetchTotalBurnedSNX() {
-  try {
-    const apiKey = BASESCAN_API;
-    const snxContractAddress = '0x22e6966B799c4D5B13BE962E1D117b56327FDa66'; //SNX contract address
-    const accountAddress = '0x000000000000000000000000000000000000dead'; //Burn Adress
-    const url = `${urls.BASESCAN_API_URL}?module=account&action=tokenbalance&contractaddress=${snxContractAddress}&address=${accountAddress}&tag=latest&apikey=${apiKey}`;
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
-      }
-    });
+// export async function FetchTotalBurnedSNX() {
+//   try {
+//     const apiKey = BASESCAN_API;
+//     const snxContractAddress = '0x22e6966B799c4D5B13BE962E1D117b56327FDa66'; //SNX contract address
+//     const accountAddress = '0x000000000000000000000000000000000000dead'; //Burn Adress
+//     const url = `${urls.BASESCAN_API_URL}?module=account&action=tokenbalance&contractaddress=${snxContractAddress}&address=${accountAddress}&tag=latest&apikey=${apiKey}`;
+//     const response = await axios.get(url, {
+//       headers: {
+//         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+//       }
+//     });
 
-    // console.log('response data',response.data);  
-    const totalBurnedSNX = parseInt(response.data.result) / 1e18; // Convert from wei to SNX
+//     // console.log('response data',response.data);  
+//     const totalBurnedSNX = parseInt(response.data.result) / 1e18; // Convert from wei to SNX
 
-    // console.log(`Total Burned SNX: ${totalBurnedSNX}`);
+//     // console.log(`Total Burned SNX: ${totalBurnedSNX}`);
     
-    return totalBurnedSNX;
+//     return totalBurnedSNX;
+//   } catch (error) {
+//     console.error('Error fetching total burned SNX:', error);
+//     throw error;
+//   }
+// }
+
+export async function FetchTotalBurnedSNX() {
+  const apiKey = "t6wG2X84EFuaOD2MET30v-U7vjSkFmJ1";  
+  const baseURL = `https://base-mainnet.g.alchemy.com/v2/${apiKey}`;
+  
+  // SNX contract address 
+  const snxContractAddress = "0x22e6966B799c4D5B13BE962E1D117b56327FDa66";  
+  // The burn address where SNX are sent to be burned
+  const burnAddress = "0x000000000000000000000000000000000000dead";
+
+  const data = JSON.stringify({
+    "jsonrpc": "2.0",
+    "method": "alchemy_getTokenBalances",
+    "params": [burnAddress, [snxContractAddress]],
+    "id": 1
+  });
+
+  const config = {
+    method: 'post',
+    url: baseURL,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: data
+  };
+
+  try {
+    const response = await axios(config);
+    // console.log('response data:', response.data.result)
+    if (response.data.result && response.data.result.tokenBalances[0].tokenBalance) {
+      const burnedSNX = parseInt(response.data.result.tokenBalances[0].tokenBalance) / 1e18;
+      console.log(`Total Burned SNX: ${burnedSNX}`);
+      return burnedSNX;
+    } else {
+      console.error('Failed to fetch or no balance returned');
+    }
   } catch (error) {
-    console.error('Error fetching total burned SNX:', error);
-    throw error;
+    console.error('Error fetching burned SNX:', error);
+    throw error
   }
 }
+
+
 async function parseBuybackData(data: any[]): Promise<Buyback> {
   const weeklyBurnedSNX = calculateWeeklyBurnedSNX(data);
   const totalBurnedSNX = Number(FetchTotalBurnedSNX());; // Await the async call
