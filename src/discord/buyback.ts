@@ -50,7 +50,9 @@ async function calculateWeeklyBurnedSNX(): Promise<number> {
 
 async function calculateTotalBurnedSNX(): Promise<number> {
   const totalBurnedSNX = await FetchTotalBurnedSNX();
-  console.log('######TOTAL',totalBurnedSNX)
+  if (totalBurnedSNX === undefined) {
+    throw new Error("Failed to fetch total burned SNX");
+  }
   return totalBurnedSNX;
 }
 
