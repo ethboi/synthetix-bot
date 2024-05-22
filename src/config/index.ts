@@ -10,6 +10,8 @@ export const DISCORD_ACCESS_TOKEN_VOLUME_BASE = _.defaultTo(process.env.DISCORD_
 export const DISCORD_ACCESS_TOKEN_VOLUME_COMBINED = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME_COMBINED, '')
 export const DISCORD_ACCESS_TOKEN_FEES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_FEES, '')
 export const DISCORD_ACCESS_TOKEN_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_OI, '')
+export const DISCORD_ACCESS_TOKEN_BASE_FEES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BASE_FEES, '')
+export const DISCORD_ACCESS_TOKEN_BASE_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BASE_OI, '')
 export const DISCORD_ACCESS_TOKEN_ETH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETH, '')
 export const DISCORD_ACCESS_TOKEN_BTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BTC, '')
 export const DISCORD_ACCESS_TOKEN_BUYBACK = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BUYBACK, '') //New Buyback Bot (Inflationbot offline)
@@ -20,6 +22,8 @@ export const DISCORD_ACCESS_TOKEN_THALES = _.defaultTo(process.env.DISCORD_ACCES
 export const DISCORD_ACCESS_TOKEN_SNX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_SNX, '')
 export const DISCORD_ACCESS_TOKEN_KWENTA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_KWENTA, '')
 export const DISCORD_ACCESS_TOKEN_ETHBTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETHBTC, '')
+export const DISCORD_ACCESS_TOKEN_PYTH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_PYTH, '')
+export const DISCORD_ACCESS_TOKEN_TLX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_TLX, '')
 
 export const BASESCAN_API = _.defaultTo(process.env.BASESCAN_API, '')
 export const ALCHEMY_BASE_API_URL = _.defaultTo(process.env.ALCHEMY_BASE_API_URL, '')
