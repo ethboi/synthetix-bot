@@ -1,87 +1,49 @@
 import { ethers } from 'ethers';
 import { alchemyProviderBase } from '../utils/providerBase';
-import { MarketSummary } from '../types/markets';
 import contractData from '../contracts/abis/PerpsMarketProxy.json';
-import { getDailyStatsBase } from './volumeBase'; // Import the volume calculation function
+import EthDater from 'ethereum-block-by-date';
+import moment from 'moment';
 
 // Define the contract instance
 const contractAddress = contractData.address;
 const perpsMarketProxyABI = contractData.abi;
 const contract = new ethers.Contract(contractAddress, perpsMarketProxyABI, alchemyProviderBase);
 
-// Function to get the block number by timestamp
-async function getBlockByTimestamp(timestamp: number): Promise<number | null> {
-  const currentBlock = await alchemyProviderBase.getBlockNumber();
-  let minBlock = 0;
-  let maxBlock = currentBlock;
-
-  while (minBlock <= maxBlock) {
-    const midBlock = Math.floor((minBlock + maxBlock) / 2);
-    const block = await alchemyProviderBase.getBlock(midBlock);
-
-    if (!block) {
-      console.error(`Block ${midBlock} not found`);
-      return null;
-    }
-
-    if (block.timestamp < timestamp) {
-      minBlock = midBlock + 1;
-    } else {
-      maxBlock = midBlock - 1;
-    }
-  }
-
-  const finalBlock = await alchemyProviderBase.getBlock(minBlock);
-  if (!finalBlock) {
-    console.error(`Final block ${minBlock} not found`);
-    return null;
-  }
-
-  console.log(`Block found for timestamp ${timestamp}: ${finalBlock.number}`);
-  return finalBlock.number;
+async function getBlockByTimestamp(provider: ethers.providers.JsonRpcProvider, timestamp: number) {
+  const dater = new EthDater(provider);
+  const date = moment.unix(timestamp);
+  const blockResult = await dater.getDate(date, true, false);
+  return blockResult.block;
 }
 
-export async function GetMarketSummariesBase(prevDay?: number): Promise<MarketSummary[]> {
-  const marketKeys = [
-    "sETHPERP",
-    "sBTCPERP",
-    "sLINKPERP",
-    "sSOLPERP",
-    "sAVAXPERP",
-    "sAAVEPERP",
-    "sUNIPERP",
-    "sMATICPERP"
-  ];
-  const summaries: MarketSummary[] = [];
+export async function GetTotalOpenInterestBase(prev: boolean): Promise<number> {
+  let blockTag = undefined;
+  if (prev) {
+    const dayInSeconds = 86400; // One day in seconds
+    const timestamp = Math.floor(Date.now() / 1000) - dayInSeconds;
+    const fromBlock = await getBlockByTimestamp(alchemyProviderBase, timestamp);
+    blockTag = ethers.utils.hexValue(fromBlock);
+  }
 
-  // Fetch daily volume data
-  const dailyVolumes = await getDailyStatsBase();
-  const currentDailyVolumes = dailyVolumes[0];
-  const previousDailyVolumes = dailyVolumes[1];
+  // Fetch all market IDs
+  const marketIds = await contract.getMarkets();
 
-  for (const key of marketKeys) {
+  let totalOI = 0;
+
+  for (const marketId of marketIds) {
     try {
-      const summary = await contract.getMarketSummary(ethers.utils.formatBytes32String(key));
+      const summary = await contract.getMarketSummary(marketId, { blockTag });
 
-      summaries.push({
-        asset: key,
-        key: key,
-        market: key,
-        originalAsset: key,
-        maxLeverage: 10,  // Replace with actual max leverage if available
-        marketSize: parseFloat(ethers.utils.formatUnits(summary.size, 18)),
-        marketValue: parseFloat(ethers.utils.formatUnits(summary.size, 18)),
-        marketSkew: parseFloat(ethers.utils.formatUnits(summary.marketSkew, 18)),
-        marketDebt: parseFloat(ethers.utils.formatUnits(summary.marketDebt, 18)),
-        currentFundingRate: parseFloat(ethers.utils.formatUnits(summary.currentFundingRate, 18)),
-        currentFundingVelocity: parseFloat(ethers.utils.formatUnits(summary.currentFundingVelocity, 18)),
-        price: parseFloat(ethers.utils.formatUnits(summary.indexPrice, 18)),
-        settings: undefined,  // Replace with actual settings if available
-      });
+      const [, size, , , , indexPrice] = summary;
+
+      const marketSize = parseFloat(ethers.utils.formatUnits(size, 18));
+      const price = parseFloat(ethers.utils.formatUnits(indexPrice, 18));
+
+      totalOI += marketSize * price;
     } catch (error) {
-      console.error(`Error fetching summary for market ${key}:`, error);
+      console.error(`Error fetching summary for market ${marketId.toString()}:`, error);
     }
   }
 
-  return summaries;
+  return totalOI;
 }
