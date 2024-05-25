@@ -4,7 +4,7 @@ import { calculateDayPercentage, calculatePercentageChange } from '../utils/util
 import { getDailyStats } from '../actions/dailyStats'
 import { sDailyStat } from '../types/synthetix'
 
-export async function SetUpDiscordVolume(discordClient: Client, accessToken: string, frontEnd: string) {
+export async function SetUpDiscordVolume(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Volume bot is online!`)
     const dailyStats = await getDailyStats()
@@ -27,10 +27,6 @@ export async function setNameActivityVolume(client: Client, dailyStats: sDailySt
     const username = `$${displayNumber(today.volume)} VOL. OP`
     const activity = `Prev: $${displayNumber(prev.volume)}`
 
-    console.log('VOLUME')
-    console.log(username)
-    console.log(activity)
-
     client.guilds.cache.map(
       async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
     )
@@ -44,7 +40,6 @@ export async function setNameActivityVolume(client: Client, dailyStats: sDailySt
 
 function applyDayPercentageToFee(fee: number): number {
   const percentage = calculateDayPercentage()
-  //console.log(percentage)
   return fee * (percentage / 100)
 }
 

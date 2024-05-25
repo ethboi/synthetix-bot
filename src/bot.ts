@@ -13,8 +13,6 @@ import {
   DISCORD_ACCESS_TOKEN_OI,
   DISCORD_ACCESS_TOKEN_SNX,
   DISCORD_ACCESS_TOKEN_THALES,
-  DISCORD_ACCESS_TOKEN_TRADERS,
-  DISCORD_ACCESS_TOKEN_TRADES,
   DISCORD_ACCESS_TOKEN_VOLUME,
   DISCORD_ACCESS_TOKEN_VOLUME_BASE,
   DISCORD_ACCESS_TOKEN_VOLUME_COMBINED,
@@ -36,8 +34,6 @@ import { SetUpDiscordBaseFees } from './discord/feesBase'
 import { SetUpDiscordBaseOI } from './discord/openInterestBase'
 import { SetUpDiscordPrices } from './discord/prices'
 import { SetUpDiscordBuyback } from './discord/buyback'
-import { SetUpDiscordTraders } from './discord/traders'
-import { SetUpDiscordTrades } from './discord/trades'
 
 let discordClient: Client
 let discordVolume: Client
@@ -50,7 +46,6 @@ let discordBaseOI: Client
 let discordEth: Client
 let discordBtc: Client
 let discordBuyback: Client
-let discordTraders: Client
 let discordTrades: Client
 let discordLyra: Client
 let discordThales: Client
@@ -70,29 +65,23 @@ export async function Run(): Promise<void> {
 
     if (!TESTNET) {
       await Promise.all([
-        SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME, FRONTEND),
-        SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE, FRONTEND),
-        SetUpDiscordVolumeCombined(
-          (discordVolumeCombined = DiscordClient()),
-          DISCORD_ACCESS_TOKEN_VOLUME_COMBINED,
-          FRONTEND,
-        ),
-        SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES, FRONTEND),
-        SetUpDiscordBaseFees((discordBaseFees = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_FEES, FRONTEND),
-        SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI, FRONTEND),
-        SetUpDiscordBaseOI((discordBaseOI = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_OI, FRONTEND),
+        SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME),
+        SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE),
+        SetUpDiscordVolumeCombined((discordVolumeCombined = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED),
+        SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES),
+        SetUpDiscordBaseFees((discordBaseFees = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_FEES),
+        SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI),
+        SetUpDiscordBaseOI((discordBaseOI = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_OI),
+        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
-        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK, FRONTEND), //New Buyback Bot (Inflationbot offline)
-        SetUpDiscordTraders((discordTraders = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADERS, FRONTEND),
-        SetUpDiscordTrades((discordTrades = DiscordClient()), DISCORD_ACCESS_TOKEN_TRADES, FRONTEND),
         SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
         SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
         SetUpDiscordPrices((discordSNX = DiscordClient()), DISCORD_ACCESS_TOKEN_SNX, 'snx'),
         SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
         SetUpDiscordPrices((discordEthBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_ETHBTC, 'ethbtc'),
         SetUpDiscordPrices((discordTlx = DiscordClient()), DISCORD_ACCESS_TOKEN_TLX, 'tlx'),
-        SetUpDiscordPrices((discordPyth  = DiscordClient()), DISCORD_ACCESS_TOKEN_PYTH, 'pyth'),
+        SetUpDiscordPrices((discordPyth = DiscordClient()), DISCORD_ACCESS_TOKEN_PYTH, 'pyth'),
       ])
       FiveMinuteJob(
         discordVolume,
@@ -102,10 +91,18 @@ export async function Run(): Promise<void> {
         discordBaseFees,
         discordOI,
         discordBaseOI,
-        discordTraders,
-        discordTrades,
       )
-      OneMinuteJob(discordEth, discordBtc, discordLyra, discordThales, discordSNX, discordKwenta, discordEthBtc, discordTlx, discordPyth)
+      OneMinuteJob(
+        discordEth,
+        discordBtc,
+        discordLyra,
+        discordThales,
+        discordSNX,
+        discordKwenta,
+        discordEthBtc,
+        discordTlx,
+        discordPyth,
+      )
       SixMinuteJob(discordBuyback)
     }
   } catch (error) {

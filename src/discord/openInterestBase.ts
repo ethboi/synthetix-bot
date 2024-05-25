@@ -2,14 +2,11 @@ import { Client, ActivityType } from 'discord.js'
 import formatNumber, { displayNumber } from '../utils/formatNumber'
 import { GetOpenInterestBase } from '../actions/openInterestBase'
 
-export async function SetUpDiscordBaseOI(discordClient: Client, accessToken: string, frontEnd: string) {
+export async function SetUpDiscordBaseOI(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Base OI bot is online!`)
 
-    const [openInterestPrev, openInterest] = await Promise.all([
-      GetOpenInterestBase(true),
-      GetOpenInterestBase(false),
-    ])
+    const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterestBase(true), GetOpenInterestBase(false)])
 
     if (openInterest) {
       await setNameActivityBaseOI(discordClient, openInterestPrev, openInterest)
@@ -22,10 +19,10 @@ export async function SetUpDiscordBaseOI(discordClient: Client, accessToken: str
 
 export async function setNameActivityBaseOI(client: Client, openInterestPrev: number, openInterest: number) {
   try {
-    const username = `$${displayNumber(openInterest)} OI`;
-    const change = ((openInterest - openInterestPrev) / openInterestPrev) * 100;
-    const changeDirection = openInterest > openInterestPrev;
-    const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`;
+    const username = `$${displayNumber(openInterest)} OI`
+    const change = ((openInterest - openInterestPrev) / openInterestPrev) * 100
+    const changeDirection = openInterest > openInterestPrev
+    const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`
 
     console.log('BASE OI')
     console.log(username)

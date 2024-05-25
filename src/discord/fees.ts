@@ -3,7 +3,7 @@ import { displayNumber } from '../utils/formatNumber'
 import { getDailyStats } from '../actions/dailyStats'
 import { sDailyStat } from '../types/synthetix'
 
-export async function SetUpDiscordFees(discordClient: Client, accessToken: string, frontEnd: string) {
+export async function SetUpDiscordFees(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Fees bot is online!`)
     const dailyStats = await getDailyStats()
