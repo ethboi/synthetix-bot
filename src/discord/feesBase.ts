@@ -129,11 +129,16 @@ export async function SetUpDiscordBaseFees(discordClient: Client, accessToken: s
 // Function to set the bot's activity and nickname
 export async function setNameActivityBaseFees(client: Client, dailyStats: { day: Date, fees: number }[]) {
     try {
-        const today = dailyStats[0];
-        const prev = dailyStats[1];
-
-        const username = `$${displayNumber(today.fees)} BASE FEES`;
-        const activity = `Prev: $${displayNumber(prev.fees)}`;
+      const currentDate = new Date(dailyStats[0].day);
+      const daysToIncl = daysSinceLastWednesday(currentDate);
+  
+      const epochDays = dailyStats.slice(0, daysToIncl);
+      const epochFees = epochDays.reduce((accumulator, dailyStat) => {
+        return accumulator + dailyStat.fees;
+      }, 0);
+  
+      const username = `$${displayNumber(epochFees)} FEES`;
+      const activity = `24h: $${displayNumber(dailyStats[0].fees)}`;
 
         console.log('BASE FEES');
         console.log(username);
@@ -149,6 +154,13 @@ export async function setNameActivityBaseFees(client: Client, dailyStats: { day:
         console.log(e);
     }
 }
+
+function daysSinceLastWednesday(today: Date): number {
+  const dayOfWeek = today.getDay();  // 0 = Sunday, 3 = Wed, 6 = Sat
+  const diff = dayOfWeek < 3 ? dayOfWeek + 4 : dayOfWeek === 3 ? 7 : dayOfWeek - 3;
+  return diff;
+}
+
 
 (async () => {
     const dailyFees = await getDailyFeesBase();

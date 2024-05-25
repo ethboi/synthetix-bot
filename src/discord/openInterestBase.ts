@@ -1,5 +1,5 @@
 import { Client, ActivityType } from 'discord.js'
-import { displayNumber } from '../utils/formatNumber'
+import formatNumber, { displayNumber } from '../utils/formatNumber'
 import { GetOpenInterestBase } from '../actions/openInterestBase'
 
 export async function SetUpDiscordBaseOI(discordClient: Client, accessToken: string, frontEnd: string) {
@@ -22,8 +22,10 @@ export async function SetUpDiscordBaseOI(discordClient: Client, accessToken: str
 
 export async function setNameActivityBaseOI(client: Client, openInterestPrev: number, openInterest: number) {
   try {
-    const username = `OI: $${displayNumber(openInterest)}`
-    const activity = `Prev OI: $${displayNumber(openInterestPrev)}`
+    const username = `OI: $${displayNumber(openInterest)}`;
+    const change = ((openInterest - openInterestPrev) / openInterestPrev) * 100;
+    const changeDirection = openInterest > openInterestPrev;
+    const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`;
 
     console.log('BASE OI')
     console.log(username)

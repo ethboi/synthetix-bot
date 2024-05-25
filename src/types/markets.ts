@@ -17,4 +17,3 @@ export type MarketSummary = {
 export type MarketSettings = {
   skewScale: number
 }
-
