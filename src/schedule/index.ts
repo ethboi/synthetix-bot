@@ -40,13 +40,13 @@ export function FiveMinuteJob(
       const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase)
       if (dailyStatsOP) {
         await Promise.all([
-          // setNameActivityVolume(discordClientVolume, dailyStatsOP),
-          // setNameActivityVolumeBase(discordClientVolumeBase, dailyStatsBase),
-          // setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStatsCombined),
+          setNameActivityVolume(discordClientVolume, dailyStatsOP),
+          setNameActivityVolumeBase(discordClientVolumeBase, dailyStatsBase),
+          setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStatsCombined),
           setNameActivityFees(discordClientFees, dailyStatsOP),
           setNameActivityBaseFees(discordClientBaseFees, dailyFeesBase),
-          // setNameActivityTraders(discordClientTraders, dailyStatsOP),
-          // setNameActivityTrades(discordClientTrades, dailyStatsOP),
+          setNameActivityTraders(discordClientTraders, dailyStatsOP),
+          setNameActivityTrades(discordClientTrades, dailyStatsOP),
         ])
       } else {
         console.log(`Stats not found.`)
@@ -55,14 +55,14 @@ export function FiveMinuteJob(
       console.log(e)
     }
 
-    // // OPEN INTEREST
-    // try {
-    //   console.log(`Getting Open Interest:  ${Date.now}`)
-    //   const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
-    //   await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
-    // } catch (e) {
-    //   console.log(e)
-    // }
+    // OPEN INTEREST
+    try {
+      console.log(`Getting Open Interest:  ${Date.now}`)
+      const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
+      await setNameActivityOI(discordClientOI, openInterestPrev, openInterest)
+    } catch (e) {
+      console.log(e)
+    }
   })
 }
 
