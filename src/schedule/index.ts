@@ -22,8 +22,8 @@ export function FiveMinuteJob(
   discordClientVolumeBase: Client,
   discordClientVolumeCombined: Client,
   discordClientFees: Client,
-  discordClientOI: Client,
   discordClientBaseFees: Client,
+  discordClientOI: Client,
   discordClientBaseOI: Client,
 ): void {
   scheduleJob('*/5 * * * *', async () => {
