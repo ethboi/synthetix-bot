@@ -6,9 +6,8 @@ export async function PostTelegram(post: string, telegramClient: Telegraf, chann
     console.log(post)
   } else {
     try {
-      const response = await telegramClient.telegram.sendMessage(channel, post, {
+      await telegramClient.telegram.sendMessage(channel, post, {
         parse_mode: 'HTML',
-        disable_web_page_preview: true,
       })
     } catch (e: any) {
       console.log(e)

@@ -23,7 +23,7 @@ export async function GetMarketDetails() {
   })
 }
 
-export async function GetMarketSummaries(timestamp?: number | undefined) {
+export async function GetMarketSummaries(timestamp?: number | undefined): Promise<MarketSummary[]> {
   let blockTag = undefined
   const rpcClient = new RpcClient(alchemyProvider)
   if (timestamp) {
@@ -37,30 +37,32 @@ export async function GetMarketSummaries(timestamp?: number | undefined) {
   // Log the entire fundingRates array for debugging
   // console.log('Funding Rates:', JSON.stringify(fundingRates, null, 2))
 
-  const rates = fundingRates.map((x) => {
-    if (!x || !x.market || !x.asset || !x.key || !x.price || !x.marketSize) {
-      console.error('Missing data in market summary:', x)
-      return null
-    }
+  const rates = fundingRates
+    .map((x) => {
+      if (!x || !x.market || !x.asset || !x.key || !x.price || !x.marketSize) {
+        console.error('Missing data in market summary:', x)
+        return null
+      }
 
-    const marketSummary: MarketSummary = {
-      market: x.market,
-      originalAsset: hexToAscii(x.asset),
-      asset: ReplaceSynths(hexToAscii(x.asset)),
-      key: hexToAscii(x.key),
-      maxLeverage: fromBigNumber(x.maxLeverage),
-      price: fromBigNumber(x.price),
-      marketSize: fromBigNumber(x.marketSize),
-      marketSkew: fromBigNumber(x.marketSkew),
-      marketDebt: fromBigNumber(x.marketDebt),
-      currentFundingRate: fromBigNumber(x.currentFundingRate),
-      currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
-      marketValue: fromBigNumber(x.marketSize) * fromBigNumber(x.price),
-      settings: global.MARKET_SETTINGS[x.key],
-    }
+      const marketSummary: MarketSummary = {
+        market: x.market,
+        originalAsset: hexToAscii(x.asset),
+        asset: ReplaceSynths(hexToAscii(x.asset)),
+        key: hexToAscii(x.key),
+        maxLeverage: fromBigNumber(x.maxLeverage),
+        price: fromBigNumber(x.price),
+        marketSize: fromBigNumber(x.marketSize),
+        marketSkew: fromBigNumber(x.marketSkew),
+        marketDebt: fromBigNumber(x.marketDebt),
+        currentFundingRate: fromBigNumber(x.currentFundingRate),
+        currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
+        marketValue: fromBigNumber(x.marketSize) * fromBigNumber(x.price),
+        settings: global.MARKET_SETTINGS[x.key],
+      }
 
-    return marketSummary
-  }).filter((rate) => rate !== null)
+      return marketSummary
+    })
+    .filter((rate) => rate !== null) as MarketSummary[]
 
   const sorted = rates.sort((a, b) => {
     if (!a || !b) {
@@ -89,6 +91,6 @@ function ReplaceSynths(asset: string) {
 async function getBlockByTimestamp(provider: ethers.providers.JsonRpcProvider, timestamp: number) {
   const dater = new EthDater(provider)
   const date = moment.unix(timestamp)
-  const blockResult = await dater.getDate(date, true, false)
+  const blockResult = dater.getDate(date, true, false)
   return blockResult.block
 }
