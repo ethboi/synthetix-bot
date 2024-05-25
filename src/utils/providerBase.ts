@@ -1,18 +1,16 @@
 import { ethers } from 'ethers'
 import CachedStaticJsonRpcProvider from './CachedStaticJsonRpcProvider'
+import { ALCHEMY_BASE_API_URL } from '../config'
 
-const ALCHEMY_ID_BASE_OI = '1YR9YqriQcXSG81zIZz-3SKAblDA8QL4'
-export const alchemyProviderBase = new ethers.providers.JsonRpcProvider(
-  `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_ID_BASE_OI}`,
-)
+export const alchemyProviderBase = new ethers.providers.JsonRpcProvider(ALCHEMY_BASE_API_URL)
 
 export const BASE_NETWORK_CONFIG = {
   name: 'Base',
   shortName: 'Base',
   chainId: 8453,
   network: 'base',
-  walletRpcUrl: `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_ID_BASE_OI}`,
-  readRpcUrls: [`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_ID_BASE_OI}`],
+  walletRpcUrl: ALCHEMY_BASE_API_URL,
+  readRpcUrls: [ALCHEMY_BASE_API_URL],
   blockExplorerUrl: 'https://basescan.org/',
   iconUrls: [],
 }
