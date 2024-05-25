@@ -22,7 +22,7 @@ export async function SetUpDiscordBaseOI(discordClient: Client, accessToken: str
 
 export async function setNameActivityBaseOI(client: Client, openInterestPrev: number, openInterest: number) {
   try {
-    const username = `OI: $${displayNumber(openInterest)}`;
+    const username = `$${displayNumber(openInterest)} OI`;
     const change = ((openInterest - openInterestPrev) / openInterestPrev) * 100;
     const changeDirection = openInterest > openInterestPrev;
     const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`;
