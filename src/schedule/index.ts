@@ -8,7 +8,7 @@ import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
-import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, PYTH_OP, SNX_OP, THALES_OP, TLX_OP } from '../constants/addresses'
+import { BTC_OP, ETH_OP, KWENTA_OP, PYTH_OP, SNX_OP, THALES_OP, TLX_OP } from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetBuybackData } from '../actions/buyback'
 import { setNameActivityBuyback } from '../discord/buyback'
@@ -70,7 +70,6 @@ export function FiveMinuteJob(
 export function OneMinuteJob(
   discordClientEth: Client,
   discordClientBtc: Client,
-  discordLyra: Client,
   discordThales: Client,
   discordSNX: Client,
   discordKwenta: Client,
@@ -94,13 +93,6 @@ export function OneMinuteJob(
       if (btcPair) {
         console.log(btcPair.priceUsd)
         await setNameActivityPrice(discordClientBtc, btcPair, 'btc')
-      }
-
-      //LYRA
-      const lyraPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == LYRA_OP.toLowerCase())
-      if (lyraPair) {
-        console.log(lyraPair.priceUsd)
-        await setNameActivityPrice(discordLyra, lyraPair, 'lyra')
       }
 
       //THALES

@@ -15,7 +15,6 @@ export const DISCORD_ACCESS_TOKEN_BASE_OI = _.defaultTo(process.env.DISCORD_ACCE
 export const DISCORD_ACCESS_TOKEN_ETH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETH, '')
 export const DISCORD_ACCESS_TOKEN_BTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BTC, '')
 export const DISCORD_ACCESS_TOKEN_BUYBACK = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BUYBACK, '') //New Buyback Bot (Inflationbot offline)
-export const DISCORD_ACCESS_TOKEN_LYRA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_LYRA, '')
 export const DISCORD_ACCESS_TOKEN_THALES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_THALES, '')
 export const DISCORD_ACCESS_TOKEN_SNX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_SNX, '')
 export const DISCORD_ACCESS_TOKEN_KWENTA = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_KWENTA, '')

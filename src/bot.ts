@@ -9,7 +9,6 @@ import {
   DISCORD_ACCESS_TOKEN_FEES,
   DISCORD_ACCESS_TOKEN_BUYBACK,
   DISCORD_ACCESS_TOKEN_KWENTA,
-  DISCORD_ACCESS_TOKEN_LYRA,
   DISCORD_ACCESS_TOKEN_OI,
   DISCORD_ACCESS_TOKEN_SNX,
   DISCORD_ACCESS_TOKEN_THALES,
@@ -46,8 +45,6 @@ let discordBaseOI: Client
 let discordEth: Client
 let discordBtc: Client
 let discordBuyback: Client
-let discordTrades: Client
-let discordLyra: Client
 let discordThales: Client
 let discordSNX: Client
 let discordKwenta: Client
@@ -75,7 +72,6 @@ export async function Run(): Promise<void> {
         SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
-        SetUpDiscordPrices((discordLyra = DiscordClient()), DISCORD_ACCESS_TOKEN_LYRA, 'lyra'),
         SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
         SetUpDiscordPrices((discordSNX = DiscordClient()), DISCORD_ACCESS_TOKEN_SNX, 'snx'),
         SetUpDiscordPrices((discordKwenta = DiscordClient()), DISCORD_ACCESS_TOKEN_KWENTA, 'kwenta'),
@@ -95,7 +91,6 @@ export async function Run(): Promise<void> {
       OneMinuteJob(
         discordEth,
         discordBtc,
-        discordLyra,
         discordThales,
         discordSNX,
         discordKwenta,
