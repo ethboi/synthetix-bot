@@ -7,3 +7,4 @@ launch.json
 deploy-commands.js
 dist/
 build/
+.DS_Store

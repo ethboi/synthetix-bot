@@ -8,14 +8,14 @@ import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
-import { BTC_OP, ETH_OP, KWENTA_OP, LYRA_OP, SNX_OP, THALES_OP } from '../constants/addresses'
+import { BTC_OP, ETH_OP, KWENTA_OP, PYTH_OP, SNX_OP, THALES_OP, TLX_OP } from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetBuybackData } from '../actions/buyback'
-// import { setNameActivityInflation } from '../discord/inflation'
-import { setNameActivityTraders } from '../discord/traders'
-import { setNameActivityTrades } from '../discord/trades'
 import { setNameActivityBuyback } from '../discord/buyback'
 import { getDailyStatsBase } from '../actions/volumeBase'
+import { getDailyFeesBase, setNameActivityBaseFees } from '../discord/feesBase'
+import { GetOpenInterestBase } from '../actions/openInterestBase'
+import { setNameActivityBaseOI } from '../discord/openInterestBase'
 
 export function FiveMinuteJob(
   discordClientVolume: Client,
@@ -23,8 +23,8 @@ export function FiveMinuteJob(
   discordClientVolumeCombined: Client,
   discordClientFees: Client,
   discordClientOI: Client,
-  discordClientTraders: Client,
-  discordClientTrades: Client,
+  discordClientBaseFees: Client,
+  discordClientBaseOI: Client,
 ): void {
   scheduleJob('*/5 * * * *', async () => {
     console.log('STATS (FEES / VOLUME) job running')
@@ -33,15 +33,21 @@ export function FiveMinuteJob(
       console.log(`Getting Volume & Fees: ${Date.now}`)
       const dailyStatsOP = await getDailyStats()
       const dailyStatsBase = await getDailyStatsBase()
+      const dailyFeesBase = await getDailyFeesBase()
       const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase)
+      const [openInterestPrev, openInterest] = await Promise.all([
+        GetOpenInterestBase(true),
+        GetOpenInterestBase(false),
+      ])
+
       if (dailyStatsOP) {
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStatsOP),
           setNameActivityVolumeBase(discordClientVolumeBase, dailyStatsBase),
           setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStatsCombined),
           setNameActivityFees(discordClientFees, dailyStatsOP),
-          setNameActivityTraders(discordClientTraders, dailyStatsOP),
-          setNameActivityTrades(discordClientTrades, dailyStatsOP),
+          setNameActivityBaseFees(discordClientBaseFees, dailyFeesBase),
+          setNameActivityBaseOI(discordClientBaseOI, openInterestPrev, openInterest),
         ])
       } else {
         console.log(`Stats not found.`)
@@ -64,11 +70,12 @@ export function FiveMinuteJob(
 export function OneMinuteJob(
   discordClientEth: Client,
   discordClientBtc: Client,
-  discordLyra: Client,
   discordThales: Client,
   discordSNX: Client,
   discordKwenta: Client,
   discordEthBtc: Client,
+  discordTlx: Client,
+  discordPyth: Client,
 ): void {
   scheduleJob('*/1 * * * *', async () => {
     try {
@@ -86,13 +93,6 @@ export function OneMinuteJob(
       if (btcPair) {
         console.log(btcPair.priceUsd)
         await setNameActivityPrice(discordClientBtc, btcPair, 'btc')
-      }
-
-      //LYRA
-      const lyraPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == LYRA_OP.toLowerCase())
-      if (lyraPair) {
-        console.log(lyraPair.priceUsd)
-        await setNameActivityPrice(discordLyra, lyraPair, 'lyra')
       }
 
       //THALES
@@ -116,6 +116,20 @@ export function OneMinuteJob(
         await setNameActivityPrice(discordKwenta, kwentaPair, 'kwenta')
       }
 
+      //TLX
+      const tlxPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == TLX_OP.toLowerCase())
+      if (tlxPair) {
+        console.log(tlxPair.priceUsd)
+        await setNameActivityPrice(discordTlx, tlxPair, 'tlx')
+      }
+
+      //PYTH
+      const pythPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == PYTH_OP.toLowerCase())
+      if (pythPair) {
+        console.log(pythPair.priceUsd)
+        await setNameActivityPrice(discordPyth, pythPair, 'pyth')
+      }
+
       if (ethPair && btcPair) {
         await setNameActivityRatio(discordEthBtc, ethPair, btcPair)
       }
@@ -125,10 +139,8 @@ export function OneMinuteJob(
   })
 }
 
-// Getting Buyback and Burn Data every 6 Minutes:
 export function SixMinuteJob(discordClientBuyback: Client): void {
   scheduleJob('*/6 * * * *', async () => {
-    // Updated the schedule to run every 6 minutes
     try {
       console.log(`Getting Buyback/Burn every 6 minutes: ${Date.now}`)
       const BBB = await GetBuybackData()

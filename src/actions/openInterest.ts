@@ -7,9 +7,9 @@ export async function GetOpenInterest(prev: boolean) {
 
   if (prev) {
     const prevDay = Math.floor((Date.now() - day) / 1000)
-    markets = await GetMarketSummaries(prevDay)
+    markets = (await GetMarketSummaries(prevDay)).filter((market): market is MarketSummary => market !== null)
   } else {
-    markets = await GetMarketSummaries()
+    markets = (await GetMarketSummaries()).filter((market): market is MarketSummary => market !== null)
   }
 
   const openInterest = markets.reduce((accumulator, market) => {

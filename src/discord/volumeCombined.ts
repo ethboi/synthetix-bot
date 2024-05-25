@@ -1,17 +1,15 @@
 import { Client, ActivityType } from 'discord.js'
-import formatNumber, { displayNumber } from '../utils/formatNumber'
+import { displayNumber } from '../utils/formatNumber'
 import { getDailyStatsBase } from '../actions/volumeBase' // Adjust the import path as necessary
 import { getDailyStats } from '../actions/dailyStats' // Adjust the import path as necessary
 import { sDailyStat } from '../types/synthetix'
 
-export async function SetUpDiscordVolumeCombined(discordClient: Client, accessToken: string, frontEnd: string) {
+export async function SetUpDiscordVolumeCombined(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Combined Volume bot is online!`)
 
-    // Fetch daily stats from both OP and Base
     const dailyStatsBase = await getDailyStatsBase()
     const dailyStatsOP = await getDailyStats()
-
     const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase)
 
     if (dailyStatsCombined) {
@@ -64,5 +62,3 @@ export async function setNameActivityVolumeCombined(client: Client, dailyStats: 
     console.log(e)
   }
 }
-
-// The rest of the functions like applyDayPercentageToFee remain the same
