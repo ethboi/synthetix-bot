@@ -1,17 +1,16 @@
-import { alchemyProvider } from '../utils/providers'
-import RpcClient from '../utils/rpcClient'
+import { providerOP } from '../utils/providers'
 import { PerpsV2MarketData__factory } from '../contracts/typechain'
-import { PerpsV2FundingDataContractAddress } from '../constants/addresses'
+import { PerpsV2MarketDataOP } from '../constants/addresses'
 import { MarketSettings, MarketSummary } from '../types/markets'
 import { hexToAscii } from '../utils/formatString'
 import fromBigNumber from '../utils/fromBigNumber'
 import { ethers } from 'ethers'
 import EthDater from 'ethereum-block-by-date'
 import moment from 'moment'
+import printObject from '../utils/printObject'
 
 export async function GetMarketDetails() {
-  const rpcClient = new RpcClient(alchemyProvider)
-  const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
+  const contract = PerpsV2MarketData__factory.connect(PerpsV2MarketDataOP, providerOP)
   const markets = await contract.allProxiedMarketSummaries()
 
   markets.map(async (x) => {
@@ -25,17 +24,14 @@ export async function GetMarketDetails() {
 
 export async function GetMarketSummaries(timestamp?: number | undefined): Promise<MarketSummary[]> {
   let blockTag = undefined
-  const rpcClient = new RpcClient(alchemyProvider)
+
   if (timestamp) {
-    const fromBlock = await getBlockByTimestamp(rpcClient.provider, timestamp)
+    const fromBlock = await getBlockByTimestamp(providerOP, timestamp)
     blockTag = ethers.utils.hexValue(fromBlock)
   }
 
-  const contract = PerpsV2MarketData__factory.connect(PerpsV2FundingDataContractAddress, rpcClient.provider)
+  const contract = PerpsV2MarketData__factory.connect(PerpsV2MarketDataOP, providerOP)
   const fundingRates = await contract.allProxiedMarketSummaries({ blockTag: blockTag })
-
-  // Log the entire fundingRates array for debugging
-  // console.log('Funding Rates:', JSON.stringify(fundingRates, null, 2))
 
   const rates = fundingRates
     .map((x) => {
@@ -91,6 +87,12 @@ function ReplaceSynths(asset: string) {
 async function getBlockByTimestamp(provider: ethers.providers.JsonRpcProvider, timestamp: number) {
   const dater = new EthDater(provider)
   const date = moment.unix(timestamp)
-  const blockResult = dater.getDate(date, true, false)
-  return blockResult.block
+
+  try {
+    const blockResult = await dater.getDate(date, true, false)
+    return blockResult.block
+  } catch (error) {
+    console.error('Error fetching block by timestamp:', error)
+    throw error
+  }
 }

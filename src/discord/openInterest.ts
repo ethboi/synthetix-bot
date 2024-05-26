@@ -4,7 +4,7 @@ import { GetOpenInterest } from '../actions/openInterest'
 import { calculatePercentageChange } from '../utils/utils'
 
 export async function SetUpDiscordOpenInterest(discordClient: Client, accessToken: string) {
-  discordClient.on('ready', async (client) => {
+  discordClient.on('ready', async () => {
     console.debug(`Discord Open Interest bot is online!`)
     const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
     await setNameActivityOI(discordClient, openInterestPrev, openInterest)

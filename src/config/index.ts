@@ -24,9 +24,8 @@ export const DISCORD_ACCESS_TOKEN_TLX = _.defaultTo(process.env.DISCORD_ACCESS_T
 
 export const BASESCAN_API = _.defaultTo(process.env.BASESCAN_API, '')
 export const ALCHEMY_BASE_API_URL = _.defaultTo(process.env.ALCHEMY_BASE_API_URL, '')
-
-export const ALCHEMY_ID = _.defaultTo(process.env.ALCHEMY_ID, '')
-export const ALCHEMY_ID_MAINNET = _.defaultTo(process.env.ALCHEMY_ID_MAINNET, '')
+export const ALCHEMY_OP_API_URL = _.defaultTo(process.env.ALCHEMY_OP_API_URL, '')
+export const ALCHEMY_MAINNET_API_URL = _.defaultTo(process.env.ALCHEMY_MAINNET_API_URL, '')
 
 export const TWITTER_ENABLED: boolean = _.defaultTo(
   convertToBoolean(process.env.TWITTER_ENABLED as string),

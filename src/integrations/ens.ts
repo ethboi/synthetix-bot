@@ -1,11 +1,9 @@
-import { alchemyProviderMainnet } from '../utils/providers'
-import RpcClient from '../utils/rpcClient'
+import { providerMainnet } from '../utils/providers'
 
 export async function GetEns(account: string | undefined): Promise<string> {
   if (account == undefined) {
     return ''
   }
-  const rpcClient = new RpcClient(alchemyProviderMainnet)
 
   console.debug(`Getting ens for ${account}`)
   const found = global.ENS[account.toLowerCase()]
@@ -15,7 +13,7 @@ export async function GetEns(account: string | undefined): Promise<string> {
     return found
   }
 
-  const ens = await rpcClient.provider.lookupAddress(account)
+  const ens = await providerMainnet.lookupAddress(account)
 
   if (ens) {
     global.ENS[account] = ens
@@ -30,12 +28,8 @@ export async function ResolveEns(ens: string | undefined): Promise<string> {
   if (ens == undefined || ens == '') {
     return ''
   }
-  const mainnet = new RpcClient(alchemyProviderMainnet)
-  console.log(mainnet.provider)
 
-  console.debug(`Getting account for ${ens}`)
-
-  const account = await mainnet.provider.resolveName(ens.toLowerCase())
+  const account = await providerMainnet.resolveName(ens.toLowerCase())
 
   if (account) {
     console.log(`Address found for ENS ${ens}: ${account}`)
