@@ -135,7 +135,7 @@ export function OneMinuteJob(
       const lernPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == LERN_OP.toLowerCase())
       if (lernPair) {
         console.log(lernPair.priceUsd)
-        await setNameActivityPrice(discordLern, lernPair, '2192')
+        await setNameActivityPrice(discordLern, lernPair, '2192', 4)
       }
       const zorkPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ZORK_OP.toLowerCase())
       if (zorkPair) {
