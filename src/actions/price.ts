@@ -1,20 +1,23 @@
 import axios from 'axios'
-import { ETH_OP, BTC_OP, THALES_OP, KWENTA_OP, SNX_OP, TLX_OP, PYTH_OP } from '../constants/addresses'
+import { ETH_OP, BTC_OP, THALES_OP, KWENTA_OP, SNX_OP, TLX_OP, PYTH_OP, ZORK_OP, LERN_OP } from '../constants/addresses'
 import { urls } from '../constants/urls'
 import { Dexscreener, Pair } from '../types/dexscreener'
 
 export async function GetPrices() {
   const pairs: Pair[] = []
 
-  const [pairsEth, pairsBtc, pairsThales, pairsSNX, pairsKwenta, pairsTLX, pairsPYTH] = await Promise.all([
-    axios.get(`${urls.dexscreenerUrl}${ETH_OP}`),
-    axios.get(`${urls.dexscreenerUrl}${BTC_OP}`),
-    axios.get(`${urls.dexscreenerUrl}${THALES_OP}`),
-    axios.get(`${urls.dexscreenerUrl}${SNX_OP}`),
-    axios.get(`${urls.dexscreenerUrl}${KWENTA_OP}`),
-    axios.get(`${urls.dexscreenerUrl}${TLX_OP}`),
-    axios.get(`${urls.dexscreenerUrl}${PYTH_OP}`),
-  ])
+  const [pairsEth, pairsBtc, pairsThales, pairsSNX, pairsKwenta, pairsTLX, pairsPYTH, pairsLERN, pairsZORK] =
+    await Promise.all([
+      axios.get(`${urls.dexscreenerUrl}${ETH_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${BTC_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${THALES_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${SNX_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${KWENTA_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${TLX_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${PYTH_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${LERN_OP}`),
+      axios.get(`${urls.dexscreenerUrl}${ZORK_OP}`),
+    ])
 
   const dexEth = pairsEth?.data as Dexscreener
   const dexBtc = pairsBtc?.data as Dexscreener
@@ -23,6 +26,8 @@ export async function GetPrices() {
   const dexKwenta = pairsKwenta?.data as Dexscreener
   const dexTLX = pairsTLX?.data as Dexscreener
   const dexPYTH = pairsPYTH?.data as Dexscreener
+  const dexLERN = pairsLERN?.data as Dexscreener
+  const dexZORK = pairsZORK?.data as Dexscreener
 
   try {
     const pairEth = dexEth.pairs.find((pair) => pair.baseToken.address.toLowerCase() == ETH_OP.toLowerCase())
@@ -58,6 +63,16 @@ export async function GetPrices() {
     const pairPYTH = dexPYTH.pairs.find((pair) => pair.baseToken.address.toLowerCase() == PYTH_OP.toLowerCase())
     if (pairPYTH) {
       pairs.push(pairPYTH)
+    }
+
+    const pairLERN = dexLERN.pairs.find((pair) => pair.baseToken.address.toLowerCase() == LERN_OP.toLowerCase())
+    if (pairLERN) {
+      pairs.push(pairLERN)
+    }
+
+    const pairZORK = dexZORK.pairs.find((pair) => pair.baseToken.address.toLowerCase() == ZORK_OP.toLowerCase())
+    if (pairZORK) {
+      pairs.push(pairZORK)
     }
   } catch (error) {
     console.log(error)

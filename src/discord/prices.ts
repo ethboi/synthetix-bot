@@ -1,13 +1,15 @@
 import { Client, ActivityType } from 'discord.js'
-import formatNumber from '../utils/formatNumber'
+import formatNumber, { displayNumber } from '../utils/formatNumber'
 import { GetPrices } from '../actions/price'
 import { Pair } from '../types/dexscreener'
-import { BTC_OP, ETH_OP, KWENTA_OP, SNX_OP, THALES_OP, TLX_OP, PYTH_OP } from '../constants/addresses'
+import { BTC_OP, ETH_OP, KWENTA_OP, SNX_OP, THALES_OP, TLX_OP, PYTH_OP, LERN_OP, ZORK_OP } from '../constants/addresses'
 
 export async function SetUpDiscordPrices(discordClient: Client, accessToken: string, market: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord PRICE ${market} bot is online!`)
     const pairs = await GetPrices()
+    let dps = 2
+
     let address = ''
 
     if (market == 'eth') {
@@ -31,6 +33,13 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
     if (market == 'pyth') {
       address = PYTH_OP.toLowerCase()
     }
+    if (market == 'zork') {
+      address = ZORK_OP.toLowerCase()
+    }
+    if (market == '2192') {
+      address = LERN_OP.toLowerCase()
+      dps = 4
+    }
 
     if (market == 'ethbtc') {
       const ethPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ETH_OP.toLowerCase())
@@ -45,7 +54,7 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
     if (address) {
       const marketPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == address)
       if (marketPair) {
-        await setNameActivityPrice(discordClient, marketPair, market)
+        await setNameActivityPrice(discordClient, marketPair, market, dps)
       } else {
         console.error(`Market pair not found for address: ${address}`)
       }
@@ -58,11 +67,15 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
   return discordClient
 }
 
-export async function setNameActivityPrice(client: Client, pair: Pair, market: string) {
+export async function setNameActivityPrice(client: Client, pair: Pair, market: string, dps = 2) {
   try {
-    const username = `${market.toUpperCase()} $${formatNumber(Number(pair.priceUsd), { dps: 2 })} (${
-      Number(pair.priceChange.h24) >= 0 ? '↗' : '↘'
-    })`
+    let price = formatNumber(Number(pair.priceUsd), { dps: dps })
+
+    if (market == 'zork') {
+      price = displayNumber(Number(pair.priceUsd))
+    }
+
+    const username = `${market.toUpperCase()} $${price} (${Number(pair.priceChange.h24) >= 0 ? '↗' : '↘'})`
     const activity = `24h: ${formatNumber(Number(pair.priceChange.h24), { dps: 2, showSign: true })}%`
 
     client.guilds.cache.map(

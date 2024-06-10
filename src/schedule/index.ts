@@ -8,7 +8,7 @@ import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
-import { BTC_OP, ETH_OP, KWENTA_OP, PYTH_OP, SNX_OP, THALES_OP, TLX_OP } from '../constants/addresses'
+import { BTC_OP, ETH_OP, KWENTA_OP, LERN_OP, PYTH_OP, SNX_OP, THALES_OP, TLX_OP, ZORK_OP } from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetBuybackData } from '../actions/buyback'
 import { setNameActivityBuyback } from '../discord/buyback'
@@ -76,6 +76,8 @@ export function OneMinuteJob(
   discordEthBtc: Client,
   discordTlx: Client,
   discordPyth: Client,
+  discordLern: Client,
+  discordZork: Client,
 ): void {
   scheduleJob('*/1 * * * *', async () => {
     try {
@@ -128,6 +130,17 @@ export function OneMinuteJob(
       if (pythPair) {
         console.log(pythPair.priceUsd)
         await setNameActivityPrice(discordPyth, pythPair, 'pyth')
+      }
+
+      const lernPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == LERN_OP.toLowerCase())
+      if (lernPair) {
+        console.log(lernPair.priceUsd)
+        await setNameActivityPrice(discordLern, lernPair, '2192')
+      }
+      const zorkPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ZORK_OP.toLowerCase())
+      if (zorkPair) {
+        console.log(zorkPair.priceUsd)
+        await setNameActivityPrice(discordZork, zorkPair, 'zork')
       }
 
       if (ethPair && btcPair) {

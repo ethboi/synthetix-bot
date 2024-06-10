@@ -21,6 +21,8 @@ import {
   DISCORD_ACCESS_TOKEN_TLX,
   FRONTEND,
   TESTNET,
+  DISCORD_ACCESS_TOKEN_LERN,
+  DISCORD_ACCESS_TOKEN_ZORK,
 } from './config'
 import { GetMarketDetails } from './actions'
 import { SixMinuteJob, FiveMinuteJob, OneMinuteJob } from './schedule'
@@ -51,6 +53,8 @@ let discordKwenta: Client
 let discordEthBtc: Client
 let discordTlx: Client
 let discordPyth: Client
+let discordLern: Client
+let discordZork: Client
 
 export async function Run(): Promise<void> {
   try {
@@ -78,6 +82,8 @@ export async function Run(): Promise<void> {
         SetUpDiscordPrices((discordEthBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_ETHBTC, 'ethbtc'),
         SetUpDiscordPrices((discordTlx = DiscordClient()), DISCORD_ACCESS_TOKEN_TLX, 'tlx'),
         SetUpDiscordPrices((discordPyth = DiscordClient()), DISCORD_ACCESS_TOKEN_PYTH, 'pyth'),
+        SetUpDiscordPrices((discordLern = DiscordClient()), DISCORD_ACCESS_TOKEN_LERN, '2192'),
+        SetUpDiscordPrices((discordZork = DiscordClient()), DISCORD_ACCESS_TOKEN_ZORK, 'zork'),
       ])
       FiveMinuteJob(
         discordVolume,
@@ -97,6 +103,8 @@ export async function Run(): Promise<void> {
         discordEthBtc,
         discordTlx,
         discordPyth,
+        discordLern,
+        discordZork,
       )
       SixMinuteJob(discordBuyback)
     }
