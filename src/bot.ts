@@ -88,7 +88,7 @@ export async function Run(): Promise<void> {
       FiveMinuteJob(
         discordVolume,
         discordVolumeBase,
-        discordVolumeCombined,
+        discordVolumeCombined, 
         discordFees,
         discordBaseFees,
         discordOI,

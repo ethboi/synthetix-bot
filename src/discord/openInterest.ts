@@ -6,11 +6,21 @@ import { calculatePercentageChange } from '../utils/utils'
 export async function SetUpDiscordOpenInterest(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async () => {
     console.debug(`Discord Open Interest bot is online!`)
-    const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
-    await setNameActivityOI(discordClient, openInterestPrev, openInterest)
+    try {
+      const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterest(true), GetOpenInterest(false)])
+      // console.debug(`Previous Open Interest: ${openInterestPrev}, Current Open Interest: ${openInterest}`)
+      await setNameActivityOI(discordClient, openInterestPrev, openInterest)
+    } catch (error) {
+      console.error('Error fetching Open Interest')
+    }
   })
 
-  await discordClient.login(accessToken)
+  try {
+    await discordClient.login(accessToken)
+    console.debug('Logged into Discord successfully')
+  } catch (error) {
+    console.error('Error logging into Discord')
+  }
   return discordClient
 }
 
@@ -20,6 +30,10 @@ export async function setNameActivityOI(client: Client, openInterestPrev: number
     const change = calculatePercentageChange(openInterestPrev, openInterest)
     const username = `$${displayNumber(openInterest)} OI`
     const activity = `24h: ${formatNumber(change, { dps: 2, showSign: true })}% (${changeDirection ? '↗' : '↘'})`
+
+    console.log('OPTIMISM OI')
+    console.log(username)
+    console.log(activity)
 
     client.guilds.cache.map(
       async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),

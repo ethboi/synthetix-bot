@@ -26,13 +26,27 @@ export async function GetMarketSummaries(timestamp?: number | undefined): Promis
   let blockTag = undefined
 
   if (timestamp) {
-    const fromBlock = await getBlockByTimestamp(providerOP, timestamp)
-    blockTag = ethers.utils.hexValue(fromBlock)
+    try {
+      const fromBlock = await getBlockByTimestamp(providerOP, timestamp)
+      blockTag = ethers.utils.hexValue(fromBlock)
+    } catch (error) {
+      console.error('Error fetching block by timestamp:', error)
+      throw error
+    }
   }
 
   const contract = PerpsV2MarketData__factory.connect(PerpsV2MarketDataOP, providerOP)
-  const fundingRates = await contract.allProxiedMarketSummaries({ blockTag: blockTag })
+  // const fundingRates = await contract.allProxiedMarketSummaries({ blockTag: blockTag })
+  let fundingRates: any[]
 
+  try {
+    fundingRates = await contract.allProxiedMarketSummaries({ blockTag })
+    // console.debug('Fetched market summaries:', fundingRates)
+  } catch (error) {
+    console.error('Error fetching market summaries')
+    throw error
+  }
+  
   const rates = fundingRates
     .map((x) => {
       if (!x || !x.market || !x.asset || !x.key || !x.price || !x.marketSize) {
@@ -40,23 +54,27 @@ export async function GetMarketSummaries(timestamp?: number | undefined): Promis
         return null
       }
 
-      const marketSummary: MarketSummary = {
-        market: x.market,
-        originalAsset: hexToAscii(x.asset),
-        asset: ReplaceSynths(hexToAscii(x.asset)),
-        key: hexToAscii(x.key),
-        maxLeverage: fromBigNumber(x.maxLeverage),
-        price: fromBigNumber(x.price),
-        marketSize: fromBigNumber(x.marketSize),
-        marketSkew: fromBigNumber(x.marketSkew),
-        marketDebt: fromBigNumber(x.marketDebt),
-        currentFundingRate: fromBigNumber(x.currentFundingRate),
-        currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
-        marketValue: fromBigNumber(x.marketSize) * fromBigNumber(x.price),
-        settings: global.MARKET_SETTINGS[x.key],
+      try {
+        const marketSummary: MarketSummary = {
+          market: x.market,
+          originalAsset: hexToAscii(x.asset),
+          asset: ReplaceSynths(hexToAscii(x.asset)),
+          key: hexToAscii(x.key),
+          maxLeverage: fromBigNumber(x.maxLeverage),
+          price: fromBigNumber(x.price),
+          marketSize: fromBigNumber(x.marketSize),
+          marketSkew: fromBigNumber(x.marketSkew),
+          marketDebt: fromBigNumber(x.marketDebt),
+          currentFundingRate: fromBigNumber(x.currentFundingRate),
+          currentFundingVelocity: fromBigNumber(x.currentFundingVelocity),
+          marketValue: fromBigNumber(x.marketSize) * fromBigNumber(x.price),
+          settings: global.MARKET_SETTINGS[x.key],
+        }
+        return marketSummary
+      } catch (error) {
+        console.error('Error processing market summary:', error, x)
+        return null
       }
-
-      return marketSummary
     })
     .filter((rate) => rate !== null) as MarketSummary[]
 
