@@ -11,7 +11,7 @@ export async function GetBuybackData() {
     const apiKey = BASESCAN_API;
     // OLD ADRESS: const url = `${urls.BASESCAN_API_URL}?module=logs&action=getLogs&fromBlock=1&toBlock=latest&topic0=0x840f6b22bacac5a7ec150e55e4101f796377c95c8b315bbfd6c943958d5a83f8&address=0x53f1e640c058337a12d036265681bc172e6fb962&apikey=${apiKey}`;
     const url = `${urls.BASESCAN_API_URL}?module=logs&action=getLogs&fromBlock=1&toBlock=latest&topic0=0x840f6b22bacac5a7ec150e55e4101f796377c95c8b315bbfd6c943958d5a83f8&address=0x632caa10a56343c5e6c0c066735840c096291b18&apikey=${apiKey}`;
-    // console.log('url', url)
+    // console.log('Fetching buyback data from URL:', url);
     const response = await axios.get(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
@@ -117,35 +117,42 @@ async function parseBuybackData(data: any[]): Promise<Buyback> {
 
 // Calculate weekly amount of burned SNX
 function calculateWeeklyBurnedSNX(data: any[]): number {
-  const now = moment.utc(); // Use UTC if your timestamps are in UTC
+  const now = moment.utc();
   let lastWednesday;
 
-  if (now.weekday() >= 3) {
-    // If today is Wednesday or later, last Wednesday is this week
-    lastWednesday = now.clone().startOf('week').add(3, 'days'); // Start of this week + 2 days to get to Wednesday
-    // console.log('lastWednesday');
-    // console.log(lastWednesday);
+  if (now.day() >= 3) { 
+    lastWednesday = now.clone().day(-4); // Set to last Wednesday
   } else {
-    // If today is before Wednesday, last Wednesday was last week
-    lastWednesday = now.clone().subtract(1, 'week').startOf('week').add(3, 'days');
-    // console.log('lastWednesday');
-    // console.log(lastWednesday);
+    lastWednesday = now.clone().day(-11); // Set to Wednesday of the previous week
   }
+
+  // console.log('Current UTC Time:', now.format());
+  // console.log('Last Wednesday UTC Time:', lastWednesday.format());
 
   let weeklyBurnedSNX = 0;
 
   for (const entry of data) {
-    const entryDate = moment.unix(parseInt(entry.timeStamp, 16)).utc(); // Use UTC if your timestamps are in UTC
-    // Check if the entry date is within the current week (from last Wednesday to this Wednesday)
+    const entryDate = moment.unix(parseInt(entry.timeStamp, 16)).utc();
+    // console.log('Processing entry with timestamp:', entry.timeStamp);
+    // console.log('Entry Date UTC:', entryDate.format());
+    // console.log(`Last Wednesday: ${lastWednesday.format()}`);
+    // console.log(`Now: ${now.format()}`);
+
     if (entryDate.isSameOrAfter(lastWednesday) && entryDate.isBefore(now)) {
       const burnedSNX = parseBurnedSNXData(entry.data);
-      // console.log('burnedSNX');
-      // console.log(burnedSNX);
+      // console.log('Entry is within the current week. Burned SNX for this entry:', burnedSNX);
       weeklyBurnedSNX += burnedSNX;
+    } else {
+      // console.log('Entry is not within the current week.');
     }
   }
+
+  console.log('Total Weekly Burned SNX:', weeklyBurnedSNX);
   return weeklyBurnedSNX;
 }
+
+
+
 
 
 // // Calculate total amount of burned SNX
