@@ -1,6 +1,7 @@
 # SYNTHETIX FUTURES Bot 🤖
 
 A bot providing real time futures market info via discord. :> :0
+WhY N0t wORkIng
 
 Run locally:
 
