@@ -107,7 +107,7 @@ async function parseBuybackData(data: any[]): Promise<Buyback> {
 }
 
 // Calculate weekly amount of burned SNX
-export function calculateWeeklyBurnedSNX(data: any[]): number {
+function calculateWeeklyBurnedSNX(data: any[]): number {
   const now = moment.utc();
   const lastWednesday = getLastWednesday(now);
 
