@@ -2,7 +2,7 @@ import { Client, ActivityType } from 'discord.js'
 import formatNumber, { displayNumber } from '../utils/formatNumber'
 import { GetPrices } from '../actions/price'
 import { Pair } from '../types/dexscreener'
-import { BTC_OP, ETH_OP, KWENTA_OP, SNX_OP, THALES_OP, TLX_OP, PYTH_OP, LERN_OP, ZORK_OP } from '../constants/addresses'
+import { BTC_OP, ETH_OP, KWENTA_OP, SNX_OP, THALES_OP, TLX_OP, PYTH_OP, LERN_OP, ZORK_OP, CYDX_OP } from '../constants/addresses'
 
 export async function SetUpDiscordPrices(discordClient: Client, accessToken: string, market: string) {
   discordClient.on('ready', async (client) => {
@@ -40,7 +40,9 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
       address = LERN_OP.toLowerCase()
       dps = 4
     }
-
+    if (market == 'cydx') {
+      address = CYDX_OP.toLowerCase()
+    }
     if (market == 'ethbtc') {
       const ethPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ETH_OP.toLowerCase())
       const btcPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == BTC_OP.toLowerCase())
@@ -74,6 +76,7 @@ export async function setNameActivityPrice(client: Client, pair: Pair, market: s
     if (market == 'zork') {
       price = displayNumber(Number(pair.priceUsd))
     }
+    
 
     const username = `${market.toUpperCase()} $${price} (${Number(pair.priceChange.h24) >= 0 ? '↗' : '↘'})`
     const activity = `24h: ${formatNumber(Number(pair.priceChange.h24), { dps: 2, showSign: true })}%`

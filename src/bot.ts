@@ -23,6 +23,7 @@ import {
   TESTNET,
   DISCORD_ACCESS_TOKEN_LERN,
   DISCORD_ACCESS_TOKEN_ZORK,
+  DISCORD_ACCESS_TOKEN_CYDX,
 } from './config'
 import { GetMarketDetails } from './actions'
 import { SixMinuteJob, FiveMinuteJob, OneMinuteJob } from './schedule'
@@ -55,25 +56,26 @@ let discordTlx: Client
 let discordPyth: Client
 let discordLern: Client
 let discordZork: Client
+let discordCYDX: Client
 
 export async function Run(): Promise<void> {
   try {
     console.log('Running Bot')
-    global.MARKET_SETTINGS = {}
-    global.ENS = {}
-    await GetMarketDetails()
-    await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
+    // global.MARKET_SETTINGS = {}
+    // global.ENS = {}
+    // await GetMarketDetails()
+    // await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
 
     if (!TESTNET) {
       await Promise.all([
-        SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME),
-        SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE),
-        SetUpDiscordVolumeCombined((discordVolumeCombined = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED),
-        SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES),
-        SetUpDiscordBaseFees((discordBaseFees = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_FEES),
-        SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI),
-        SetUpDiscordBaseOI((discordBaseOI = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_OI),
-        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
+        // SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME),
+        // SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE),
+        // SetUpDiscordVolumeCombined((discordVolumeCombined = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED),
+        // SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES),
+        // SetUpDiscordBaseFees((discordBaseFees = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_FEES),
+        // SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI),
+        // SetUpDiscordBaseOI((discordBaseOI = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_OI),
+        // SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
         SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
@@ -84,6 +86,7 @@ export async function Run(): Promise<void> {
         SetUpDiscordPrices((discordPyth = DiscordClient()), DISCORD_ACCESS_TOKEN_PYTH, 'pyth'),
         SetUpDiscordPrices((discordLern = DiscordClient()), DISCORD_ACCESS_TOKEN_LERN, '2192'),
         SetUpDiscordPrices((discordZork = DiscordClient()), DISCORD_ACCESS_TOKEN_ZORK, 'zork'),
+        SetUpDiscordPrices((discordCYDX = DiscordClient()), DISCORD_ACCESS_TOKEN_CYDX, 'cydx'),
       ])
       FiveMinuteJob(
         discordVolume,
@@ -105,6 +108,7 @@ export async function Run(): Promise<void> {
         discordPyth,
         discordLern,
         discordZork,
+        discordCYDX,
       )
       SixMinuteJob(discordBuyback)
     }
