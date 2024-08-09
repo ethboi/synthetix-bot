@@ -23,6 +23,7 @@ export const DISCORD_ACCESS_TOKEN_PYTH = _.defaultTo(process.env.DISCORD_ACCESS_
 export const DISCORD_ACCESS_TOKEN_TLX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_TLX, '')
 export const DISCORD_ACCESS_TOKEN_LERN = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_LERN, '')
 export const DISCORD_ACCESS_TOKEN_ZORK = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ZORK, '')
+export const DISCORD_ACCESS_TOKEN_CYDX = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_CYDX, '')
 
 export const BASESCAN_API = _.defaultTo(process.env.BASESCAN_API, '')
 export const ALCHEMY_BASE_API_URL = _.defaultTo(process.env.ALCHEMY_BASE_API_URL, '')

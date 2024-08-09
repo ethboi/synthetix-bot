@@ -23,6 +23,7 @@ import {
   TESTNET,
   DISCORD_ACCESS_TOKEN_LERN,
   DISCORD_ACCESS_TOKEN_ZORK,
+  DISCORD_ACCESS_TOKEN_CYDX,
 } from './config'
 import { GetMarketDetails } from './actions'
 import { SixMinuteJob, FiveMinuteJob, OneMinuteJob } from './schedule'
@@ -55,14 +56,15 @@ let discordTlx: Client
 let discordPyth: Client
 let discordLern: Client
 let discordZork: Client
+let discordCYDX: Client
 
 export async function Run(): Promise<void> {
   try {
     console.log('Running Bot')
-    global.MARKET_SETTINGS = {}
-    global.ENS = {}
-    await GetMarketDetails()
-    await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
+    // global.MARKET_SETTINGS = {}
+    // global.ENS = {}
+    // await GetMarketDetails()
+    // await Promise.all([SetUpDiscord((discordClient = DiscordClient()), DISCORD_ACCESS_TOKEN, FRONTEND)])
 
     if (!TESTNET) {
       await Promise.all([
@@ -84,11 +86,12 @@ export async function Run(): Promise<void> {
         SetUpDiscordPrices((discordPyth = DiscordClient()), DISCORD_ACCESS_TOKEN_PYTH, 'pyth'),
         SetUpDiscordPrices((discordLern = DiscordClient()), DISCORD_ACCESS_TOKEN_LERN, '2192'),
         SetUpDiscordPrices((discordZork = DiscordClient()), DISCORD_ACCESS_TOKEN_ZORK, 'zork'),
+        SetUpDiscordPrices((discordCYDX = DiscordClient()), DISCORD_ACCESS_TOKEN_CYDX, 'cydx'),
       ])
       FiveMinuteJob(
         discordVolume,
         discordVolumeBase,
-        discordVolumeCombined, 
+        discordVolumeCombined,
         discordFees,
         discordBaseFees,
         discordOI,
@@ -105,6 +108,7 @@ export async function Run(): Promise<void> {
         discordPyth,
         discordLern,
         discordZork,
+        discordCYDX,
       )
       SixMinuteJob(discordBuyback)
     }
