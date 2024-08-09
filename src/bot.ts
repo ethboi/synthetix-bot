@@ -68,14 +68,14 @@ export async function Run(): Promise<void> {
 
     if (!TESTNET) {
       await Promise.all([
-        // SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME),
-        // SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE),
-        // SetUpDiscordVolumeCombined((discordVolumeCombined = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED),
-        // SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES),
-        // SetUpDiscordBaseFees((discordBaseFees = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_FEES),
-        // SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI),
-        // SetUpDiscordBaseOI((discordBaseOI = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_OI),
-        // SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
+        SetUpDiscordVolume((discordVolume = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME),
+        SetUpDiscordVolumeBase((discordVolumeBase = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_BASE),
+        SetUpDiscordVolumeCombined((discordVolumeCombined = DiscordClient()), DISCORD_ACCESS_TOKEN_VOLUME_COMBINED),
+        SetUpDiscordFees((discordFees = DiscordClient()), DISCORD_ACCESS_TOKEN_FEES),
+        SetUpDiscordBaseFees((discordBaseFees = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_FEES),
+        SetUpDiscordOpenInterest((discordOI = DiscordClient()), DISCORD_ACCESS_TOKEN_OI),
+        SetUpDiscordBaseOI((discordBaseOI = DiscordClient()), DISCORD_ACCESS_TOKEN_BASE_OI),
+        SetUpDiscordBuyback((discordBuyback = DiscordClient()), DISCORD_ACCESS_TOKEN_BUYBACK), //New Buyback Bot (Inflationbot offline)
         SetUpDiscordPrices((discordEth = DiscordClient()), DISCORD_ACCESS_TOKEN_ETH, 'eth'),
         SetUpDiscordPrices((discordBtc = DiscordClient()), DISCORD_ACCESS_TOKEN_BTC, 'btc'),
         SetUpDiscordPrices((discordThales = DiscordClient()), DISCORD_ACCESS_TOKEN_THALES, 'thales'),
@@ -91,7 +91,7 @@ export async function Run(): Promise<void> {
       FiveMinuteJob(
         discordVolume,
         discordVolumeBase,
-        discordVolumeCombined, 
+        discordVolumeCombined,
         discordFees,
         discordBaseFees,
         discordOI,

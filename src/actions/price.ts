@@ -1,19 +1,29 @@
 import axios from 'axios'
-import { ETH_OP, BTC_OP, THALES_OP, KWENTA_OP, SNX_OP, TLX_OP, PYTH_OP, ZORK_OP, LERN_OP, CYDX_OP } from '../constants/addresses'
+import {
+  ETH_OP,
+  BTC_OP,
+  THALES_OP,
+  KWENTA_OP,
+  SNX_OP,
+  TLX_OP,
+  PYTH_OP,
+  ZORK_OP,
+  LERN_OP,
+  CYDX_OP,
+} from '../constants/addresses'
 import { urls } from '../constants/urls'
 import { Dexscreener, Pair } from '../types/dexscreener'
 
-
 async function fetchSolscanPrice(address: string): Promise<string | null> {
   try {
-    const response = await axios.get(`https://api.solscan.io/token/price?tokenAddress=${address}`);
+    const response = await axios.get(`https://api.solscan.io/token/price?tokenAddress=${address}`)
     if (response.data && response.data.data && response.data.data.priceUsdt) {
-      return response.data.data.priceUsdt.toString();
+      return response.data.data.priceUsdt.toString()
     }
   } catch (error) {
-    console.error(`Error fetching price from Solscan for address: ${address}`, error);
+    console.error(`Error fetching price from Solscan for address: ${address}`, error)
   }
-  return null;
+  return null
 }
 
 export async function GetPrices() {
@@ -43,40 +53,39 @@ export async function GetPrices() {
   const dexLERN = pairsLERN?.data as Dexscreener
   const dexZORK = pairsZORK?.data as Dexscreener
   const dexCYDX = pairsCYDX?.data as Dexscreener
-  
+
   // console.log('dexZORK:', JSON.stringify(dexZORK, null, 2)); // Log the ZORK response
 
- 
   try {
     const findPair = (dexData: Dexscreener, address: string): Pair | null => {
       if (!dexData || !dexData.pairs) {
-        console.error(`No pairs found for address: ${address}`);
-        return null;
+        console.error(`No pairs found for address: ${address}`)
+        return null
       }
-      const pair = dexData.pairs.find((pair: Pair) => pair.baseToken.address.toLowerCase() === address.toLowerCase());
+      const pair = dexData.pairs.find((pair: Pair) => pair.baseToken.address.toLowerCase() === address.toLowerCase())
       if (!pair) {
-        console.error(`Pair not found for address: ${address}`);
-        return null;
+        console.error(`Pair not found for address: ${address}`)
+        return null
       }
-      return pair;
-    };
+      return pair
+    }
 
     const addPair = (pair: Pair | null) => {
-      if (pair) pairs.push(pair);
-    };
+      if (pair) pairs.push(pair)
+    }
 
-    addPair(findPair(dexEth, ETH_OP));
-    addPair(findPair(dexBtc, BTC_OP));
-    addPair(findPair(dexThales, THALES_OP));
-    addPair(findPair(dexSNX, SNX_OP));
-    addPair(findPair(dexKwenta, KWENTA_OP));
-    addPair(findPair(dexTLX, TLX_OP));
-    addPair(findPair(dexPYTH, PYTH_OP));
-    addPair(findPair(dexLERN, LERN_OP));
+    addPair(findPair(dexEth, ETH_OP))
+    addPair(findPair(dexBtc, BTC_OP))
+    addPair(findPair(dexThales, THALES_OP))
+    addPair(findPair(dexSNX, SNX_OP))
+    addPair(findPair(dexKwenta, KWENTA_OP))
+    addPair(findPair(dexTLX, TLX_OP))
+    addPair(findPair(dexPYTH, PYTH_OP))
+    addPair(findPair(dexLERN, LERN_OP))
 
-    let pairZORK = findPair(dexZORK, ZORK_OP);
+    let pairZORK = findPair(dexZORK, ZORK_OP)
     if (!pairZORK) {
-      const zorkPrice = await fetchSolscanPrice(ZORK_OP);
+      const zorkPrice = await fetchSolscanPrice(ZORK_OP)
       if (zorkPrice !== null) {
         pairZORK = {
           chainId: 'solana',
@@ -87,27 +96,31 @@ export async function GetPrices() {
           quoteToken: { address: '', name: 'USD', symbol: 'USD' },
           priceUsd: zorkPrice,
           priceNative: '',
-          txns: { h24: { buys: 0, sells: 0 }, h6: { buys: 0, sells: 0 }, h1: { buys: 0, sells: 0 }, m5: { buys: 0, sells: 0 } },
+          txns: {
+            h24: { buys: 0, sells: 0 },
+            h6: { buys: 0, sells: 0 },
+            h1: { buys: 0, sells: 0 },
+            m5: { buys: 0, sells: 0 },
+          },
           volume: { h24: 0, h6: 0, h1: 0, m5: 0 },
           priceChange: { h24: 0, h6: 0, h1: 0, m5: 0 },
           liquidity: { usd: 0, base: 0, quote: 0 },
           fdv: 0,
           pairCreatedAt: 0,
-        };
-        pairs.push(pairZORK);
+        }
+        pairs.push(pairZORK)
       }
     } else {
-      pairs.push(pairZORK);
+      pairs.push(pairZORK)
     }
 
-    addPair(findPair(dexCYDX, CYDX_OP));
-
+    addPair(findPair(dexCYDX, CYDX_OP))
   } catch (error) {
-    console.log('Error processing pairs:', error);
+    console.log('Error processing pairs:', error)
   }
 
   // console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
   // console.log('END: END');
 
-  return pairs;
+  return pairs
 }

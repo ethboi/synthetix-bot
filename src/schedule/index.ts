@@ -8,7 +8,18 @@ import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
 import { GetOpenInterest } from '../actions/openInterest'
 import { GetPrices } from '../actions/price'
-import { BTC_OP, ETH_OP, KWENTA_OP, LERN_OP, PYTH_OP, SNX_OP, THALES_OP, TLX_OP, ZORK_OP, CYDX_OP } from '../constants/addresses'
+import {
+  BTC_OP,
+  ETH_OP,
+  KWENTA_OP,
+  LERN_OP,
+  PYTH_OP,
+  SNX_OP,
+  THALES_OP,
+  TLX_OP,
+  ZORK_OP,
+  CYDX_OP,
+} from '../constants/addresses'
 import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetBuybackData } from '../actions/buyback'
 import { setNameActivityBuyback } from '../discord/buyback'
