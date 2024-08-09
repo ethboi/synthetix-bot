@@ -42,6 +42,7 @@ export async function SetUpDiscordPrices(discordClient: Client, accessToken: str
     }
     if (market == 'cydx') {
       address = CYDX_OP.toLowerCase()
+      dps = 4
     }
     if (market == 'ethbtc') {
       const ethPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == ETH_OP.toLowerCase())
@@ -76,7 +77,6 @@ export async function setNameActivityPrice(client: Client, pair: Pair, market: s
     if (market == 'zork') {
       price = displayNumber(Number(pair.priceUsd))
     }
-    
 
     const username = `${market.toUpperCase()} $${price} (${Number(pair.priceChange.h24) >= 0 ? '↗' : '↘'})`
     const activity = `24h: ${formatNumber(Number(pair.priceChange.h24), { dps: 2, showSign: true })}%`
