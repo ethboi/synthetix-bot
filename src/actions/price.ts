@@ -16,7 +16,10 @@ import { Dexscreener, Pair } from '../types/dexscreener'
 
 async function fetchSolscanPrice(address: string): Promise<string | null> {
   try {
-    const response = await axios.get(`https://api.solscan.io/token/price?tokenAddress=${address}`)
+    const axiosInstance = axios.create({
+      timeout: 10000, // 10 seconds
+    });
+    const response = await axiosInstance.get(`https://api.solscan.io/token/price?tokenAddress=${address}`)
     if (response.data && response.data.data && response.data.data.priceUsdt) {
       return response.data.data.priceUsdt.toString()
     }
@@ -119,8 +122,8 @@ export async function GetPrices() {
     console.log('Error processing pairs:', error)
   }
 
-  // console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
-  // console.log('END: END');
+  console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
+  console.log('END: END');
 
   return pairs
 }

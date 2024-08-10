@@ -16,5 +16,8 @@ export async function GetOpenInterest(prev: boolean) {
     return accumulator + market.marketValue
   }, 0)
 
+  // console.log("Fetched market summaries:", markets);
+  // console.log("Calculated open interest:", openInterest);
+
   return openInterest
 }

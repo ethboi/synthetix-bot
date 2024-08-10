@@ -40,7 +40,8 @@ export async function GetTotalOpenInterestBase(prev: boolean): Promise<number> {
 
       totalOI += marketSize * price
     } catch (error) {
-      console.error(`Error fetching summary for market ${marketId.toString()}:`, error)
+      // console.error(`Error fetching summary for market ${marketId.toString()}:`, error)
+      // console.error(`Error fetching summary for market`);
     }
   }
 

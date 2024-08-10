@@ -162,7 +162,7 @@ export function OneMinuteJob(
       const cydxPair = pairs.find((pair) => pair.baseToken.address.toLowerCase() == CYDX_OP.toLowerCase())
       if (cydxPair) {
         console.log(cydxPair.priceUsd)
-        await setNameActivityPrice(discordCYDX, cydxPair, 'cydx')
+        await setNameActivityPrice(discordCYDX, cydxPair, 'cydx', 4)
       }
 
       if (ethPair && btcPair) {
