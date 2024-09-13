@@ -122,7 +122,7 @@ export async function GetPrices() {
     console.log('Error processing pairs:', error)
   }
 
-  console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
+  // console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
   console.log('END: END');
 
   return pairs

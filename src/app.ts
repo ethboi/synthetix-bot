@@ -6,7 +6,7 @@ import { LOG_CHANNEL, LOG_TOKEN } from './config'
 async function Initialize(): Promise<void> {
   try {
     RegisterShutdownEvents()
-    await Notifier('Initialize', false)
+    // await Notifier('Initialize', false)
     await Run()
   } catch (error) {
     console.error(error)

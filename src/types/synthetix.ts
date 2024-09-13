@@ -97,3 +97,8 @@ export type sDailyStat = {
 export type baseDailyStat = {
   volume: number
 }
+
+
+export type arbDailyStat = {
+  volume: number
+}

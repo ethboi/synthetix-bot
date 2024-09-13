@@ -3,6 +3,7 @@ import { scheduleJob } from 'node-schedule'
 import { getDailyStats } from '../actions/dailyStats'
 import { setNameActivityVolume } from '../discord/volume'
 import { setNameActivityVolumeBase } from '../discord/volumeBase'
+import { setNameActivityVolumeArb } from '../discord/volumeArb'
 import { combineStats, setNameActivityVolumeCombined } from '../discord/volumeCombined'
 import { setNameActivityFees } from '../discord/fees'
 import { setNameActivityOI } from '../discord/openInterest'
@@ -24,18 +25,26 @@ import { setNameActivityPrice, setNameActivityRatio } from '../discord/prices'
 import { GetBuybackData } from '../actions/buyback'
 import { setNameActivityBuyback } from '../discord/buyback'
 import { getDailyStatsBase } from '../actions/volumeBase'
+import { getDailyStatsArb } from '../actions/volumeArb'
 import { getDailyFeesBase, setNameActivityBaseFees } from '../discord/feesBase'
+import { getDailyFeesArb, setNameActivityArbFees } from '../discord/feesArb'
 import { GetOpenInterestBase } from '../actions/openInterestBase'
+import { GetOpenInterestArb } from '../actions/openInterestArb'
 import { setNameActivityBaseOI } from '../discord/openInterestBase'
+import { setNameActivityArbOI } from '../discord/openInterestArb'
+// import { getDailyStatsArb } from '../actions/volumeArb'
 
 export function FiveMinuteJob(
   discordClientVolume: Client,
   discordClientVolumeBase: Client,
+  discordClientVolumeArb: Client,
   discordClientVolumeCombined: Client,
   discordClientFees: Client,
   discordClientBaseFees: Client,
+  discordClientArbFees: Client,
   discordClientOI: Client,
   discordClientBaseOI: Client,
+  discordClientArbOI: Client,
 ): void {
   scheduleJob('*/5 * * * *', async () => {
     console.log('STATS (FEES / VOLUME) job running')
@@ -44,21 +53,30 @@ export function FiveMinuteJob(
       console.log(`Getting Volume & Fees: ${Date.now}`)
       const dailyStatsOP = await getDailyStats()
       const dailyStatsBase = await getDailyStatsBase()
+      const dailyStatsArb = await getDailyStatsArb()
       const dailyFeesBase = await getDailyFeesBase()
-      const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase)
+      const dailyFeesArb = await getDailyFeesArb()
+      const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase, dailyStatsArb)
       const [openInterestPrev, openInterest] = await Promise.all([
         GetOpenInterestBase(true),
         GetOpenInterestBase(false),
+      ])
+      const [openInterestPrevArb, openInterestArb] = await Promise.all([
+        GetOpenInterestArb(true),
+        GetOpenInterestArb(false),
       ])
 
       if (dailyStatsOP) {
         await Promise.all([
           setNameActivityVolume(discordClientVolume, dailyStatsOP),
           setNameActivityVolumeBase(discordClientVolumeBase, dailyStatsBase),
+          setNameActivityVolumeArb(discordClientVolumeArb, dailyStatsArb),
           setNameActivityVolumeCombined(discordClientVolumeCombined, dailyStatsCombined),
           setNameActivityFees(discordClientFees, dailyStatsOP),
           setNameActivityBaseFees(discordClientBaseFees, dailyFeesBase),
+          setNameActivityArbFees(discordClientArbFees, dailyFeesArb),
           setNameActivityBaseOI(discordClientBaseOI, openInterestPrev, openInterest),
+          setNameActivityArbOI(discordClientArbOI, openInterestPrevArb, openInterestArb),
         ])
       } else {
         console.log(`Stats not found.`)
