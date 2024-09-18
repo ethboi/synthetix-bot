@@ -7,15 +7,11 @@ import { ALCHEMY_ARB_API_URL } from '../config';
 
 // Set up Web3 instance
 const web3 = new Web3(new Web3.providers.HttpProvider(ALCHEMY_ARB_API_URL));
-
-// Use the contract address for PerpsMarketProxy
 const contractAddress = '0xd762960c31210Cf1bDf75b06A5192d395EEDC659';
-
-// Create contract instance with ABI and address
 const perpsMarketProxyContract = new web3.eth.Contract(perpsMarketProxyABI as AbiItem[], contractAddress);
 
 // Function to get the timestamp for the start of the day in UTC
-function getStartOfDayUTCTimestamp(dayOffset: number) {
+function getStartOfDayUTCTimestamp(dayOffset: number): number {
   const now = new Date();
   now.setUTCDate(now.getUTCDate() + dayOffset);
   const startOfDayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
@@ -23,21 +19,16 @@ function getStartOfDayUTCTimestamp(dayOffset: number) {
 }
 
 // Function to find the block number closest to a given timestamp
-async function getBlockClosestToTimestamp(timestamp: number) {
+async function getBlockClosestToTimestamp(timestamp: number): Promise<number> {
   const latestBlock = await web3.eth.getBlock('latest');
-  const latestBlockNumber = latestBlock.number;
-
   let minBlock = 0;
-  let maxBlock = latestBlockNumber;
+  let maxBlock = latestBlock.number;
 
   while (minBlock <= maxBlock) {
     const midBlock = Math.floor((minBlock + maxBlock) / 2);
     const midBlockData = await web3.eth.getBlock(midBlock);
 
-    // Explicitly cast the timestamp to a number
-    const midBlockTime = typeof midBlockData.timestamp === 'string'
-      ? parseInt(midBlockData.timestamp)
-      : midBlockData.timestamp;
+    const midBlockTime = typeof midBlockData.timestamp === 'string' ? parseInt(midBlockData.timestamp) : midBlockData.timestamp;
 
     if (midBlockTime < timestamp) {
       minBlock = midBlock + 1;
@@ -49,7 +40,7 @@ async function getBlockClosestToTimestamp(timestamp: number) {
 }
 
 // Function to find the block number at the start of a day given a day offset
-async function findBlockAtStartOfDayUTC(dayOffset: number) {
+async function findBlockAtStartOfDayUTC(dayOffset: number): Promise<number> {
   const startOfDayTimestamp = getStartOfDayUTCTimestamp(dayOffset);
   return await getBlockClosestToTimestamp(startOfDayTimestamp);
 }
@@ -64,7 +55,7 @@ async function calculateOpenInterest(startBlock: number, endBlock: number): Prom
   });
 
   openInterestEvents.forEach((event: any) => {
-    const marketValue = Math.abs(parseFloat(event.returnValues.marketValue)) / 1e18;
+    const marketValue = Math.abs(parseFloat(Web3.utils.fromWei(event.returnValues.marketValue, 'ether')));
     totalOpenInterest += marketValue;
   });
 

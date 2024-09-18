@@ -46,7 +46,8 @@ export async function GetTotalOpenInterestArb(prev: boolean): Promise<number> {
 
       totalOI += marketSize * price;
     } catch (error) {
-      console.error(`Error fetching summary for market ${marketId.toString()}:`, error);
+      // console.error(`Error fetching summary for market ${marketId.toString()}:`);
+      // console.log(error); //show full error
     }
   }
 

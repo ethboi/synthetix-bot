@@ -1,52 +1,97 @@
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 import { Client, ActivityType } from 'discord.js';
 import { displayNumber } from '../utils/formatNumber';
-import axios from 'axios';
 
-// Define the type for the fees response
-interface FeeData {
-  ts: string;
-  daily_exchange_fees: number;
+// Import the ABI JSON
+import perpsMarketProxyABI from '../contracts/abis/PerpsMarketProxyArb.json';
+import { ALCHEMY_ARB_API_URL } from '../config';
+
+// Set up Web3 instance
+const web3 = new Web3(new Web3.providers.HttpProvider(ALCHEMY_ARB_API_URL));
+const contractAddress = '0xd762960c31210Cf1bDf75b06A5192d395EEDC659';
+const perpsMarketProxyContract = new web3.eth.Contract(perpsMarketProxyABI as AbiItem[], contractAddress);
+
+// Function to fetch `OrderSettled` events and calculate protocol fees
+async function fetchOrderSettledFees(startBlock: number, endBlock: number): Promise<number> {
+  let totalProtocolFees = 0;
+
+  const orderSettledEvents = await perpsMarketProxyContract.getPastEvents('OrderSettled', {
+    fromBlock: startBlock,
+    toBlock: endBlock,
+  });
+
+  orderSettledEvents.forEach((event: any) => {
+    const totalFees = parseFloat(Web3.utils.fromWei(event.returnValues.totalFees, 'ether'));
+    const settlementReward = parseFloat(Web3.utils.fromWei(event.returnValues.settlementReward, 'ether'));
+    
+    const protocolFees = totalFees - settlementReward;
+    totalProtocolFees += protocolFees;
+  });
+
+  return totalProtocolFees;
 }
 
-// Function to fetch daily fees for Arbitrum using the new API endpoint
-export async function getDailyFeesArb() {
-  try {
-    const response = await axios.get('https://synthetix-cache-api-f7db01015ec1.herokuapp.com/api/v1/perp-stats/exchange-fees/daily?chain=arbitrum');
-    const feesData = response.data.arbitrum;
+// Function to get the timestamp for the start of the day in UTC
+function getStartOfDayUTCTimestamp(dayOffset: number): number {
+  const now = new Date();
+  now.setUTCDate(now.getUTCDate() + dayOffset);
+  const startOfDayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  return Math.floor(startOfDayUTC.getTime() / 1000);
+}
 
-    const currentDate = new Date();
-    const yesterday = new Date();
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+// Function to find the block number closest to a given timestamp
+async function getBlockClosestToTimestamp(timestamp: number): Promise<number> {
+  const latestBlock = await web3.eth.getBlock('latest');
+  let minBlock = 0;
+  let maxBlock = latestBlock.number;
 
-    // Find today's and yesterday's fees
-    const todayFeesData = feesData.find((fee:FeeData) => new Date(fee.ts).getUTCDate() === currentDate.getUTCDate());
-    const yesterdayFeesData = feesData.find((fee:FeeData) => new Date(fee.ts).getUTCDate() === yesterday.getUTCDate());
+  while (minBlock <= maxBlock) {
+    const midBlock = Math.floor((minBlock + maxBlock) / 2);
+    const midBlockData = await web3.eth.getBlock(midBlock);
 
-    const currentFees = todayFeesData ? todayFeesData.daily_exchange_fees : 0;
-    const previousFees = yesterdayFeesData ? yesterdayFeesData.daily_exchange_fees : 0;
+    const midBlockTime = typeof midBlockData.timestamp === 'string' ? parseInt(midBlockData.timestamp) : midBlockData.timestamp;
 
-    console.log(`Current 24h ARBITRUM Fees: ${currentFees.toFixed(6)} snxUSD`);
-    console.log(`Previous 24h ARBITRUM Fees: ${previousFees.toFixed(6)} snxUSD`);
-
-    return [
-      {
-        day: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), 0, 0, 0)),
-        fees: currentFees,
-      },
-      {
-        day: new Date(
-          Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() - 1, 0, 0, 0),
-        ),
-        fees: previousFees,
-      },
-    ];
-  } catch (error) {
-    console.error('Error fetching fees from API:', error);
-    return [];
+    if (midBlockTime < timestamp) {
+      minBlock = midBlock + 1;
+    } else {
+      maxBlock = midBlock - 1;
+    }
   }
+  return minBlock;
 }
 
-// Function to set up Discord bot and update its status
+// Function to find the block number at the start of a day given a day offset
+async function findBlockAtStartOfDayUTC(dayOffset: number): Promise<number> {
+  const startOfDayTimestamp = getStartOfDayUTCTimestamp(dayOffset);
+  return await getBlockClosestToTimestamp(startOfDayTimestamp);
+}
+
+// Main function to calculate protocol fees for the day
+export async function getDailyFeesArb() {
+  const currentBlock = await web3.eth.getBlockNumber();
+  const oneDayAgoBlock = await findBlockAtStartOfDayUTC(0);
+  const twoDaysAgoBlock = await findBlockAtStartOfDayUTC(-1);
+
+  const currentProtocolFees = await fetchOrderSettledFees(oneDayAgoBlock, currentBlock);
+  const previousProtocolFees = await fetchOrderSettledFees(twoDaysAgoBlock, oneDayAgoBlock);
+
+  console.log(`Current Arb 24h Protocol Fees: ${currentProtocolFees.toFixed(4)} snxUSD`);
+  console.log(`Previous Arb 24h Protocol Fees: ${previousProtocolFees.toFixed(4)} snxUSD`);
+
+  return [
+    {
+      day: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), 0, 0, 0)),
+      fees: currentProtocolFees,
+    },
+    {
+      day: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() - 1, 0, 0, 0)),
+      fees: previousProtocolFees,
+    },
+  ];
+}
+
+// Function to set up Discord bot and update its status with protocol fees
 export async function SetUpDiscordArbFees(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Arb Fees bot is online!`);
@@ -69,19 +114,17 @@ export async function setNameActivityArbFees(client: Client, dailyStats: { day: 
     const daysToIncl = daysSinceLastWednesday(currentDate);
 
     const epochDays = dailyStats.slice(0, daysToIncl);
-    const epochFees = epochDays.reduce((accumulator, dailyStat) => {
-      return accumulator + dailyStat.fees;
-    }, 0);
+    const epochFees = epochDays.reduce((accumulator, dailyStat) => accumulator + dailyStat.fees, 0);
 
     const username = `$${displayNumber(epochFees)} FEES`;
-    const activity = `24h: $${displayNumber(dailyStats[0].fees)}`;
+    const activity = `24h Fees: $${displayNumber(dailyStats[0].fees)}`;
 
-    console.log('Arb FEES');
+    console.log('Arb Fees');
     console.log(username);
     console.log(activity);
 
     client.guilds.cache.map(
-      async (guild) => await guild.members.cache.find((m) => m.id == client.user?.id)?.setNickname(username),
+      async (guild) => await guild.members.cache.find((m) => m.id === client.user?.id)?.setNickname(username),
     );
     client.user?.setActivity(activity, {
       type: ActivityType.Watching,

@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 
 // Import the ABI JSON
-import perpsMarketProxyABI from '../contracts/abis/PerpsMarketProxyArb.json'; // Assuming the ABI is directly the array
+import perpsMarketProxyABI from '../contracts/abis/PerpsMarketProxyArb.json'; 
 import { ALCHEMY_ARB_API_URL } from '../config';
 
 // Set up Web3 instance
