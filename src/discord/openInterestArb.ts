@@ -1,41 +1,13 @@
 import { Client, ActivityType } from 'discord.js';
 import formatNumber, { displayNumber } from '../utils/formatNumber';
-import axios from 'axios';
+import { GetOpenInterestArb } from '../actions/openInterestArb';  // Adjust the import path if necessary
 
-// Define the API endpoint for fetching daily open interest data
-const OI_API_URL = 'https://synthetix-cache-api-f7db01015ec1.herokuapp.com/api/v1/perp-market-history/open-interest/daily?chain=arbitrum';
-
-// Function to fetch the open interest from the API
-async function GetOpenInterestArb(previousDay: boolean): Promise<number> {
-  try {
-    const response = await axios.get(OI_API_URL);
-    const data = response.data.arbitrum;
-
-    if (!data || data.length === 0) {
-      throw new Error('No data returned from the API');
-    }
-
-    // Get the index for the previous day (yesterday) or current day (today)
-    const index = previousDay ? 1 : 0;
-
-    const openInterest = data[index]?.daily_open_interest;
-    if (openInterest === undefined) {
-      throw new Error(`No open interest found for index ${index}`);
-    }
-
-    return openInterest;
-  } catch (error) {
-    console.error('Error fetching Open Interest data:', error);
-    return 0;
-  }
-}
-
-// Function to set up Discord bot and update its status for Open Interest (OI)
+// Function to set up Discord bot and update its status for Open Interest (OI) on Arbitrum
 export async function SetUpDiscordArbOI(discordClient: Client, accessToken: string) {
   discordClient.on('ready', async (client) => {
     console.debug(`Discord Arb OI bot is online!`);
 
-    // Fetch previous and current Open Interest using the API
+    // Fetch previous and current Open Interest using the Arbitrum calculation
     const [openInterestPrev, openInterest] = await Promise.all([GetOpenInterestArb(true), GetOpenInterestArb(false)]);
 
     if (openInterest !== undefined && openInterestPrev !== undefined) {

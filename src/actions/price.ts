@@ -24,7 +24,8 @@ async function fetchSolscanPrice(address: string): Promise<string | null> {
       return response.data.data.priceUsdt.toString()
     }
   } catch (error) {
-    console.error(`Error fetching price from Solscan for address: ${address}`, error)
+    console.error(`Error fetching price from Solscan for address: ${address}`)
+    // console.error(error);
   }
   return null
 }
@@ -119,11 +120,12 @@ export async function GetPrices() {
 
     addPair(findPair(dexCYDX, CYDX_OP))
   } catch (error) {
-    console.log('Error processing pairs:', error)
+    console.log('Error processing pairs:')
+    // console.log(error);
   }
 
   // console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
-  console.log('END: END');
+  // console.log('END: END');
 
   return pairs
 }
