@@ -16,7 +16,7 @@ import {
 } from '../constants/addresses'
 
 export async function SetUpDiscordPrices(discordClient: Client, accessToken: string, market: string) {
-  discordClient.on('ready', async (client) => {
+  discordClient.on('ready', async () => {
     console.debug(`Discord PRICE ${market} bot is online!`)
     const pairs = await GetPrices()
     let dps = 2

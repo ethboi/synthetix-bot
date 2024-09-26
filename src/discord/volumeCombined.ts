@@ -1,7 +1,8 @@
 import { Client, ActivityType } from 'discord.js'
 import { displayNumber } from '../utils/formatNumber'
-import { getDailyStatsBase } from '../actions/volumeBase' // Adjust the import path as necessary
-import { getDailyStats } from '../actions/dailyStats' // Adjust the import path as necessary
+import { getDailyStatsBase } from '../actions/volumeBase' 
+import { getDailyStatsArb } from '../actions/volumeArb' 
+import { getDailyStats } from '../actions/dailyStats' 
 import { sDailyStat } from '../types/synthetix'
 
 export async function SetUpDiscordVolumeCombined(discordClient: Client, accessToken: string) {
@@ -10,7 +11,8 @@ export async function SetUpDiscordVolumeCombined(discordClient: Client, accessTo
 
     const dailyStatsBase = await getDailyStatsBase()
     const dailyStatsOP = await getDailyStats()
-    const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase)
+    const dailyStatsArb = await getDailyStatsArb()
+    const dailyStatsCombined = combineStats(dailyStatsOP, dailyStatsBase, dailyStatsArb)
 
     if (dailyStatsCombined) {
       await setNameActivityVolumeCombined(discordClient, dailyStatsCombined)
@@ -21,16 +23,16 @@ export async function SetUpDiscordVolumeCombined(discordClient: Client, accessTo
   return discordClient
 }
 
-export function combineStats(dailyStatsOP: sDailyStat[] | undefined, dailyStatsBase: { volume: number }[]) {
+export function combineStats(dailyStatsOP: sDailyStat[] | undefined, dailyStatsBase: { volume: number }[], dailyStatsArb: { volume: number }[]) {
   // Check if dailyStatsOP and dailyStatsBase are defined
-  if (!dailyStatsOP || !dailyStatsBase) {
+  if (!dailyStatsOP || !dailyStatsBase || !dailyStatsArb) {
     console.error('Failed to fetch daily stats from OP or Base')
     return // Exit if either is undefined
   }
   // Calculate the combined volumes for today and yesterday
   console.log(dailyStatsBase[0].volume)
-  const combinedTodayVolume = dailyStatsOP[0].volume + dailyStatsBase[0].volume
-  const combinedYesterdayVolume = dailyStatsOP[1].volume + dailyStatsBase[1].volume
+  const combinedTodayVolume = dailyStatsOP[0].volume + dailyStatsBase[0].volume + dailyStatsArb[0].volume
+  const combinedYesterdayVolume = dailyStatsOP[1].volume + dailyStatsBase[1].volume + dailyStatsArb[1].volume
 
   // Use combined volumes for setting the name and activity
   const dailyStatsCombined = [{ volume: combinedTodayVolume }, { volume: combinedYesterdayVolume }]

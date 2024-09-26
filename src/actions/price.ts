@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 import {
   ETH_OP,
   BTC_OP,
@@ -10,27 +10,24 @@ import {
   ZORK_OP,
   LERN_OP,
   CYDX_OP,
-} from '../constants/addresses'
-import { urls } from '../constants/urls'
-import { Dexscreener, Pair } from '../types/dexscreener'
+} from '../constants/addresses';
+import { urls } from '../constants/urls';
+import { Dexscreener, Pair } from '../types/dexscreener';
 
-async function fetchSolscanPrice(address: string): Promise<string | null> {
+async function fetchCoinGeckoPrice(coinId: string): Promise<string | null> {
   try {
-    const axiosInstance = axios.create({
-      timeout: 10000, // 10 seconds
-    });
-    const response = await axiosInstance.get(`https://api.solscan.io/token/price?tokenAddress=${address}`)
-    if (response.data && response.data.data && response.data.data.priceUsdt) {
-      return response.data.data.priceUsdt.toString()
+    const response = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`);
+    if (response.data && response.data[coinId] && response.data[coinId].usd) {
+      return response.data[coinId].usd.toString();
     }
   } catch (error) {
-    console.error(`Error fetching price from Solscan for address: ${address}`, error)
+    console.error(`Error fetching price from CoinGecko for coinId: ${coinId}`, error);
   }
-  return null
+  return null;
 }
 
 export async function GetPrices() {
-  const pairs: Pair[] = []
+  const pairs: Pair[] = [];
 
   const [pairsEth, pairsBtc, pairsThales, pairsSNX, pairsKwenta, pairsTLX, pairsPYTH, pairsLERN, pairsZORK, pairsCYDX] =
     await Promise.all([
@@ -44,56 +41,54 @@ export async function GetPrices() {
       axios.get(`${urls.dexscreenerUrl}${LERN_OP}`),
       axios.get(`${urls.dexscreenerUrl}${ZORK_OP}`),
       axios.get(`${urls.dexscreenerUrl}${CYDX_OP}`),
-    ])
+    ]);
 
-  const dexEth = pairsEth?.data as Dexscreener
-  const dexBtc = pairsBtc?.data as Dexscreener
-  const dexThales = pairsThales?.data as Dexscreener
-  const dexSNX = pairsSNX?.data as Dexscreener
-  const dexKwenta = pairsKwenta?.data as Dexscreener
-  const dexTLX = pairsTLX?.data as Dexscreener
-  const dexPYTH = pairsPYTH?.data as Dexscreener
-  const dexLERN = pairsLERN?.data as Dexscreener
-  const dexZORK = pairsZORK?.data as Dexscreener
-  const dexCYDX = pairsCYDX?.data as Dexscreener
-
-  // console.log('dexZORK:', JSON.stringify(dexZORK, null, 2)); // Log the ZORK response
+  const dexEth = pairsEth?.data as Dexscreener;
+  const dexBtc = pairsBtc?.data as Dexscreener;
+  const dexThales = pairsThales?.data as Dexscreener;
+  const dexSNX = pairsSNX?.data as Dexscreener;
+  const dexKwenta = pairsKwenta?.data as Dexscreener;
+  const dexTLX = pairsTLX?.data as Dexscreener;
+  const dexPYTH = pairsPYTH?.data as Dexscreener;
+  const dexLERN = pairsLERN?.data as Dexscreener;
+  const dexZORK = pairsZORK?.data as Dexscreener;
+  const dexCYDX = pairsCYDX?.data as Dexscreener;
 
   try {
     const findPair = (dexData: Dexscreener, address: string): Pair | null => {
       if (!dexData || !dexData.pairs) {
-        console.error(`No pairs found for address: ${address}`)
-        return null
+        console.error(`No pairs found for address: ${address}`);
+        return null;
       }
-      const pair = dexData.pairs.find((pair: Pair) => pair.baseToken.address.toLowerCase() === address.toLowerCase())
+      const pair = dexData.pairs.find((pair: Pair) => pair.baseToken.address.toLowerCase() === address.toLowerCase());
       if (!pair) {
-        console.error(`Pair not found for address: ${address}`)
-        return null
+        console.error(`Pair not found for address: ${address}`);
+        return null;
       }
-      return pair
-    }
+      return pair;
+    };
 
     const addPair = (pair: Pair | null) => {
-      if (pair) pairs.push(pair)
-    }
+      if (pair) pairs.push(pair);
+    };
 
-    addPair(findPair(dexEth, ETH_OP))
-    addPair(findPair(dexBtc, BTC_OP))
-    addPair(findPair(dexThales, THALES_OP))
-    addPair(findPair(dexSNX, SNX_OP))
-    addPair(findPair(dexKwenta, KWENTA_OP))
-    addPair(findPair(dexTLX, TLX_OP))
-    addPair(findPair(dexPYTH, PYTH_OP))
-    addPair(findPair(dexLERN, LERN_OP))
+    addPair(findPair(dexEth, ETH_OP));
+    addPair(findPair(dexBtc, BTC_OP));
+    addPair(findPair(dexThales, THALES_OP));
+    addPair(findPair(dexSNX, SNX_OP));
+    addPair(findPair(dexKwenta, KWENTA_OP));
+    addPair(findPair(dexTLX, TLX_OP));
+    addPair(findPair(dexPYTH, PYTH_OP));
+    addPair(findPair(dexLERN, LERN_OP));
 
-    let pairZORK = findPair(dexZORK, ZORK_OP)
+    let pairZORK = findPair(dexZORK, ZORK_OP);
     if (!pairZORK) {
-      const zorkPrice = await fetchSolscanPrice(ZORK_OP)
+      const zorkPrice = await fetchCoinGeckoPrice('zorksees'); // Use the CoinGecko ID for ZORK
       if (zorkPrice !== null) {
         pairZORK = {
           chainId: 'solana',
-          dexId: 'solscan',
-          url: `https://solscan.io/token/${ZORK_OP}`,
+          dexId: 'coingecko',
+          url: `https://www.coingecko.com/en/coins/zorksees`, // Update the URL if needed
           pairAddress: ZORK_OP,
           baseToken: { address: ZORK_OP, name: 'ZORK', symbol: 'ZORK' },
           quoteToken: { address: '', name: 'USD', symbol: 'USD' },
@@ -110,20 +105,17 @@ export async function GetPrices() {
           liquidity: { usd: 0, base: 0, quote: 0 },
           fdv: 0,
           pairCreatedAt: 0,
-        }
-        pairs.push(pairZORK)
+        };
+        pairs.push(pairZORK);
       }
     } else {
-      pairs.push(pairZORK)
+      pairs.push(pairZORK);
     }
 
-    addPair(findPair(dexCYDX, CYDX_OP))
+    addPair(findPair(dexCYDX, CYDX_OP));
   } catch (error) {
-    console.log('Error processing pairs:', error)
+    console.log('Error processing pairs:', error);
   }
 
-  console.log('PAIRS:', JSON.stringify(pairs, null, 2)); // Log the pairs array to verify the contents
-  console.log('END: END');
-
-  return pairs
+  return pairs;
 }

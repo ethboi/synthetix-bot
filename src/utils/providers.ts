@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { ALCHEMY_BASE_API_URL, ALCHEMY_MAINNET_API_URL, ALCHEMY_OP_API_URL } from '../config'
+import { ALCHEMY_BASE_API_URL, ALCHEMY_MAINNET_API_URL, ALCHEMY_OP_API_URL, ALCHEMY_ARB_API_URL } from '../config'
 
 export const providerMainnet = new ethers.providers.JsonRpcProvider(ALCHEMY_MAINNET_API_URL, {
   chainId: 1,
@@ -14,4 +14,9 @@ export const providerOP = new ethers.providers.JsonRpcProvider(ALCHEMY_OP_API_UR
 export const providerBase = new ethers.providers.JsonRpcProvider(ALCHEMY_BASE_API_URL, {
   chainId: 8453,
   name: 'base',
+})
+
+export const providerArb = new ethers.providers.JsonRpcProvider(ALCHEMY_ARB_API_URL, {
+  chainId: 42161,
+  name: 'arbitrum',
 })
