@@ -117,7 +117,7 @@ export async function setNameActivityBaseFees(client: Client, dailyStats: { day:
     const epochFees = epochDays.reduce((accumulator, dailyStat) => accumulator + dailyStat.fees, 0);
 
     const username = `$${displayNumber(epochFees)} FEES`;
-    const activity = `24h Fees: $${displayNumber(dailyStats[0].fees)}`;
+    const activity = `24h: $${displayNumber(dailyStats[0].fees)}`;
 
     console.log('Base Fees');
     console.log(username);
