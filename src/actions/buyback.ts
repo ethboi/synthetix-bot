@@ -17,15 +17,25 @@ export async function GetBuybackData() {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
       }
     });
-    // console.log(response.data.result);
-    const buybackData = parseBuybackData(response.data.result);
+    if (!response.data || !response.data.result || response.data.result.length === 0) {
+      console.warn('No logs found. Returning weekly burned SNX as 0.');
+      // const totalBurnedSNX = await FetchTotalBurnedSNX();
+      return {
+        burnedSNX: 0,
+        weeklyBurnedSNX: 0,
+        // totalBurnedSNX,
+        burnedUSD: 0,
+        lastBurnEvent: 'No recent burn event',
+      };
+    } else {
+      return parseBuybackData(response.data.result);
+    }
+
     
-    console.log(buybackData);
-    return buybackData;
   } catch (error) {
-    console.error('Error fetching buyback data:');
+    console.error('Error fetching buyback data');
     throw error;
-  } 
+  }
 }
 
 async function getCurrentBlockNumber(apiKey: string): Promise<number> {
@@ -86,23 +96,29 @@ export async function FetchTotalBurnedSNX() {
 
 
 async function parseBuybackData(data: any[]): Promise<Buyback> {
-  const weeklyBurnedSNX = calculateWeeklyBurnedSNX(data);
-  const totalBurnedSNX = Number(FetchTotalBurnedSNX());; // Await the async call
+  const totalBurnedSNX = await FetchTotalBurnedSNX() || 0; // Default to 0 if undefined
 
-  const latestEntry = data[data.length - 1];
-  const burnedSNX = parseBurnedSNXData(latestEntry.data);
-  const burnedUSD = parseBurnedUSDData(latestEntry.data);
+  const latestEntry = data.length > 0 ? data[data.length - 1] : null;
 
-  const lastBurnEventTimestampHex = latestEntry.timeStamp;
-  const lastBurnEventTimestampDecimal = parseInt(lastBurnEventTimestampHex, 16);
-  const lastBurnEventDate = new Date(lastBurnEventTimestampDecimal * 1000);
+  let burnedSNX = 0;
+  let burnedUSD = 0;
+  let lastBurnEventDate = 'No recent burn event';
+
+  if (latestEntry && latestEntry.data) {
+    burnedSNX = parseBurnedSNXData(latestEntry.data);
+    burnedUSD = parseBurnedUSDData(latestEntry.data);
+
+    const lastBurnEventTimestampHex = latestEntry.timeStamp;
+    const lastBurnEventTimestampDecimal = parseInt(lastBurnEventTimestampHex, 16);
+    lastBurnEventDate = new Date(lastBurnEventTimestampDecimal * 1000).toISOString();
+  }
 
   return {
     burnedSNX,
-    weeklyBurnedSNX,
-    totalBurnedSNX, // Now including the awaited value
+    weeklyBurnedSNX: calculateWeeklyBurnedSNX(data),
+    // totalBurnedSNX, // This is now guaranteed to be a number
     burnedUSD,
-    lastBurnEvent: lastBurnEventDate.toISOString(), 
+    lastBurnEvent: lastBurnEventDate,
   };
 }
 
