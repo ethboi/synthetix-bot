@@ -12,11 +12,11 @@ export const DISCORD_ACCESS_TOKEN_FEES = _.defaultTo(process.env.DISCORD_ACCESS_
 export const DISCORD_ACCESS_TOKEN_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_OI, '')
 export const DISCORD_ACCESS_TOKEN_BASE_FEES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BASE_FEES, '')
 export const DISCORD_ACCESS_TOKEN_BASE_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BASE_OI, '')
+
 export const DISCORD_ACCESS_TOKEN_VOLUME_ARB = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_VOLUME_ARB, '')
 export const DISCORD_ACCESS_TOKEN_ARB_FEES = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ARB_FEES, '')
 export const DISCORD_ACCESS_TOKEN_ARB_OI = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ARB_OI, '')
 export const DISCORD_ACCESS_TOKEN_OI_COMBINED = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_OI_COMBINED, '')
-
 
 export const DISCORD_ACCESS_TOKEN_ETH = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_ETH, '')
 export const DISCORD_ACCESS_TOKEN_BTC = _.defaultTo(process.env.DISCORD_ACCESS_TOKEN_BTC, '')
