@@ -3,15 +3,14 @@ import moment from 'moment'
 import { urls } from '../constants/urls'
 import axios from 'axios'
 import { Buyback } from '../types/buyback'
-import { BASESCAN_API } from '../config/'
+import { BASESCAN_API_KEY, ALCHEMY_BASE_API_KEY } from '../config/'
 
 export async function GetBuybackData() {
   try {
-    const apiKey = '4N3FZPBS52ITAUWPQ5UU9Z641TZN7SE9AJ'
-    const currentBlock = await getCurrentBlockNumber(apiKey)
+    const currentBlock = await getCurrentBlockNumber(BASESCAN_API_KEY)
     const fromBlock = calculateFromBlock(currentBlock)
     const toBlock = 'latest'
-    const url = `${urls.BASESCAN_API_URL}?module=logs&action=getLogs&fromBlock=${fromBlock}&toBlock=${toBlock}&topic0=0x840f6b22bacac5a7ec150e55e4101f796377c95c8b315bbfd6c943958d5a83f8&address=0x632caa10a56343c5e6c0c066735840c096291b18&apikey=${apiKey}`
+    const url = `${urls.BASESCAN_API_URL}?module=logs&action=getLogs&fromBlock=${fromBlock}&toBlock=${toBlock}&topic0=0x840f6b22bacac5a7ec150e55e4101f796377c95c8b315bbfd6c943958d5a83f8&address=0x632caa10a56343c5e6c0c066735840c096291b18&apikey=${BASESCAN_API_KEY}`
     const response = await axios.get(url, {
       headers: {
         'User-Agent':
@@ -37,8 +36,8 @@ export async function GetBuybackData() {
   }
 }
 
-async function getCurrentBlockNumber(apiKey: string): Promise<number> {
-  const url = `${urls.BASESCAN_API_URL}?module=proxy&action=eth_blockNumber&apikey=${apiKey}`
+async function getCurrentBlockNumber(BASESCAN_API_KEY: string): Promise<number> {
+  const url = `${urls.BASESCAN_API_URL}?module=proxy&action=eth_blockNumber&apikey=${BASESCAN_API_KEY}`
   const response = await axios.get(url)
   return parseInt(response.data.result, 16)
 }
@@ -52,9 +51,7 @@ function calculateFromBlock(currentBlock: number): number {
 }
 
 export async function FetchTotalBurnedSNX() {
-  const apiKey = 't6wG2X84EFuaOD2MET30v-U7vjSkFmJ1'
-  const baseURL = `https://base-mainnet.g.alchemy.com/v2/${apiKey}`
-
+  const baseURL = `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_BASE_API_KEY}`
   // SNX contract address
   const snxContractAddress = '0x22e6966B799c4D5B13BE962E1D117b56327FDa66'
   // The burn address where SNX are sent to be burned
