@@ -5,11 +5,11 @@ import { displayNumber } from '../utils/formatNumber';
 
 // Import the ABI JSON
 import perpsMarketProxyABI from '../contracts/abis/PerpsMarketProxyBase.json';
-import { ALCHEMY_BASE_API_URL } from '../config';
+import { ALCHEMY_BASE_FEES_API_URL } from '../config';
 
 // Set up Web3 instance
-const web3 = new Web3(new Web3.providers.HttpProvider("https://base-mainnet.g.alchemy.com/v2/Ikqy1XKMqh4SqTEjhf5rdlxEcdqD5RBI"));
-const contractAddress = '0x0A2AF931eFFd34b81ebcc57E3d3c9B1E1dE1C9Ce'; // Replace with the correct Base contract address
+const web3 = new Web3(new Web3.providers.HttpProvider(ALCHEMY_BASE_FEES_API_URL));
+const contractAddress = '0x0A2AF931eFFd34b81ebcc57E3d3c9B1E1dE1C9Ce';
 const perpsMarketProxyContract = new web3.eth.Contract(perpsMarketProxyABI as AbiItem[], contractAddress);
 
 // Function to fetch `OrderSettled` events and calculate protocol fees

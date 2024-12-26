@@ -43,9 +43,6 @@ export async function setNameActivityVolumeCombined(client: Client, dailyStats: 
   try {
     const today = dailyStats[0]
     const prev = dailyStats[1]
-    // const adjustedPrevVol = applyDayPercentageToFee(prev.volume);
-    // const changeDirection = today.volume > adjustedPrevVol;
-    // const change = calculatePercentageChange(adjustedPrevVol, today.volume);
 
     const username = `!$${displayNumber(today.volume)} VOL. COMB.`
     const activity = `Prev: $${displayNumber(prev.volume)}`
